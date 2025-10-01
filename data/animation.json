@@ -1,0 +1,153 @@
+{
+  "intro": {
+    "steps": [
+      {
+        "transforms": {
+          "envelopeFrontFlapShadow": {
+            "translateZ": -0.4,
+            "rotateX": "132cw",
+            "opacity": 1
+          },
+          "envelopeFrontFlap": {
+            "translateZ": -0.4,
+            "translateY": -0.25,
+            "rotateX": "132cw"
+          },
+          "envelopeBackFlap": {
+            "translateZ": -0.4,
+            "rotateX": "-132.5ccw",
+            "translateY": 0.03,
+            "visibility": "inherit",
+            "opacity": 1
+          },
+          "envelopeFrontBase": {
+            "translateZ": -0.2
+          },
+          "envelopeBackBase": {
+            "translateZ": -0.2
+          },
+          "envelopeCard": {
+            "translateZ": 0,
+            "visibility": "inherit",
+            "scale": 0.68,
+            "translateX": 0,
+            "translateY": 24,
+            "rotate": -90
+          },
+          "envelopeBackCover": {
+            "translateZ": 0.1
+          },
+          "cardFront": {
+            "translateZ": 0
+          },
+          "cardBack": {
+            "translateZ": 0
+          },
+          "envelope": {
+            "zIndex": 1,
+            "translateX": 0,
+            "translateY": -28,
+            "scale": 1.2,
+            "visibility": "inherit"
+          },
+          "envelopeChild": {
+            "rotateY": 0
+          },
+          "card": {
+            "visibility": "hidden",
+            "translateX": 0,
+            "translateY": 0,
+            "scale": 1,
+            "zIndex": 0
+          },
+          "cardChild": {
+            "rotateY": 0
+          }
+        },
+        "duration": 0
+      },
+      {
+        "transforms": {
+          "envelope": [
+            {
+              "translateY": 73,
+              "scale": 1.75,
+              "duration": 2000,
+              "delay": 200,
+              "ease": "cubicInOut"
+            }
+          ],
+          "envelopeCard": [
+            {
+              "translateX": 0,
+              "translateY": -41.67,
+              "delay": 510,
+              "duration": 1800,
+              "ease": "cubicInOut"
+            },
+            {
+              "rotate": 0,
+              "delay": 1500,
+              "duration": 800,
+              "ease": "cubicOut"
+            },
+            {
+              "translateX": 0,
+              "scale": 0.685,
+              "delay": 1600,
+              "duration": 1200
+            }
+          ],
+          "envelopeFrontFlapShadow": [
+            {
+              "rotateX": "89cw",
+              "duration": 900,
+              "delay": 250,
+              "ease": "sinusoidalOut"
+            },
+            {
+              "opacity": 0,
+              "duration": 700,
+              "delay": 250,
+              "ease": "sinusoidalOut"
+            }
+          ],
+          "envelopeFrontFlap": {
+            "rotateX": "0.01cw",
+            "duration": 750,
+            "delay": 220,
+            "ease": "sinusoidalOut"
+          },
+          "envelopeBackFlap": {
+            "rotateX": "0cw",
+            "duration": 750,
+            "delay": 220,
+            "ease": "sinusoidalOut"
+          }
+        }
+      },
+      {
+        "transforms": {
+          "card": {
+            "visibility": "inherit",
+            "zIndex": 1,
+            "translateY": 0,
+            "scale": 1.2
+          },
+          "cardChild": {
+            "rotateY": 0
+          },
+          "envelope": {
+            "zIndex": 0
+          },
+          "envelopeCard": {
+            "visibility": "hidden"
+          }
+        },
+        "duration": 0,
+        "next": "showPreviewSecond",
+        "delayNext": 500
+      }
+    ]
+  }
+}
