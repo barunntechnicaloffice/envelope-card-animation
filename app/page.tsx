@@ -18,7 +18,7 @@ export default function Home() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '16px'
+      padding: '0'
     }}>
       <div style={{ width: '100%', maxWidth: '672px' }}>
         <EnvelopeCard isAnimating={isAnimating} onAnimationStart={() => setIsAnimating(true)} />
