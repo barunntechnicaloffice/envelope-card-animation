@@ -260,7 +260,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 </div>
 
                 {/* 아래쪽 플랩 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: '3px', left: 0, zIndex: 4, filter: visibleCards.length > 1 ? 'none' : 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))', opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out, filter 1s ease-out' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: '3px', left: 0, zIndex: 4, opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out' }}>
                   <defs>
                     <linearGradient id="bottomGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#2a2a2a" />
@@ -272,7 +272,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 </svg>
 
                 {/* 왼쪽 플랩 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 2, filter: visibleCards.length > 1 ? 'none' : 'drop-shadow(-2px 0 8px rgba(0,0,0,0.3))', opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out, filter 1s ease-out' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 2, opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out' }}>
                   <defs>
                     <linearGradient id="leftGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#0a0a0a" />
@@ -283,7 +283,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 </svg>
 
                 {/* 오른쪽 플랩 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, filter: visibleCards.length > 1 ? 'none' : 'drop-shadow(2px 0 8px rgba(0,0,0,0.3))', opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out, filter 1s ease-out' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out' }}>
                   <defs>
                     <linearGradient id="rightGradient" x1="100%" y1="0%" x2="0%" y2="0%">
                       <stop offset="0%" stopColor="#0a0a0a" />
@@ -323,9 +323,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     style={{
                       position: 'absolute',
                       width: '100%',
-                      height: '100%',
-                      filter: visibleCards.length > 1 ? 'none' : 'drop-shadow(0 -4px 12px rgba(0,0,0,0.5))',
-                      transition: 'filter 1s ease-out'
+                      height: '100%'
                     }}
                   >
                     <defs>
