@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
   output: 'export',
-  basePath: '/envelope-card-animation',
+  basePath: isProd ? '/envelope-card-animation' : '',
   images: {
     unoptimized: true,
   },
