@@ -234,10 +234,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 position: 'relative',
                 width: '100%',
                 height: '100%',
-                backgroundColor: '#1a1a1a',
+                backgroundColor: visibleCards.length > 1 ? 'transparent' : '#1a1a1a',
                 overflow: 'visible',
-                opacity: visibleCards.length > 1 ? 0 : 1,
-                transition: 'opacity 1s ease-out'
+                transition: 'background-color 1s ease-out'
               }}>
 
                 {/* 봉투 내부 바닥 (내지) */}
