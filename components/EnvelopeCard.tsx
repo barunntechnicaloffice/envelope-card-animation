@@ -246,7 +246,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   top: '0',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  zIndex: 0
+                  zIndex: 0,
+                  opacity: visibleCards.length > 1 ? 0 : 1,
+                  transition: 'opacity 1s ease-out'
                 }}>
                   <svg width="100%" height="100%" viewBox="0 0 340 250" preserveAspectRatio="none">
                     <defs>
