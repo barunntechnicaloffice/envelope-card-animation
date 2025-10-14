@@ -6,11 +6,6 @@ import EnvelopeCard from '@/components/EnvelopeCard'
 export default function Home() {
   const [isAnimating, setIsAnimating] = useState(false)
 
-  const handleReplay = () => {
-    setIsAnimating(false)
-    setTimeout(() => setIsAnimating(true), 50)
-  }
-
   return (
     <main style={{
       minHeight: '100vh',

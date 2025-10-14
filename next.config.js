@@ -2,8 +2,8 @@
 const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig = {
-  output: 'export',
-  basePath: isProd ? '/envelope-card-animation' : '',
+  // output: 'export', // dev 서버에서는 주석 처리
+  // basePath: isProd ? '/envelope-card-animation' : '', // dev에서 사용 안함
   images: {
     unoptimized: true,
   },

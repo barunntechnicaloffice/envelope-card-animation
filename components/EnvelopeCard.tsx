@@ -1,7 +1,50 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import styles from './EnvelopeCard.module.css'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectCreative } from 'swiper/modules'
+import type { Swiper as SwiperType } from 'swiper'
+
+// Swiper CSS
+import 'swiper/css'
+import 'swiper/css/effect-creative'
+
+// Swiper 커스텀 스타일
+const swiperStyles = `
+  .envelope-swiper {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: visible !important;
+  }
+  .envelope-swiper .swiper-wrapper {
+    overflow: visible !important;
+  }
+  .envelope-swiper .swiper-slide {
+    width: min(220px, 42vw) !important;
+    height: min(340px, 65vw) !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .envelope-swiper .swiper-slide > div {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .envelope-swiper .swiper-slide-shadow,
+  .envelope-swiper .swiper-slide-shadow-creative {
+    display: none !important;
+  }
+`
+
+if (typeof document !== 'undefined' && !document.getElementById('swiper-custom-styles')) {
+  const styleEl = document.createElement('style')
+  styleEl.id = 'swiper-custom-styles'
+  styleEl.textContent = swiperStyles
+  document.head.appendChild(styleEl)
+}
 
 interface Card {
   id: number
@@ -25,10 +68,9 @@ const ALL_CARDS: Card[] = [
 export default function EnvelopeCard({ isAnimating, onAnimationStart }: EnvelopeCardProps) {
   const [phase, setPhase] = useState<'initial' | 'start' | 'flap-open' | 'card-slide' | 'card-rotate'>('initial')
   const [hasStarted, setHasStarted] = useState(false)
-  const [visibleCards, setVisibleCards] = useState<Card[]>([ALL_CARDS[0]]) // 처음엔 1장만
-  const [currentCardIndex, setCurrentCardIndex] = useState(0)
-  const [swipingCardId, setSwipingCardId] = useState<number | null>(null)
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const swiperRef = useRef<SwiperType | null>(null)
 
   useEffect(() => {
     if (isAnimating && !hasStarted) {
@@ -44,32 +86,26 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
       setPhase('start')
     }, 0)
 
-    // Step 2: Flap fully open (after 750ms animation)
+    // Step 2: Flap fully open
     setTimeout(() => {
       setPhase('flap-open')
     }, 750)
 
-    // Step 3: Card slides up (after flap is open)
+    // Step 3: Card slides up
     setTimeout(() => {
       setPhase('card-slide')
     }, 1260)
 
-    // Step 4: Card rotates (바로 회전 시작)
+    // Step 4: Card rotates
     setTimeout(() => {
       setPhase('card-rotate')
-    }, 1760) // 2250 → 1760으로 단축 (약 500ms 단축)
+    }, 1760)
 
-    // Step 5: 회전 완료 후 뒤에 카드들 나타남
+    // Step 5: Swiper 활성화 (회전 완료 직후)
     setTimeout(() => {
-      console.log('🎴 Adding cards 2, 3, 4 to visibleCards')
-      setVisibleCards(ALL_CARDS) // 모든 카드 표시
-    }, 2560) // 3050 → 2560으로 단축
-
-    // Step 6: 스와이프 활성화
-    setTimeout(() => {
-      console.log('👆 Swipe enabled')
+      console.log('👆 Swiper enabled - seamless swap')
       setIsSwipeEnabled(true)
-    }, 3000) // 3500 → 3000으로 단축
+    }, 2600) // 회전 완료 후 바로 바꿔치기
   }
 
   const handleEnvelopeClick = () => {
@@ -80,102 +116,91 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
   }
 
   const handleReplay = () => {
-    // Force reload to reset everything
     window.location.reload()
   }
 
-  // 카드 전환 핸들러
-  const goToNextCard = () => {
-    if (!isSwipeEnabled || currentCardIndex >= ALL_CARDS.length - 1) return
-
-    console.log('➡️ Next card')
-    setIsSwipeEnabled(false)
-    setSwipingCardId(ALL_CARDS[currentCardIndex].id)
-
-    setTimeout(() => {
-      setCurrentCardIndex(prev => prev + 1)
-      setSwipingCardId(null)
-      setIsSwipeEnabled(true)
-    }, 600)
-  }
-
-  const goToPrevCard = () => {
-    if (!isSwipeEnabled || currentCardIndex <= 0) return
-
-    console.log('⬅️ Previous card')
-    setIsSwipeEnabled(false)
-    // 이전 카드도 동일한 애니메이션 (fly away 효과 없이 바로 전환)
-    setCurrentCardIndex(prev => prev - 1)
-    setTimeout(() => {
-      setIsSwipeEnabled(true)
-    }, 600) // 다음 카드와 동일한 시간
-  }
-
-  // 터치 스와이프 감지
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
-
-  const minSwipeDistance = 50
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    if (!isSwipeEnabled) {
-      console.log('❌ Touch blocked - swipe not enabled')
-      return
-    }
-    setTouchEnd(null)
-    setTouchStart(e.targetTouches[0].clientX)
-    console.log('👆 Touch start:', e.targetTouches[0].clientX)
-  }
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!isSwipeEnabled) return
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd || !isSwipeEnabled) return
-
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
-
-    console.log(`Touch distance: ${distance}, Left: ${isLeftSwipe}, Right: ${isRightSwipe}, CurrentIndex: ${currentCardIndex}`)
-
-    if (isLeftSwipe && currentCardIndex < ALL_CARDS.length - 1) {
-      console.log('✅ Going to NEXT card')
-      goToNextCard()
-    } else if (isRightSwipe && currentCardIndex > 0) {
-      console.log('✅ Going to PREV card')
-      goToPrevCard()
-    } else {
-      console.log('❌ Swipe blocked or not enough distance')
-    }
-
-    // 리셋
-    setTouchStart(null)
-    setTouchEnd(null)
-  }
-
-  // 키보드 이벤트
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isSwipeEnabled) return
-      if (e.key === 'ArrowLeft') goToPrevCard()
-      if (e.key === 'ArrowRight') goToNextCard()
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isSwipeEnabled, currentCardIndex])
-
   return (
-    <div className={styles.container}>
-      <div className={styles.mediaRoot}>
+    <>
+      {/* Swiper 카드 스택 - 봉투와 완전히 분리 */}
+      {isSwipeEnabled && (
         <div
-          className={styles.graphics}
           style={{
-            opacity: 1
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translateX(-50%) translateY(-50%)',
+            zIndex: 1000,
+            width: 'min(220px, 42vw)',
+            height: 'min(340px, 65vw)',
+            perspective: '1200px'
           }}
         >
+          <Swiper
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper
+              console.log('🎯 Swiper initialized:', swiper)
+            }}
+            onSlideChange={(swiper) => {
+              setActiveIndex(swiper.activeIndex)
+              console.log('✅ Slide changed to index:', swiper.activeIndex)
+            }}
+            effect="creative"
+            grabCursor={true}
+            modules={[EffectCreative]}
+            creativeEffect={{
+              prev: {
+                translate: ['-120%', 0, 0],
+                opacity: 0,
+              },
+              next: {
+                translate: [0, 0, -40],
+                rotate: [0, 0, -7],
+                opacity: 1,
+                shadow: false,
+              },
+            }}
+            slidesPerView="auto"
+            centeredSlides={true}
+            className="envelope-swiper"
+          >
+            {ALL_CARDS.map((card, index) => (
+              <SwiperSlide key={card.id}>
+                <div
+                  className={styles.envelopeCardInner}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: index === activeIndex ? '#ffffff' : '#e0e0e0',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    cursor: 'grab',
+                    userSelect: 'none'
+                  }}
+                >
+                  <div className={styles.cardHeaderSmall}>
+                    <div className={styles.headerDecoration}>{card.decoration}</div>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <h3 className={styles.cardTitle}>{card.title}</h3>
+                    <p className={styles.cardSubtitle}>{card.subtitle}</p>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      )}
+
+      {/* 봉투 컨테이너 */}
+      <div className={styles.container}>
+        <div className={styles.mediaRoot}>
+          <div
+            className={styles.graphics}
+            style={{
+              opacity: 1
+            }}
+          >
 
           {/* CARD - 원본과 동일한 구조 (사용 안함) */}
           <div
@@ -220,7 +245,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
               width: 'min(380px, 75vw)', // 모바일: 화면의 75%
               height: 'min(250px, 48vw)', // 비율 유지
               visibility: 'inherit',
-              zIndex: phase === 'initial' ? 1 : 0,
+              zIndex: phase === 'initial' ? 1 : phase === 'card-rotate' ? -10 : 0,
               cursor: hasStarted ? 'default' : 'pointer',
               transform: phase === 'initial'
                 ? 'translateX(-50%) translateY(calc(-50% - 28%)) scale(1.0)'
@@ -234,9 +259,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 position: 'relative',
                 width: '100%',
                 height: '100%',
-                backgroundColor: visibleCards.length > 1 ? 'transparent' : '#1a1a1a',
+                backgroundColor: phase === 'card-rotate' ? 'transparent' : '#1a1a1a',
                 overflow: 'visible',
-                transition: 'background-color 1s ease-out'
+                transition: 'background-color 0.3s ease-out'
               }}>
 
                 {/* 봉투 내부 바닥 (내지) */}
@@ -248,8 +273,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   left: '50%',
                   transform: 'translateX(-50%)',
                   zIndex: 0,
-                  opacity: visibleCards.length > 1 ? 0 : 1,
-                  transition: 'opacity 1s ease-out'
+                  opacity: phase === 'card-rotate' ? 0 : 1,
+                  transition: 'opacity 0.3s ease-out'
                 }}>
                   <svg width="100%" height="100%" viewBox="0 0 340 250" preserveAspectRatio="none">
                     <defs>
@@ -263,7 +288,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 </div>
 
                 {/* 아래쪽 플랩 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: '3px', left: 0, zIndex: 4, opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: '3px', left: 0, zIndex: 4, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out' }}>
                   <defs>
                     <linearGradient id="bottomGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#2a2a2a" />
@@ -275,7 +300,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 </svg>
 
                 {/* 왼쪽 플랩 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 2, opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 2, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out' }}>
                   <defs>
                     <linearGradient id="leftGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#0a0a0a" />
@@ -286,7 +311,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 </svg>
 
                 {/* 오른쪽 플랩 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: visibleCards.length > 1 ? 0 : 1, transition: 'opacity 1s ease-out' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out' }}>
                   <defs>
                     <linearGradient id="rightGradient" x1="100%" y1="0%" x2="0%" y2="0%">
                       <stop offset="0%" stopColor="#0a0a0a" />
@@ -308,9 +333,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     transform: phase === 'initial'
                       ? 'rotateX(0deg)'
                       : 'rotateX(180deg)',
-                    transition: 'transform 0.75s cubic-bezier(0.445, 0.05, 0.55, 0.95), z-index 0s, opacity 1s ease-out',
+                    transition: 'transform 0.75s cubic-bezier(0.445, 0.05, 0.55, 0.95), z-index 0s, opacity 0.3s ease-out',
                     zIndex: phase === 'initial' || phase === 'start' ? 5 : -10,
-                    opacity: visibleCards.length > 1 ? 0 : 1, // 뚜껑도 fade out
+                    opacity: phase === 'card-rotate' ? 0 : 1,
                     pointerEvents: 'none',
                     transformStyle: 'preserve-3d'
                   }}
@@ -363,67 +388,39 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   </div>
                 </div>
 
-                {/* 카드 스택 - 봉투 안으로 다시 이동 */}
-                {visibleCards.map((card, index) => {
-                  const cardPosition = ALL_CARDS.findIndex(c => c.id === card.id)
-                  const isCurrentCard = cardPosition === currentCardIndex
-                  const cardsBehind = cardPosition - currentCardIndex
-                  const isSwiping = swipingCardId === card.id
-                  const isNewCard = cardPosition > 0 // 첫 번째 카드가 아니면 새로 추가된 카드
-
-                  // 현재 카드 기준 앞뒤로 1장씩만 렌더링 (성능 최적화)
-                  if (cardsBehind < -1 || cardsBehind > 3) return null
-
-                  return (
-                    <div
-                      key={card.id}
-                      id={isCurrentCard ? "envelopeCard" : undefined}
-                      className={styles.scene}
-                      onTouchStart={isCurrentCard ? onTouchStart : undefined}
-                      onTouchMove={isCurrentCard ? onTouchMove : undefined}
-                      onTouchEnd={isCurrentCard ? onTouchEnd : undefined}
-                      onClick={isCurrentCard ? goToNextCard : undefined}
-                      style={{
-                        visibility: 'inherit',
-                        width: 'min(220px, 42vw)', // 모바일: 화면의 42%
-                        height: 'min(340px, 65vw)', // 비율 유지 (340/220 = 1.545)
-                        position: 'absolute', // 원래대로 absolute
-                        top: '50%',
-                        left: '50%',
-                        zIndex: phase === 'initial' || phase === 'start' || phase === 'flap-open' || phase === 'card-slide' ? 1 : cardsBehind < 0 ? 5 : (10 - cardsBehind),
-                        transform: isSwiping
-                          ? 'translateX(calc(-50% - 150%)) translateY(-130%) translateZ(30px) rotate(-15deg) scale(0.9)'
-                          : phase === 'initial' || phase === 'start' || phase === 'flap-open'
-                          ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.95)'
-                          : phase === 'card-slide'
-                          ? 'translateX(-50%) translateY(-140%) translateZ(10px) rotate(-90deg) scale(1)'
-                          : cardsBehind < 0
-                          ? 'translateX(-50%) translateY(calc(-130% - 5px)) translateZ(-5px) rotate(0deg) scale(0.98)'
-                          : `translateX(-50%) translateY(calc(-130% + ${cardsBehind * 12}px)) translateZ(${20 - cardsBehind * 8}px) rotate(${cardsBehind * 3}deg) scale(${1 - cardsBehind * 0.02})`,
-                        transition: isSwiping
-                          ? 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                          : isNewCard
-                          ? 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)' // 새 카드는 bounce 효과
-                          : phase === 'card-rotate'
-                          ? 'all 0.8s cubic-bezier(0.445, 0.05, 0.55, 0.95)'
-                          : 'all 0.6s cubic-bezier(0.445, 0.05, 0.55, 0.95)', // 스와이프 전환은 부드럽게
-                        opacity: isSwiping ? 0 : cardsBehind < 0 ? 0 : (isNewCard && visibleCards.length === 1 ? 0 : 1), // 이전 카드는 투명
-                        pointerEvents: isCurrentCard && isSwipeEnabled ? 'auto' : 'none',
-                        cursor: isCurrentCard && isSwipeEnabled ? 'grab' : 'default'
-                      }}
-                    >
-                      <div className={styles.envelopeCardInner}>
-                        <div className={styles.cardHeaderSmall}>
-                          <div className={styles.headerDecoration}>{card.decoration}</div>
-                        </div>
-                        <div className={styles.cardContent}>
-                          <h3 className={styles.cardTitle}>{card.title}</h3>
-                          <p className={styles.cardSubtitle}>{card.subtitle}</p>
-                        </div>
-                      </div>
+                {/* 첫 카드 애니메이션 (봉투에서 나오는 효과) - 항상 표시 */}
+                <div
+                  id="envelopeCard"
+                  className={styles.scene}
+                  style={{
+                    visibility: 'inherit',
+                    width: 'min(220px, 42vw)',
+                    height: 'min(340px, 65vw)',
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    zIndex: 1,
+                    transform: phase === 'initial' || phase === 'start' || phase === 'flap-open'
+                      ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.95)'
+                      : phase === 'card-slide'
+                      ? 'translateX(-50%) translateY(-140%) translateZ(10px) rotate(-90deg) scale(1)'
+                      : 'translateX(-50%) translateY(-130%) translateZ(0px) rotate(0deg) scale(1)',
+                    transition: 'all 0.8s ease-out',
+                    opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 투명하게
+                    pointerEvents: 'none',
+                    cursor: 'default'
+                  }}
+                >
+                  <div className={styles.envelopeCardInner}>
+                    <div className={styles.cardHeaderSmall}>
+                      <div className={styles.headerDecoration}>{ALL_CARDS[0].decoration}</div>
                     </div>
-                  )
-                })}
+                    <div className={styles.cardContent}>
+                      <h3 className={styles.cardTitle}>{ALL_CARDS[0].title}</h3>
+                      <p className={styles.cardSubtitle}>{ALL_CARDS[0].subtitle}</p>
+                    </div>
+                  </div>
+                </div>
 
               </div>
 
@@ -433,13 +430,13 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
         </div>
       </div>
 
-      {/* Replay Button */}
-      <button onClick={handleReplay} className={styles.replayBtn}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-        </svg>
-      </button>
-
-    </div>
+        {/* Replay Button */}
+        <button onClick={handleReplay} className={styles.replayBtn}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+          </svg>
+        </button>
+      </div>
+    </>
   )
 }
