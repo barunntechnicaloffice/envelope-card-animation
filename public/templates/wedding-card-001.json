@@ -1,0 +1,47 @@
+{
+  "id": "wedding-card-001",
+  "version": "1.0.0",
+  "name": "웨딩 청첩장 템플릿 001",
+  "description": "Figma에서 가져온 청첩장 디자인",
+  "metadata": {
+    "title": "결혼식 초대장",
+    "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다"
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 12일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/figma/photo.png",
+      "backgroundImage": "/assets/figma/card-bg.png",
+      "decorationImage": "/assets/figma/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-001",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "backgroundImage": "$.data.wedding.backgroundImage",
+        "decorationImage": "$.data.wedding.decorationImage"
+      },
+      "style": {
+        "width": "320px",
+        "height": "580px"
+      }
+    }
+  ],
+  "globalStyles": {
+    "layout": "flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "minHeight": "100vh",
+    "backgroundColor": "#fefbf6"
+  }
+}

@@ -6,6 +6,8 @@ import styles from './EnvelopeCard.module.css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCreative } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
+import { WeddingCard } from './cards/WeddingCard'
+import { MOCK_WEDDING_DATA, type WeddingData } from '@/types/wedding'
 
 // Swiper CSS
 import 'swiper/css'
@@ -99,6 +101,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
   const [finalCardSize, setFinalCardSize] = useState({ width: 440, height: 680 })
   const [swiperPosition, setSwiperPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' })
   const [swiperOpacity, setSwiperOpacity] = useState(0)
+
+  // Wedding data state - 한 곳에서만 관리!
+  const [weddingData, setWeddingData] = useState<WeddingData>(MOCK_WEDDING_DATA)
 
   // 초기 Swiper 스타일 설정
   useEffect(() => {
@@ -238,21 +243,36 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
           >
             {ALL_CARDS.map((card, index) => (
               <SwiperSlide key={card.id}>
-                <div
-                  className={styles.envelopeCardInner}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    cursor: 'grab',
-                    userSelect: 'none',
-                    backgroundColor: index === activeIndex ? '#ffffff' : '#e5e5e5'
-                  }}
-                >
-                  <div className={styles.cardContent}>
-                    <h3 className={styles.cardTitle}>{card.title}</h3>
-                    <p className={styles.cardSubtitle}>{card.subtitle}</p>
+                {index === 0 ? (
+                  /* 첫 번째 카드 - WeddingCard 사용 */
+                  <WeddingCard
+                    data={weddingData}
+                    className={styles.envelopeCardInner}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      cursor: 'grab',
+                      userSelect: 'none'
+                    }}
+                  />
+                ) : (
+                  /* 나머지 카드들 - 기존 디자인 */
+                  <div
+                    className={styles.envelopeCardInner}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      cursor: 'grab',
+                      userSelect: 'none',
+                      backgroundColor: index === activeIndex ? '#ffffff' : '#e5e5e5'
+                    }}
+                  >
+                    <div className={styles.cardContent}>
+                      <h3 className={styles.cardTitle}>{card.title}</h3>
+                      <p className={styles.cardSubtitle}>{card.subtitle}</p>
+                    </div>
                   </div>
-                </div>
+                )}
               </SwiperSlide>
             ))}
           </Swiper>
@@ -447,14 +467,13 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     cursor: 'default'
                   }}
                 >
-                  <div id="envelope-card-inner" className={styles.envelopeCardInner}>
-                    <div className={styles.cardHeaderSmall}>
-                      <div className={styles.headerDecoration}>{ALL_CARDS[0].decoration}</div>
-                    </div>
-                    <div className={styles.cardContent}>
-                      <h3 className={styles.cardTitle}>{ALL_CARDS[0].title}</h3>
-                      <p className={styles.cardSubtitle}>{ALL_CARDS[0].subtitle}</p>
-                    </div>
+                  {/* 봉투 카드 - WeddingCard 사용 (Swiper와 동일한 컴포넌트!) */}
+                  <div id="envelope-card-inner" style={{ width: '100%', height: '100%' }}>
+                    <WeddingCard
+                      data={weddingData}
+                      className={styles.envelopeCardInner}
+                      style={{ width: '100%', height: '100%' }}
+                    />
                   </div>
                 </div>
 
