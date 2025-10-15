@@ -10,40 +10,45 @@ import type { Swiper as SwiperType } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/effect-creative'
 
-// Swiper 커스텀 스타일
-const swiperStyles = `
-  .envelope-swiper {
-    width: 100% !important;
-    height: 100% !important;
-    overflow: visible !important;
-  }
-  .envelope-swiper .swiper-wrapper {
-    overflow: visible !important;
-  }
-  .envelope-swiper .swiper-slide {
-    width: min(220px, 42vw) !important;
-    height: min(340px, 65vw) !important;
-    overflow: visible !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-  }
-  .envelope-swiper .swiper-slide > div {
-    width: 100% !important;
-    height: 100% !important;
-  }
-  .envelope-swiper .swiper-slide-shadow,
-  .envelope-swiper .swiper-slide-shadow-creative {
-    display: none !important;
-  }
-`
+// Swiper 커스텀 스타일 - 동적 업데이트
+function updateSwiperStyles(width: number, height: number) {
+  const styles = `
+    .envelope-swiper {
+      width: 100% !important;
+      height: 100% !important;
+      overflow: visible !important;
+    }
+    .envelope-swiper .swiper-wrapper {
+      overflow: visible !important;
+    }
+    .envelope-swiper .swiper-slide {
+      width: ${width}px !important;
+      height: ${height}px !important;
+      overflow: visible !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+    }
+    .envelope-swiper .swiper-slide > div {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .envelope-swiper .swiper-slide-shadow,
+    .envelope-swiper .swiper-slide-shadow-creative {
+      display: none !important;
+    }
+  `
 
-if (typeof document !== 'undefined' && !document.getElementById('swiper-custom-styles')) {
-  const styleEl = document.createElement('style')
-  styleEl.id = 'swiper-custom-styles'
-  styleEl.textContent = swiperStyles
-  document.head.appendChild(styleEl)
+  if (typeof document !== 'undefined') {
+    let styleEl = document.getElementById('swiper-custom-styles') as HTMLStyleElement
+    if (!styleEl) {
+      styleEl = document.createElement('style')
+      styleEl.id = 'swiper-custom-styles'
+      document.head.appendChild(styleEl)
+    }
+    styleEl.textContent = styles
+  }
 }
 
 interface Card {
@@ -71,6 +76,18 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const swiperRef = useRef<SwiperType | null>(null)
+  const [finalCardSize, setFinalCardSize] = useState({ width: 440, height: 680 })
+  const [swiperPosition, setSwiperPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' })
+  const [swiperOpacity, setSwiperOpacity] = useState(0)
+
+  // 초기 크기는 대략적으로만 설정 (실제 측정값으로 나중에 업데이트됨)
+  useEffect(() => {
+    const vw = window.innerWidth / 100
+    const baseWidth = Math.min(220, 42 * vw) * 2 // 2배 크기
+    const baseHeight = Math.min(340, 65 * vw) * 2 // 2배 크기
+
+    updateSwiperStyles(baseWidth, baseHeight)
+  }, [])
 
   useEffect(() => {
     if (isAnimating && !hasStarted) {
@@ -103,9 +120,34 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
 
     // Step 5: Swiper 활성화 (회전 완료 직후)
     setTimeout(() => {
-      console.log('👆 Swiper enabled - seamless swap')
+      // 봉투 카드의 실제 렌더링된 크기와 위치 측정
+      const envelopeCard = document.getElementById('envelope-card-inner')
+      if (envelopeCard) {
+        const rect = envelopeCard.getBoundingClientRect()
+
+        // Swiper를 정확히 같은 크기와 위치로 설정
+        setFinalCardSize({
+          width: rect.width,
+          height: rect.height
+        })
+
+        setSwiperPosition({
+          top: `${rect.top}px`,
+          left: `${rect.left}px`,
+          transform: 'none'
+        })
+
+        // Swiper 스타일도 업데이트
+        updateSwiperStyles(rect.width, rect.height)
+      }
+
       setIsSwipeEnabled(true)
-    }, 2600) // 회전 완료 후 바로 바꿔치기
+
+      // Swiper fadein
+      setTimeout(() => {
+        setSwiperOpacity(1)
+      }, 50)
+    }, 2600) // 회전 완료 직후
   }
 
   const handleEnvelopeClick = () => {
@@ -126,13 +168,15 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
         <div
           style={{
             position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translateX(-50%) translateY(-50%)',
+            top: swiperPosition.top,
+            left: swiperPosition.left,
+            transform: swiperPosition.transform,
             zIndex: 1000,
-            width: 'min(220px, 42vw)',
-            height: 'min(340px, 65vw)',
-            perspective: '1200px'
+            width: `${finalCardSize.width}px`,
+            height: `${finalCardSize.height}px`,
+            perspective: '1200px',
+            opacity: swiperOpacity,
+            transition: 'opacity 0.4s ease-out'
           }}
         >
           <Swiper
@@ -170,17 +214,10 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   style={{
                     width: '100%',
                     height: '100%',
-                    backgroundColor: index === activeIndex ? '#ffffff' : '#e0e0e0',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                     cursor: 'grab',
                     userSelect: 'none'
                   }}
                 >
-                  <div className={styles.cardHeaderSmall}>
-                    <div className={styles.headerDecoration}>{card.decoration}</div>
-                  </div>
                   <div className={styles.cardContent}>
                     <h3 className={styles.cardTitle}>{card.title}</h3>
                     <p className={styles.cardSubtitle}>{card.subtitle}</p>
@@ -242,14 +279,14 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
             style={{
               top: '50%',
               left: '50%',
-              width: 'min(380px, 75vw)', // 모바일: 화면의 75%
-              height: 'min(250px, 48vw)', // 비율 유지
+              width: 'min(760px, 150vw)', // 2배 크기
+              height: 'min(500px, 96vw)', // 2배 크기
               visibility: 'inherit',
               zIndex: phase === 'initial' ? 1 : phase === 'card-rotate' ? -10 : 0,
               cursor: hasStarted ? 'default' : 'pointer',
               transform: phase === 'initial'
-                ? 'translateX(-50%) translateY(calc(-50% - 28%)) scale(1.0)'
-                : 'translateX(-50%) translateY(calc(-50% + 210%)) scale(2.0)',
+                ? 'translateX(-50%) translateY(calc(-50% - 14%)) scale(0.5)'
+                : 'translateX(-50%) translateY(calc(-50% + 105%)) scale(1.0)',
               transition: 'all 2s cubic-bezier(0.445, 0.05, 0.55, 0.95)'
             }}
           >
@@ -394,8 +431,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   className={styles.scene}
                   style={{
                     visibility: 'inherit',
-                    width: 'min(220px, 42vw)',
-                    height: 'min(340px, 65vw)',
+                    width: 'min(440px, 84vw)', // 2배 크기
+                    height: 'min(680px, 130vw)', // 2배 크기
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
@@ -405,13 +442,13 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                       : phase === 'card-slide'
                       ? 'translateX(-50%) translateY(-140%) translateZ(10px) rotate(-90deg) scale(1)'
                       : 'translateX(-50%) translateY(-130%) translateZ(0px) rotate(0deg) scale(1)',
-                    transition: 'all 0.8s ease-out',
-                    opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 투명하게
+                    transition: 'transform 0.8s ease-out, opacity 0.5s ease-out',
+                    opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 fadeout
                     pointerEvents: 'none',
                     cursor: 'default'
                   }}
                 >
-                  <div className={styles.envelopeCardInner}>
+                  <div id="envelope-card-inner" className={styles.envelopeCardInner}>
                     <div className={styles.cardHeaderSmall}>
                       <div className={styles.headerDecoration}>{ALL_CARDS[0].decoration}</div>
                     </div>
