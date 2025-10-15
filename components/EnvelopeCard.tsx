@@ -10,6 +10,25 @@ import type { Swiper as SwiperType } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/effect-creative'
 
+// 반응형 카드 크기 계산
+function calculateCardSize() {
+  const ASPECT_RATIO = 1.55
+  const MAX_WIDTH = 500
+  const MAX_HEIGHT = MAX_WIDTH * ASPECT_RATIO
+  const VW_WIDTH = window.innerWidth * 0.6
+  const VH_HEIGHT = window.innerHeight * 0.85
+
+  let finalWidth = Math.min(MAX_WIDTH, VW_WIDTH)
+  let finalHeight = finalWidth * ASPECT_RATIO
+
+  if (finalHeight > VH_HEIGHT) {
+    finalHeight = VH_HEIGHT
+    finalWidth = finalHeight / ASPECT_RATIO
+  }
+
+  return { width: finalWidth, height: finalHeight }
+}
+
 // Swiper 커스텀 스타일 - 동적 업데이트
 function updateSwiperStyles(width: number, height: number) {
   const styles = `
@@ -79,31 +98,11 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
   const [finalCardSize, setFinalCardSize] = useState({ width: 440, height: 680 })
   const [swiperPosition, setSwiperPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' })
   const [swiperOpacity, setSwiperOpacity] = useState(0)
-  const measureIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  // 초기 크기는 대략적으로만 설정 (실제 측정값으로 나중에 업데이트됨)
+  // 초기 Swiper 스타일 설정
   useEffect(() => {
-    // 화면 크기 기준으로 카드 크기 계산
-    const aspectRatio = 1.55 // 가로:세로 비율
-
-    // 최대 크기 제한 (PC에서 너무 커지지 않도록)
-    const maxWidth = 500
-    const maxHeight = maxWidth * aspectRatio
-
-    // 반응형 크기 (모바일에서는 화면에 맞춤)
-    const vwWidth = window.innerWidth * 0.6 // 60vw
-    const vhHeight = window.innerHeight * 0.85 // 85vh
-
-    let finalWidth = Math.min(maxWidth, vwWidth)
-    let finalHeight = finalWidth * aspectRatio
-
-    // 높이가 화면을 넘으면 높이 기준으로 조정
-    if (finalHeight > vhHeight) {
-      finalHeight = vhHeight
-      finalWidth = finalHeight / aspectRatio
-    }
-
-    updateSwiperStyles(finalWidth, finalHeight)
+    const { width, height } = calculateCardSize()
+    updateSwiperStyles(width, height)
   }, [])
 
   // Swiper 활성화 후 봉투 카드 위치를 계속 추적
@@ -213,11 +212,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
           <Swiper
             onSwiper={(swiper) => {
               swiperRef.current = swiper
-              console.log('🎯 Swiper initialized:', swiper)
             }}
             onSlideChange={(swiper) => {
               setActiveIndex(swiper.activeIndex)
-              console.log('✅ Slide changed to index:', swiper.activeIndex)
             }}
             effect="creative"
             grabCursor={true}
@@ -270,38 +267,6 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
               opacity: 1
             }}
           >
-
-          {/* CARD - 원본과 동일한 구조 (사용 안함) */}
-          <div
-            id="card"
-            className={styles.scenario}
-            style={{
-              top: '50%',
-              left: '50%',
-              width: '267.375px',
-              height: '374.325px',
-              visibility: 'hidden',
-              zIndex: 1,
-              transform: 'translateX(-50%) translateY(-50%) scale(1.2)',
-              transition: 'all 0.5s cubic-bezier(0.445, 0.05, 0.55, 0.95)'
-            }}
-          >
-            <div
-              id="cardChild"
-              className={styles.scenarioChild}
-              style={{
-                transform: 'rotateY(0deg)'
-              }}
-            >
-              <div id="cardFront" className={styles.scene}>
-                <div className={styles.cardFrontContent}>
-                  <div className={styles.cardHeader}></div>
-                  <h2>You're Invited</h2>
-                  <p>to our special event</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* ENVELOPE - 가로로 긴 봉투 */}
           <div
