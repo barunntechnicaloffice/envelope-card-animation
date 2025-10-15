@@ -246,7 +246,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     width: '100%',
                     height: '100%',
                     cursor: 'grab',
-                    userSelect: 'none'
+                    userSelect: 'none',
+                    backgroundColor: index === activeIndex ? '#ffffff' : '#e5e5e5'
                   }}
                 >
                   <div className={styles.cardContent}>
@@ -317,7 +318,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
               cursor: hasStarted ? 'default' : 'pointer',
               transform: phase === 'initial'
                 ? 'translateX(-50%) translateY(calc(-50% - 10vh)) scale(0.5)'
-                : 'translateX(-50%) translateY(-50%) scale(1.0)',
+                : 'translateX(-50%) translateY(calc(-50% + 60vh)) scale(1.0)',
               transition: 'all 2s cubic-bezier(0.445, 0.05, 0.55, 0.95)'
             }}
           >
@@ -469,10 +470,10 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     left: '50%',
                     zIndex: 1,
                     transform: phase === 'initial' || phase === 'start' || phase === 'flap-open'
-                      ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.95)'
+                      ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.7)'
                       : phase === 'card-slide'
-                      ? 'translateX(-50%) translateY(-80%) translateZ(10px) rotate(-90deg) scale(1)'
-                      : 'translateX(-50%) translateY(-50%) translateZ(0px) rotate(0deg) scale(1)',
+                      ? 'translateX(-50%) translateY(-100%) translateZ(10px) rotate(-90deg) scale(0.85)'
+                      : 'translateX(-50%) translateY(calc(-50% - 60vh)) translateZ(0px) rotate(0deg) scale(1)',
                     transition: 'transform 0.8s ease-out, opacity 0.5s ease-out',
                     opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 fadeout
                     pointerEvents: 'none',
