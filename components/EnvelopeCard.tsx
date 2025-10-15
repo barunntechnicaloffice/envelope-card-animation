@@ -13,19 +13,23 @@ import { MOCK_WEDDING_DATA, type WeddingData } from '@/types/wedding'
 import 'swiper/css'
 import 'swiper/css/effect-creative'
 
-// 반응형 카드 크기 계산
+// 반응형 카드 크기 계산 (새 시안: 335x515 기준)
 function calculateCardSize() {
-  const ASPECT_RATIO = 1.55
-  const MAX_WIDTH = 500
-  const MAX_HEIGHT = MAX_WIDTH * ASPECT_RATIO
-  const VW_WIDTH = window.innerWidth * 0.6
-  const VH_HEIGHT = window.innerHeight * 0.85
+  const ASPECT_RATIO = 515 / 335  // 1.537
+  const MIN_WIDTH = 335  // 최소 크기
+  const PADDING = 36  // 좌우 padding (18 * 2)
 
-  let finalWidth = Math.min(MAX_WIDTH, VW_WIDTH)
+  // 화면 너비 - padding
+  const availableWidth = window.innerWidth - PADDING
+
+  // 최소 크기와 화면 크기 중 큰 값 사용 (반응형)
+  let finalWidth = Math.max(MIN_WIDTH, Math.min(availableWidth, 600))  // 최대 600px
   let finalHeight = finalWidth * ASPECT_RATIO
 
-  if (finalHeight > VH_HEIGHT) {
-    finalHeight = VH_HEIGHT
+  // 높이가 화면을 넘으면 조정
+  const maxHeight = window.innerHeight * 0.85
+  if (finalHeight > maxHeight) {
+    finalHeight = maxHeight
     finalWidth = finalHeight / ASPECT_RATIO
   }
 
@@ -103,7 +107,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
   const [swiperOpacity, setSwiperOpacity] = useState(0)
 
   // Wedding data state - 한 곳에서만 관리!
-  const [weddingData, setWeddingData] = useState<WeddingData>(MOCK_WEDDING_DATA)
+  const [weddingData] = useState<WeddingData>(MOCK_WEDDING_DATA)
 
   // 초기 Swiper 스타일 설정
   useEffect(() => {
@@ -450,8 +454,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   className={styles.scene}
                   style={{
                     visibility: 'inherit',
-                    width: 'min(500px, 60vw)', // PC: 최대 500px, 모바일: 60vw
-                    height: 'min(775px, calc(60vw * 1.55))', // 비율 유지
+                    width: 'max(335px, min(calc(100vw - 36px), 600px))', // 최소 335px, 최대 600px
+                    height: 'max(515px, min(calc((100vw - 36px) * 1.537), 922px))', // 비율 유지
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
