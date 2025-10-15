@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import styles from './EnvelopeCard.module.css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCreative } from 'swiper/modules'
@@ -193,8 +194,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
 
   return (
     <>
-      {/* Swiper 카드 스택 - 봉투와 완전히 분리 */}
-      {isSwipeEnabled && (
+      {/* Swiper 카드 스택 - Portal로 body에 직접 렌더링 */}
+      {isSwipeEnabled && typeof window !== 'undefined' && createPortal(
         <div
           style={{
             position: 'fixed',
@@ -255,7 +256,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 봉투 컨테이너 */}
