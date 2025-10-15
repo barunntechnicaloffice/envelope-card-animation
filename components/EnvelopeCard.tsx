@@ -79,15 +79,67 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
   const [finalCardSize, setFinalCardSize] = useState({ width: 440, height: 680 })
   const [swiperPosition, setSwiperPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' })
   const [swiperOpacity, setSwiperOpacity] = useState(0)
+  const measureIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   // 초기 크기는 대략적으로만 설정 (실제 측정값으로 나중에 업데이트됨)
   useEffect(() => {
-    const vw = window.innerWidth / 100
-    const baseWidth = Math.min(220, 42 * vw) * 2 // 2배 크기
-    const baseHeight = Math.min(340, 65 * vw) * 2 // 2배 크기
+    // 화면 크기 기준으로 카드 크기 계산
+    const aspectRatio = 1.55 // 가로:세로 비율
 
-    updateSwiperStyles(baseWidth, baseHeight)
+    // 최대 크기 제한 (PC에서 너무 커지지 않도록)
+    const maxWidth = 500
+    const maxHeight = maxWidth * aspectRatio
+
+    // 반응형 크기 (모바일에서는 화면에 맞춤)
+    const vwWidth = window.innerWidth * 0.6 // 60vw
+    const vhHeight = window.innerHeight * 0.85 // 85vh
+
+    let finalWidth = Math.min(maxWidth, vwWidth)
+    let finalHeight = finalWidth * aspectRatio
+
+    // 높이가 화면을 넘으면 높이 기준으로 조정
+    if (finalHeight > vhHeight) {
+      finalHeight = vhHeight
+      finalWidth = finalHeight / aspectRatio
+    }
+
+    updateSwiperStyles(finalWidth, finalHeight)
   }, [])
+
+  // Swiper 활성화 후 봉투 카드 위치를 계속 추적
+  useEffect(() => {
+    if (isSwipeEnabled) {
+      const measurePosition = () => {
+        const envelopeCard = document.getElementById('envelope-card-inner')
+        if (envelopeCard) {
+          const rect = envelopeCard.getBoundingClientRect()
+
+          setFinalCardSize({
+            width: rect.width,
+            height: rect.height
+          })
+
+          setSwiperPosition({
+            top: `${rect.top}px`,
+            left: `${rect.left}px`,
+            transform: 'none'
+          })
+
+          updateSwiperStyles(rect.width, rect.height)
+        }
+      }
+
+      // 초기 측정
+      measurePosition()
+
+      // resize 이벤트 리스너
+      window.addEventListener('resize', measurePosition)
+
+      return () => {
+        window.removeEventListener('resize', measurePosition)
+      }
+    }
+  }, [isSwipeEnabled])
 
   useEffect(() => {
     if (isAnimating && !hasStarted) {
@@ -120,27 +172,6 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
 
     // Step 5: Swiper 활성화 (회전 완료 직후)
     setTimeout(() => {
-      // 봉투 카드의 실제 렌더링된 크기와 위치 측정
-      const envelopeCard = document.getElementById('envelope-card-inner')
-      if (envelopeCard) {
-        const rect = envelopeCard.getBoundingClientRect()
-
-        // Swiper를 정확히 같은 크기와 위치로 설정
-        setFinalCardSize({
-          width: rect.width,
-          height: rect.height
-        })
-
-        setSwiperPosition({
-          top: `${rect.top}px`,
-          left: `${rect.left}px`,
-          transform: 'none'
-        })
-
-        // Swiper 스타일도 업데이트
-        updateSwiperStyles(rect.width, rect.height)
-      }
-
       setIsSwipeEnabled(true)
 
       // Swiper fadein
@@ -176,7 +207,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
             height: `${finalCardSize.height}px`,
             perspective: '1200px',
             opacity: swiperOpacity,
-            transition: 'opacity 0.4s ease-out'
+            transition: swiperOpacity === 0 ? 'opacity 0.4s ease-out' : 'none' // fadein 시에만 transition
           }}
         >
           <Swiper
@@ -279,14 +310,14 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
             style={{
               top: '50%',
               left: '50%',
-              width: 'min(760px, 150vw)', // 2배 크기
-              height: 'min(500px, 96vw)', // 2배 크기
+              width: 'min(1000px, 85vw)', // 반응형
+              height: 'min(660px, 55vw)', // 반응형
               visibility: 'inherit',
               zIndex: phase === 'initial' ? 1 : phase === 'card-rotate' ? -10 : 0,
               cursor: hasStarted ? 'default' : 'pointer',
               transform: phase === 'initial'
-                ? 'translateX(-50%) translateY(calc(-50% - 14%)) scale(0.5)'
-                : 'translateX(-50%) translateY(calc(-50% + 105%)) scale(1.0)',
+                ? 'translateX(-50%) translateY(calc(-50% - 10vh)) scale(0.5)'
+                : 'translateX(-50%) translateY(-50%) scale(1.0)',
               transition: 'all 2s cubic-bezier(0.445, 0.05, 0.55, 0.95)'
             }}
           >
@@ -431,8 +462,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   className={styles.scene}
                   style={{
                     visibility: 'inherit',
-                    width: 'min(440px, 84vw)', // 2배 크기
-                    height: 'min(680px, 130vw)', // 2배 크기
+                    width: 'min(500px, 60vw)', // PC: 최대 500px, 모바일: 60vw
+                    height: 'min(775px, calc(60vw * 1.55))', // 비율 유지
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
@@ -440,8 +471,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     transform: phase === 'initial' || phase === 'start' || phase === 'flap-open'
                       ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.95)'
                       : phase === 'card-slide'
-                      ? 'translateX(-50%) translateY(-140%) translateZ(10px) rotate(-90deg) scale(1)'
-                      : 'translateX(-50%) translateY(-130%) translateZ(0px) rotate(0deg) scale(1)',
+                      ? 'translateX(-50%) translateY(-80%) translateZ(10px) rotate(-90deg) scale(1)'
+                      : 'translateX(-50%) translateY(-50%) translateZ(0px) rotate(0deg) scale(1)',
                     transition: 'transform 0.8s ease-out, opacity 0.5s ease-out',
                     opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 fadeout
                     pointerEvents: 'none',
