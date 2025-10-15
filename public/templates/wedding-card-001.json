@@ -1,11 +1,67 @@
 {
   "id": "wedding-card-001",
-  "version": "1.0.0",
-  "name": "웨딩 청첩장 템플릿 001",
-  "description": "Figma에서 가져온 청첩장 디자인",
+  "version": "2.0.0",
+  "name": "웨딩 청첩장 템플릿 001 (절대 픽셀 레이아웃)",
+  "description": "Figma 2072:68405 기반, 절대 픽셀 레이아웃 시스템",
   "metadata": {
     "title": "결혼식 초대장",
-    "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다"
+    "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다",
+    "figmaNodeId": "2072:68405"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "zIndex": 0
+    },
+    "photo": {
+      "x": 52,
+      "y": 106,
+      "width": 233.076,
+      "height": 257.502,
+      "zIndex": 1
+    },
+    "groom": {
+      "x": 40.45,
+      "y": 395.42,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "left",
+      "zIndex": 2
+    },
+    "bride": {
+      "x": 192.67,
+      "y": 395.42,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "right",
+      "zIndex": 2
+    },
+    "dateVenue": {
+      "x": 0,
+      "y": 437.49,
+      "width": 335,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "color": "#333333",
+      "lineHeight": 1.67,
+      "align": "center",
+      "paddingX": 33.5,
+      "zIndex": 2
+    },
+    "decoration": {
+      "x": 135.22,
+      "y": 384,
+      "width": 41.675,
+      "height": 39.546,
+      "zIndex": 2
+    }
   },
   "data": {
     "wedding": {
@@ -31,9 +87,10 @@
         "backgroundImage": "$.data.wedding.backgroundImage",
         "decorationImage": "$.data.wedding.decorationImage"
       },
+      "layout": "$.layout",
       "style": {
-        "width": "320px",
-        "height": "580px"
+        "width": "335px",
+        "height": "515px"
       }
     }
   ],

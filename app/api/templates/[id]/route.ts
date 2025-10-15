@@ -4,10 +4,10 @@ import path from 'path'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const filePath = path.join(process.cwd(), 'public', 'templates', `${id}.json`)
 
     // 파일 존재 여부 확인
@@ -40,10 +40,10 @@ export async function GET(
 // 템플릿 업데이트 (개발용)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
 
     const filePath = path.join(process.cwd(), 'public', 'templates', `${id}.json`)

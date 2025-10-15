@@ -238,7 +238,7 @@ export function renderComponent(
       return renderContainerComponent(component as ContainerComponent, data, style, className, key)
 
     case 'card':
-      return renderCardComponent(component as ContainerComponent, data, style, className, key)
+      return renderCardComponent(component as any, data, style, className, key)
 
     case 'wedding-card-template-001':
       return renderWeddingCardTemplate001(component as WeddingCardTemplate001Component, data, style, className, key)
