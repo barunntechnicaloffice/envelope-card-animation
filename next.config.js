@@ -2,11 +2,14 @@
 const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig = {
-  // output: 'export', // dev 서버에서는 주석 처리
-  // basePath: isProd ? '/envelope-card-animation' : '', // dev에서 사용 안함
+  output: 'export', // Static export for GitHub Pages
+  basePath: isProd ? '/envelope-card-animation' : '', // GitHub repo name
   images: {
     unoptimized: true,
   },
+  // Skip API routes for static export
+  skipTrailingSlashRedirect: true,
+  trailingSlash: true,
   webpack: (config) => {
     return config
   }
