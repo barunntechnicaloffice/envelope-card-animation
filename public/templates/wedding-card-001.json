@@ -6,6 +6,8 @@
   "metadata": {
     "title": "결혼식 초대장",
     "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다",
+    "category": "wedding",
+    "thumbnail": "/assets/figma/card-bg.png",
     "figmaNodeId": "2072:68405"
   },
   "layout": {
