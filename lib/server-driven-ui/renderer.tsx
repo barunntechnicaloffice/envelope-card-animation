@@ -438,10 +438,8 @@ function renderWeddingCardTemplate001(
       : '/assets/figma/decoration.png'
   }
 
-  // Layout 정보 (JSONPath로 가져오기)
-  const layout = component.layout
-    ? resolveJSONPath(data, component.layout)
-    : DEFAULT_WEDDING_CARD_LAYOUT
+  // Layout 정보 - 기본 레이아웃 사용
+  const layout = DEFAULT_WEDDING_CARD_LAYOUT
 
   return (
     <WeddingCard
