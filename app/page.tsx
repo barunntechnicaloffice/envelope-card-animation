@@ -9,6 +9,10 @@ export default function Home() {
   return (
     <main style={{
       minHeight: '100vh',
+      backgroundImage: 'url(/assets/figma/bg.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
       backgroundColor: '#fefbf6',
       display: 'flex',
       alignItems: 'center',
