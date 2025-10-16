@@ -454,8 +454,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   className={styles.scene}
                   style={{
                     visibility: 'inherit',
-                    width: 'max(335px, min(calc(100vw - 36px), 600px))', // 최소 335px, 최대 600px
-                    height: 'max(515px, min(calc((100vw - 36px) * 1.537), 922px))', // 비율 유지
+                    width: 'max(335px, min(calc(100vw - 36px), 600px, 58.5vh))', // 최소 335px, 최대 600px, 90vh 비율 유지
+                    height: 'max(515px, min(calc((100vw - 36px) * 1.537), 922px, 90vh))', // 비율 유지, 최대 90vh
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
@@ -464,7 +464,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                       ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.7)'
                       : phase === 'card-slide'
                       ? 'translateX(-50%) translateY(-100%) translateZ(10px) rotate(-90deg) scale(0.85)'
-                      : 'translateX(-50%) translateY(calc(-50% - 60vh)) translateZ(0px) rotate(0deg) scale(1)',
+                      : 'translateX(-50%) translateY(calc(-50% - 62.5vh)) translateZ(0px) rotate(0deg) scale(1)',
                     transition: 'transform 0.8s ease-out, opacity 0.5s ease-out',
                     opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 fadeout
                     pointerEvents: 'none',

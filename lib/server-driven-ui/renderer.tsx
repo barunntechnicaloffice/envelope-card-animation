@@ -419,145 +419,42 @@ function renderWeddingCardTemplate001(
   className: string,
   key?: string | number
 ): React.ReactNode {
+  // WeddingCard 컴포넌트 import
+  const { WeddingCard } = require('@/components/cards/WeddingCard')
+  const { DEFAULT_WEDDING_CARD_LAYOUT } = require('@/types/card-layout')
+
   // JSONPath로 데이터 추출
-  const groom = resolveJSONPath(data, component.data.groom) || '신랑'
-  const bride = resolveJSONPath(data, component.data.bride) || '신부'
-  const date = resolveJSONPath(data, component.data.date) || '날짜 미정'
-  const venue = resolveJSONPath(data, component.data.venue) || '장소 미정'
-  const photo = resolveJSONPath(data, component.data.photo) || '/placeholder.jpg'
-  const backgroundImage = component.data.backgroundImage
-    ? resolveJSONPath(data, component.data.backgroundImage)
-    : undefined
-  const decorationImage = component.data.decorationImage
-    ? resolveJSONPath(data, component.data.decorationImage)
-    : undefined
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+    photo: resolveJSONPath(data, component.data.photo) || '/placeholder.jpg',
+    backgroundImage: component.data.backgroundImage
+      ? resolveJSONPath(data, component.data.backgroundImage)
+      : '/assets/figma/card-bg.png',
+    decorationImage: component.data.decorationImage
+      ? resolveJSONPath(data, component.data.decorationImage)
+      : '/assets/figma/decoration.png'
+  }
+
+  // Layout 정보 (JSONPath로 가져오기)
+  const layout = component.layout
+    ? resolveJSONPath(data, component.layout)
+    : DEFAULT_WEDDING_CARD_LAYOUT
 
   return (
-    <div
+    <WeddingCard
       key={key}
+      data={weddingData}
+      layout={layout}
       style={{
-        width: '320px',
-        height: '580px',
-        position: 'relative',
-        backgroundColor: '#EFEEEB',
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        ...style,
+        width: '335px',
+        height: '515px',
+        ...style
       }}
       className={className}
-    >
-      {/* 배경 이미지 */}
-      {backgroundImage && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.95,
-          }}
-        />
-      )}
-
-      {/* 사진 */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '282px',
-          transform: 'translateX(-50%)',
-          width: '233px',
-          height: '257px',
-          overflow: 'hidden',
-        }}
-      >
-        <img
-          src={photo}
-          alt="Wedding Photo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
-        />
-      </div>
-
-      {/* 장식 이미지 (중앙) */}
-      {decorationImage && (
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '562px',
-            transform: 'translateX(-50%)',
-            width: '42px',
-            height: '40px',
-          }}
-        >
-          <img
-            src={decorationImage}
-            alt="Decoration"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-            }}
-          />
-        </div>
-      )}
-
-      {/* 신랑 이름 */}
-      <p
-        style={{
-          position: 'absolute',
-          left: '72px',
-          top: '574px',
-          fontFamily: "'NanumMyeongjo', serif",
-          fontSize: '20px',
-          color: '#333',
-          letterSpacing: '-0.316px',
-        }}
-      >
-        {groom}
-      </p>
-
-      {/* 신부 이름 */}
-      <p
-        style={{
-          position: 'absolute',
-          right: '71px',
-          top: '574px',
-          fontFamily: "'NanumMyeongjo', serif",
-          fontSize: '20px',
-          color: '#333',
-          letterSpacing: '-0.316px',
-          textAlign: 'right',
-        }}
-      >
-        {bride}
-      </p>
-
-      {/* 날짜 및 장소 */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '616px',
-          transform: 'translateX(-50%)',
-          width: '177px',
-          fontFamily: "'NanumMyeongjo', serif",
-          fontSize: '12px',
-          color: '#333',
-          textAlign: 'center',
-          lineHeight: '20px',
-        }}
-      >
-        <p style={{ margin: 0 }}>{date}</p>
-        <p style={{ margin: 0 }}>{venue}</p>
-      </div>
-    </div>
+    />
   )
 }
 

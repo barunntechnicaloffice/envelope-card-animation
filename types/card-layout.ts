@@ -25,6 +25,7 @@ export interface ElementLayout extends Position, Size {
 }
 
 export interface TextElementLayout extends Position {
+  width?: number            // 텍스트 컨테이너 폭 (px, 선택적)
   fontSize: number          // 폰트 크기 (px)
   fontFamily: string
   color: string
@@ -98,27 +99,29 @@ export const DEFAULT_WEDDING_CARD_LAYOUT: WeddingCardLayout = {
     zIndex: 1
   },
 
-  // 신랑 이름 - Figma: x=60.45, y=543.42 → 상대: (40.45, 395.42)
+  // 신랑 이름 - Figma: x=44, y=543, width=111 → 상대: (24, 395)
   groom: {
-    x: 40.45,     // 60.45 - 20
-    y: 395.42,    // 543.42 - 148
+    x: 24,        // 44 - 20
+    y: 395,       // 543 - 148
+    width: 111,   // 텍스트 컨테이너 폭
     fontSize: 20,
     fontFamily: "'NanumMyeongjo', serif",
     color: '#333333',
     letterSpacing: -0.316,
-    align: 'left',
+    align: 'center',
     zIndex: 2
   },
 
-  // 신부 이름 - Figma: x=212.67, y=543.42 → 상대: (192.67, 395.42)
+  // 신부 이름 - Figma: x=213, y=543, width=117 → 상대: (193, 395)
   bride: {
-    x: 192.67,    // 212.67 - 20
-    y: 395.42,    // 543.42 - 148
+    x: 193,       // 213 - 20
+    y: 395,       // 543 - 148
+    width: 117,   // 텍스트 컨테이너 폭
     fontSize: 20,
     fontFamily: "'NanumMyeongjo', serif",
     color: '#333333',
     letterSpacing: -0.316,
-    align: 'right',
+    align: 'center',
     zIndex: 2
   },
 

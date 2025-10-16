@@ -70,6 +70,11 @@ export function textLayoutToStyle(
     style.letterSpacing = `${layout.letterSpacing}px`
   }
 
+  // width가 있으면 추가
+  if (layout.width !== undefined) {
+    style.width = pxToPercent(layout.width, baseSize.width)
+  }
+
   // 정렬에 따라 left/right 설정
   if (layout.align === 'left') {
     style.left = pxToPercent(layout.x, baseSize.width)
@@ -82,9 +87,8 @@ export function textLayoutToStyle(
     style.textAlign = 'right'
   } else {
     // center
-    style.left = '50%'
+    style.left = pxToPercent(layout.x, baseSize.width)
     style.top = pxToPercent(layout.y, baseSize.height)
-    style.transform = 'translateX(-50%)'
     style.textAlign = 'center'
   }
 

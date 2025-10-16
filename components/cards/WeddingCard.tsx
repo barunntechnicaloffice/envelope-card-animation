@@ -59,8 +59,16 @@ export function WeddingCard({
         />
       </div>
 
-      {/* 장식 이미지 */}
-      <div style={elementLayoutToStyle(layout.decoration, baseSize)}>
+      {/* 장식 이미지 - 정중앙 배치 */}
+      <div style={{
+        position: 'absolute',
+        left: '50%',
+        top: `${(layout.decoration.y / baseSize.height) * 100}%`,
+        transform: 'translateX(-50%)',
+        width: `${(layout.decoration.width / baseSize.width) * 100}%`,
+        height: `${(layout.decoration.height / baseSize.height) * 100}%`,
+        zIndex: layout.decoration.zIndex
+      }}>
         <img
           src={data.decorationImage}
           alt="Decoration"

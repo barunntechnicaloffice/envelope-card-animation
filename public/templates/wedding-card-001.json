@@ -24,23 +24,25 @@
       "zIndex": 1
     },
     "groom": {
-      "x": 40.45,
-      "y": 395.42,
+      "x": 24,
+      "y": 395,
+      "width": 111,
       "fontSize": 20,
       "fontFamily": "'NanumMyeongjo', serif",
       "color": "#333333",
       "letterSpacing": -0.316,
-      "align": "left",
+      "align": "center",
       "zIndex": 2
     },
     "bride": {
-      "x": 192.67,
-      "y": 395.42,
+      "x": 193,
+      "y": 395,
+      "width": 117,
       "fontSize": 20,
       "fontFamily": "'NanumMyeongjo', serif",
       "color": "#333333",
       "letterSpacing": -0.316,
-      "align": "right",
+      "align": "center",
       "zIndex": 2
     },
     "dateVenue": {
@@ -93,12 +95,5 @@
         "height": "515px"
       }
     }
-  ],
-  "globalStyles": {
-    "layout": "flex",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "minHeight": "100vh",
-    "backgroundColor": "#fefbf6"
-  }
+  ]
 }
