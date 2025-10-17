@@ -1,15 +1,10 @@
 {
   "id": "wedding-card-001",
   "version": "2.0.0",
-  "name": "웨딩 청첩장 템플릿 001 (절대 픽셀 레이아웃)",
-  "description": "Figma 2072:68405 기반, 절대 픽셀 레이아웃 시스템",
-  "metadata": {
-    "title": "결혼식 초대장",
-    "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다",
-    "category": "wedding",
-    "thumbnail": "/assets/figma/card-bg.png",
-    "figmaNodeId": "2072:68405"
-  },
+  "name": "웨딩 청첩장 템플릿 001",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-001/card-bg.png",
+  "figmaNodeId": "2072:68405",
   "layout": {
     "baseSize": {
       "width": 335,
@@ -73,9 +68,9 @@
       "bride": "김 은 재",
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/figma/photo.png",
-      "backgroundImage": "/assets/figma/card-bg.png",
-      "decorationImage": "/assets/figma/decoration.png"
+      "photo": "/assets/wedding-card-001/photo.png",
+      "backgroundImage": "/assets/wedding-card-001/card-bg.png",
+      "decorationImage": "/assets/wedding-card-001/decoration.png"
     }
   },
   "components": [
@@ -90,11 +85,6 @@
         "photo": "$.data.wedding.photo",
         "backgroundImage": "$.data.wedding.backgroundImage",
         "decorationImage": "$.data.wedding.decorationImage"
-      },
-      "layout": "$.layout",
-      "style": {
-        "width": "335px",
-        "height": "515px"
       }
     }
   ]

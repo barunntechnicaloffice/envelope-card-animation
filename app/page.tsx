@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main style={{
       minHeight: '100vh',
-      backgroundImage: 'url(/assets/figma/bg.png)',
+      backgroundImage: 'url(/assets/wedding-card-001/bg.png)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

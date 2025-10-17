@@ -421,7 +421,6 @@ function renderWeddingCardTemplate001(
 ): React.ReactNode {
   // WeddingCard 컴포넌트 import
   const { WeddingCard } = require('@/components/cards/WeddingCard')
-  const { DEFAULT_WEDDING_CARD_LAYOUT } = require('@/types/card-layout')
 
   // JSONPath로 데이터 추출
   const weddingData = {
@@ -432,25 +431,21 @@ function renderWeddingCardTemplate001(
     photo: resolveJSONPath(data, component.data.photo) || '/placeholder.jpg',
     backgroundImage: component.data.backgroundImage
       ? resolveJSONPath(data, component.data.backgroundImage)
-      : '/assets/figma/card-bg.png',
+      : '/assets/wedding-card-001/card-bg.png',
     decorationImage: component.data.decorationImage
       ? resolveJSONPath(data, component.data.decorationImage)
-      : '/assets/figma/decoration.png'
+      : '/assets/wedding-card-001/decoration.png'
   }
 
-  // Layout 정보 - 기본 레이아웃 사용
-  const layout = DEFAULT_WEDDING_CARD_LAYOUT
+  // Layout 정보 - JSON의 layout 사용 ($.layout 참조)
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
 
   return (
     <WeddingCard
       key={key}
       data={weddingData}
       layout={layout}
-      style={{
-        width: '335px',
-        height: '515px',
-        ...style
-      }}
+      style={style}
       className={className}
     />
   )

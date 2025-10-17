@@ -351,7 +351,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: '3px', left: 0, zIndex: 4, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
                   <defs>
                     <pattern id="bottomPattern" patternUnits="objectBoundingBox" width="1" height="1">
-                      <image href="/assets/figma/pattern.png" width="335" height="173" preserveAspectRatio="xMidYMid slice" />
+                      <image href="/assets/wedding-card-001/pattern.png" width="335" height="173" preserveAspectRatio="xMidYMid slice" />
                     </pattern>
                   </defs>
                   <path d="M333.604 164.977C333.241 162.314 331.568 159.911 329.015 158.389L180.084 68.9955C172.529 64.4654 162.49 64.4654 154.917 68.9955L5.98593 158.372C3.43302 159.911 1.75983 162.297 1.39759 164.96L0.638619 170.562C0.569621 171.081 1.03535 171.547 1.65633 171.547H333.345C333.949 171.547 334.432 171.081 334.363 170.562L333.604 164.96V164.977Z" fill="url(#bottomPattern)"/>
@@ -361,7 +361,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 2, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
                   <defs>
                     <pattern id="leftPattern" patternUnits="objectBoundingBox" width="1" height="1">
-                      <image href="/assets/figma/pattern.png" width="335" height="173" preserveAspectRatio="xMidYMid slice" />
+                      <image href="/assets/wedding-card-001/pattern.png" width="335" height="173" preserveAspectRatio="xMidYMid slice" />
                     </pattern>
                   </defs>
                   <path d="M12.8506 0.904175H0.5V172.222C0.5 172.654 0.965734 173 1.51771 173H19.1466L155.469 90.1594C158.177 88.5168 158.177 85.4044 155.469 83.7618L24.0627 3.8782C20.8888 1.94163 16.9387 0.904175 12.8678 0.904175H12.8506Z" fill="url(#leftPattern)"/>
@@ -371,7 +371,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                 <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
                   <defs>
                     <pattern id="rightPattern" patternUnits="objectBoundingBox" width="1" height="1">
-                      <image href="/assets/figma/pattern.png" width="335" height="173" preserveAspectRatio="xMidYMid slice" />
+                      <image href="/assets/wedding-card-001/pattern.png" width="335" height="173" preserveAspectRatio="xMidYMid slice" />
                     </pattern>
                   </defs>
                   <path d="M322.132 0.904175H334.483V172.222C334.483 172.654 334.017 173 333.465 173H315.836L179.515 90.1594C176.806 88.5168 176.806 85.4044 179.515 83.7618L310.938 3.89551C314.112 1.95893 318.062 0.921483 322.132 0.921483V0.904175Z" fill="url(#rightPattern)"/>
@@ -396,7 +396,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   pointerEvents: 'none' // 클릭 방해하지 않도록
                 }}>
                   <img
-                    src="/assets/figma/seal.png"
+                    src="/assets/wedding-card-001/seal.png"
                     alt=""
                     style={{
                       width: '100%',
@@ -443,7 +443,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                   >
                     <defs>
                       <pattern id="topPattern" patternUnits="objectBoundingBox" width="1" height="1">
-                        <image href="/assets/figma/pattern.png" width="334" height="125" preserveAspectRatio="xMidYMid slice" />
+                        <image href="/assets/wedding-card-001/pattern.png" width="334" height="125" preserveAspectRatio="xMidYMid slice" />
                       </pattern>
                     </defs>
                     <path d="M0.897426 7.47704C1.25968 10.4096 2.93296 13.0489 5.486 14.7222L154.425 120.673C161.981 125.659 172.02 125.659 179.593 120.673L328.532 14.7394C331.085 13.0489 332.758 10.4096 333.121 7.49429L333.88 1.31869C333.949 0.749427 333.483 0.231918 332.862 0.231918H167L1.15618 0.231918C0.552421 0.231918 0.069413 0.732176 0.138414 1.31869L0.897426 7.49429V7.47704Z" fill="url(#topPattern)"/>
