@@ -5,6 +5,14 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import EnvelopeCard from '@/components/EnvelopeCard'
 
+// Static export를 위한 generateStaticParams
+export function generateStaticParams() {
+  return [
+    { id: 'wedding-card-001' },
+    { id: 'wedding-card-002' }
+  ]
+}
+
 export default function TemplatePage() {
   const params = useParams()
   const templateId = params.id as string
