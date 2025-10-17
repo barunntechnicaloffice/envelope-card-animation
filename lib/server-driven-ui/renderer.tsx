@@ -427,19 +427,28 @@ function renderWeddingCardTemplate001(
   const { WeddingCard } = require('@/components/cards/WeddingCard')
 
   // JSONPath로 데이터 추출
+  console.log('Component data paths:', component.data)
+  console.log('Full data object:', data)
+  console.log('backgroundImage path:', component.data.backgroundImage)
+  console.log('decorationImage path:', component.data.decorationImage)
+
+  const backgroundImagePath = component.data.backgroundImage
+  const decorationImagePath = component.data.decorationImage
+
+  console.log('Resolved backgroundImage:', backgroundImagePath ? resolveJSONPath(data, backgroundImagePath) : 'NO PATH')
+  console.log('Resolved decorationImage:', decorationImagePath ? resolveJSONPath(data, decorationImagePath) : 'NO PATH')
+
   const weddingData = {
     groom: resolveJSONPath(data, component.data.groom) || '신랑',
     bride: resolveJSONPath(data, component.data.bride) || '신부',
     date: resolveJSONPath(data, component.data.date) || '날짜 미정',
     venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
     photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
-    backgroundImage: component.data.backgroundImage
-      ? resolveJSONPath(data, component.data.backgroundImage)
-      : undefined,
-    decorationImage: component.data.decorationImage
-      ? resolveJSONPath(data, component.data.decorationImage)
-      : undefined
+    backgroundImage: backgroundImagePath ? resolveJSONPath(data, backgroundImagePath) : undefined,
+    decorationImage: decorationImagePath ? resolveJSONPath(data, decorationImagePath) : undefined
   }
+
+  console.log('Wedding Card 001 Data:', weddingData)
 
   // Layout 정보 - JSON의 layout 사용 ($.layout 참조)
   const layout = resolveJSONPath(data, '$.layout') || data.layout

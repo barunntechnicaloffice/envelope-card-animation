@@ -68,7 +68,9 @@
       "bride": "김 은 재",
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/common/photo.png"
+      "photo": "/assets/common/photo.png",
+      "backgroundImage": "/assets/wedding-card-001/card-bg.png",
+      "decorationImage": "/assets/wedding-card-001/decoration.png"
     }
   },
   "components": [

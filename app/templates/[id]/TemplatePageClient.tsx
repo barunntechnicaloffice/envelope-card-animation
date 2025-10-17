@@ -63,6 +63,7 @@ export default function TemplatePageClient({ templateId }: TemplatePageClientPro
           isAnimating={isAnimating}
           onAnimationStart={() => setIsAnimating(true)}
           templateId={templateId}
+          templateData={template.data}
         />
       </div>
     </main>

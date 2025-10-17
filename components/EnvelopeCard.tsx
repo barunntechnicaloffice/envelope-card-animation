@@ -89,6 +89,7 @@ interface EnvelopeCardProps {
   isAnimating: boolean
   onAnimationStart: () => void
   templateId?: string
+  templateData?: any
 }
 
 const ALL_CARDS: Card[] = [
@@ -98,7 +99,7 @@ const ALL_CARDS: Card[] = [
   { id: 4, title: "Birthday Party", subtitle: "Let's Celebrate Together", decoration: "" },
 ]
 
-export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId = 'wedding-card-001' }: EnvelopeCardProps) {
+export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId = 'wedding-card-001', templateData }: EnvelopeCardProps) {
   const [phase, setPhase] = useState<'initial' | 'start' | 'flap-open' | 'card-slide' | 'card-rotate'>('initial')
   const [hasStarted, setHasStarted] = useState(false)
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(false)
@@ -108,8 +109,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
   const [swiperPosition, setSwiperPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' })
   const [swiperOpacity, setSwiperOpacity] = useState(0)
 
-  // Wedding data state - 한 곳에서만 관리!
-  const [weddingData] = useState<WeddingData>(MOCK_WEDDING_DATA)
+  // Wedding data - 템플릿 데이터 또는 MOCK 데이터 사용
+  const weddingData: WeddingData = templateData?.wedding || MOCK_WEDDING_DATA
 
   // 초기 Swiper 스타일 설정
   useEffect(() => {

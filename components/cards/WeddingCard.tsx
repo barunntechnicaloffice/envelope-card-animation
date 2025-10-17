@@ -22,6 +22,10 @@ export function WeddingCard({
 }: WeddingCardProps) {
   const { baseSize } = layout
 
+  console.log('WeddingCard received data:', data)
+  console.log('backgroundImage:', data.backgroundImage)
+  console.log('decorationImage:', data.decorationImage)
+
   return (
     <div
       className={className}
@@ -32,7 +36,7 @@ export function WeddingCard({
       }}
     >
       {/* 배경 이미지 (card-bg.png) */}
-      {data.backgroundImage && (
+      {data.backgroundImage ? (
         <div
           style={{
             position: 'absolute',
@@ -40,9 +44,12 @@ export function WeddingCard({
             backgroundImage: `url(${data.backgroundImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
             zIndex: layout.background.zIndex
           }}
         />
+      ) : (
+        <div style={{ display: 'none' }}>No backgroundImage</div>
       )}
 
       {/* 사진 - 픽셀 기반 레이아웃 → 백분율 자동 변환 */}
