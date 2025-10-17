@@ -7,17 +7,14 @@
   "figmaNodeId": "13:263",
   "common": {
     "envelope": {
-      "pattern": "/assets/wedding-card-002/pattern.png",
-      "seal": "/assets/wedding-card-002/seal.png"
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
     },
-    "background": "/assets/wedding-card-002/bg.png"
+    "background": "/assets/common/bg.png"
   },
   "layout": {
-    "baseSize": {
-      "width": 335,
-      "height": 515
-    },
     "dday": {
+      "type": "text",
       "x": 315,
       "y": 164,
       "width": 310,
@@ -27,9 +24,11 @@
       "color": "#333333",
       "letterSpacing": -0.316,
       "align": "right",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "dateMonth": {
+      "type": "text",
       "x": 20,
       "y": 241,
       "width": 40,
@@ -39,16 +38,20 @@
       "color": "#333333",
       "letterSpacing": -0.474,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "dateDivider": {
-      "x": 32.6025,
-      "y": 294.73,
-      "width": 14.795,
-      "height": 1.904,
-      "zIndex": 2
+      "type": "vector",
+      "x": 67,
+      "y": 294.724609375,
+      "width": 14.794921875,
+      "height": 1.904296875,
+      "zIndex": 2,
+      "editable": false
     },
     "dateDay": {
+      "type": "text",
       "x": 20,
       "y": 312,
       "width": 40,
@@ -58,9 +61,11 @@
       "color": "#333333",
       "letterSpacing": -0.474,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "photo": {
+      "type": "image",
       "x": 95.5,
       "y": 226,
       "width": 144,
@@ -69,13 +74,16 @@
       "editable": true
     },
     "decoration": {
+      "type": "vector",
       "x": 139.6845,
       "y": 389.9,
       "width": 55.631,
       "height": 14.1,
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "dateEnglish": {
+      "type": "text",
       "x": 11,
       "y": 453,
       "width": 313,
@@ -85,9 +93,11 @@
       "color": "#333333",
       "letterSpacing": -0.474,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "groom": {
+      "type": "text",
       "x": 20,
       "y": 530,
       "width": 116,
@@ -97,9 +107,11 @@
       "color": "#333333",
       "letterSpacing": -0.2844,
       "align": "right",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
     "groomLabel": {
+      "type": "text",
       "x": 20,
       "y": 511,
       "fontSize": 10,
@@ -109,9 +121,11 @@
       "letterSpacing": -0.158,
       "align": "right",
       "textTransform": "uppercase",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "bride": {
+      "type": "text",
       "x": 199,
       "y": 530,
       "width": 112,
@@ -121,9 +135,11 @@
       "color": "#333333",
       "letterSpacing": -0.2844,
       "align": "left",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
     "brideLabel": {
+      "type": "text",
       "x": 199,
       "y": 511,
       "fontSize": 10,
@@ -133,9 +149,11 @@
       "letterSpacing": -0.158,
       "align": "left",
       "textTransform": "uppercase",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": false
     },
     "dateKorean": {
+      "type": "text",
       "x": 12,
       "y": 582,
       "width": 311,
@@ -144,9 +162,11 @@
       "color": "#333333",
       "lineHeight": 1.67,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
     "venue": {
+      "type": "text",
       "x": 12,
       "y": 602,
       "width": 311,
@@ -155,7 +175,8 @@
       "color": "#333333",
       "lineHeight": 1.67,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     }
   },
   "data": {
@@ -164,8 +185,7 @@
       "bride": "김 은 재",
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/wedding-card-002/photo.png",
-      "cardBackground": "/assets/wedding-card-002/card-bg.png",
+      "photo": "/assets/common/photo.png",
       "decoration": "/assets/wedding-card-002/decoration.svg",
       "dateDivider": "/assets/wedding-card-002/date-divider.svg"
     }
@@ -180,7 +200,6 @@
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
-        "cardBackground": "$.data.wedding.cardBackground",
         "decoration": "$.data.wedding.decoration",
         "dateDivider": "$.data.wedding.dateDivider"
       }

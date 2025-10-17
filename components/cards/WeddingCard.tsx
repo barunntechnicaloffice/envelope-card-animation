@@ -32,16 +32,18 @@ export function WeddingCard({
       }}
     >
       {/* 배경 이미지 (card-bg.png) */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${data.backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          zIndex: layout.background.zIndex
-        }}
-      />
+      {data.backgroundImage && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${data.backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            zIndex: layout.background.zIndex
+          }}
+        />
+      )}
 
       {/* 사진 - 픽셀 기반 레이아웃 → 백분율 자동 변환 */}
       <div style={{
@@ -60,25 +62,27 @@ export function WeddingCard({
       </div>
 
       {/* 장식 이미지 - 정중앙 배치 */}
-      <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: `${(layout.decoration.y / baseSize.height) * 100}%`,
-        transform: 'translateX(-50%)',
-        width: `${(layout.decoration.width / baseSize.width) * 100}%`,
-        height: `${(layout.decoration.height / baseSize.height) * 100}%`,
-        zIndex: layout.decoration.zIndex
-      }}>
-        <img
-          src={data.decorationImage}
-          alt="Decoration"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
-          }}
-        />
-      </div>
+      {data.decorationImage && (
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          top: `${(layout.decoration.y / baseSize.height) * 100}%`,
+          transform: 'translateX(-50%)',
+          width: `${(layout.decoration.width / baseSize.width) * 100}%`,
+          height: `${(layout.decoration.height / baseSize.height) * 100}%`,
+          zIndex: layout.decoration.zIndex
+        }}>
+          <img
+            src={data.decorationImage}
+            alt="Decoration"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain'
+            }}
+          />
+        </div>
+      )}
 
       {/* 신랑 이름 */}
       <p style={textLayoutToStyle(layout.groom, baseSize)}>

@@ -195,6 +195,7 @@ export interface WeddingCardTemplate002Component extends BaseComponent {
     photo: JSONPathExpression;
     cardBackground?: JSONPathExpression;
     decoration?: JSONPathExpression;
+    dateDivider?: JSONPathExpression;
   };
 }
 

@@ -11,6 +11,13 @@ export function WeddingCard002({
   className,
   style
 }: WeddingCard002Props) {
+  // 디버깅: data 확인
+  console.log('WeddingCard002 data:', {
+    decoration: data.decoration,
+    dateDivider: data.dateDivider,
+    photo: data.photo
+  })
+
   // Figma baseSize: 335px × 515px
   const baseWidth = 335
   const baseHeight = 515
@@ -105,11 +112,11 @@ export function WeddingCard002({
         10
       </p>
 
-      {/* 날짜 구분선 - canvas y:294.724 → BG 기준 146.724px */}
+      {/* 날짜 구분선 - 월과 일 사이 중간 */}
       <div style={{
         position: 'absolute',
         left: pxToPercent(67, bgOffsetX, baseWidth),
-        top: pxToPercent(294.724609375, bgOffsetY, baseHeight),
+        top: '25.49%',
         width: pxToPercent(14.794921875, 0, baseWidth),
         height: pxToPercent(1.904296875, 0, baseHeight),
         zIndex: 2

@@ -432,13 +432,13 @@ function renderWeddingCardTemplate001(
     bride: resolveJSONPath(data, component.data.bride) || '신부',
     date: resolveJSONPath(data, component.data.date) || '날짜 미정',
     venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
-    photo: resolveJSONPath(data, component.data.photo) || '/placeholder.jpg',
+    photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
     backgroundImage: component.data.backgroundImage
       ? resolveJSONPath(data, component.data.backgroundImage)
-      : '/assets/wedding-card-001/card-bg.png',
+      : undefined,
     decorationImage: component.data.decorationImage
       ? resolveJSONPath(data, component.data.decorationImage)
-      : '/assets/wedding-card-001/decoration.png'
+      : undefined
   }
 
   // Layout 정보 - JSON의 layout 사용 ($.layout 참조)
@@ -471,13 +471,16 @@ function renderWeddingCardTemplate002(
     bride: resolveJSONPath(data, component.data.bride) || '신부',
     date: resolveJSONPath(data, component.data.date) || '날짜 미정',
     venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
-    photo: resolveJSONPath(data, component.data.photo) || '/placeholder.jpg',
+    photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
     cardBackground: component.data.cardBackground
       ? resolveJSONPath(data, component.data.cardBackground)
-      : '/assets/wedding-card-002/card-bg.png',
+      : undefined,  // 기본값 없음 - backgroundColor: #fff 사용
     decoration: component.data.decoration
       ? resolveJSONPath(data, component.data.decoration)
-      : '/assets/wedding-card-002/decoration.svg'
+      : undefined,
+    dateDivider: component.data.dateDivider
+      ? resolveJSONPath(data, component.data.dateDivider)
+      : undefined
   }
 
   return (

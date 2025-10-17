@@ -216,8 +216,49 @@ This project is private and proprietary.
 
 ## 📚 Documentation
 
+- **[CLAUDE.md](./CLAUDE.md)**: 📖 **새로운 템플릿 개발 가이드** (Claude AI 사용 시 필수 참고)
+- **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)**: 🎨 **Figma 디자인 작성 가이드** (디자이너용)
 - **[API_SPEC.md](./API_SPEC.md)**: 백엔드 API 명세서
 - **[public/templates/](./public/templates/)**: Server-Driven UI JSON 템플릿 예시
+
+### 🤖 For Claude AI / Next Development Session
+
+**새로운 개발자나 Claude AI가 이 프로젝트를 이어서 작업할 때 반드시 읽어야 할 문서:**
+
+1. **[CLAUDE.md](./CLAUDE.md)** - 새로운 템플릿 개발 완벽 가이드
+   - ✅ wedding-card-001 vs wedding-card-002 방법 비교
+   - ✅ 단계별 템플릿 개발 프로세스
+   - ✅ Figma MCP 좌표 계산 방법
+   - ✅ BG 오프셋 처리 방법
+   - ✅ 체크리스트 및 트러블슈팅
+
+2. **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** - Figma 디자인 규칙
+   - ⚠️ 중요: 프레임 구조 제약사항 (중첩 그룹 금지!)
+   - ✅ 레이어 네이밍 규칙 (JSON 키값과 일치)
+   - ✅ [locked] / [editable] 태그 시스템
+   - ✅ 필수 레이어 이름 (groom, bride, date, venue, photo)
+
+3. **Key Files to Reference**:
+   - `types/card-layout.ts` - Layout type definitions
+   - `lib/layout-utils.ts` - Percentage conversion utilities
+   - `components/cards/WeddingCard.tsx` - Template 001 (type system approach)
+   - `components/cards/WeddingCard002.tsx` - Template 002 (manual calculation approach)
+   - `lib/server-driven-ui/renderer.tsx` - Component renderer registry
+
+**Quick Start for New Templates:**
+```bash
+# 1. Read CLAUDE.md to choose development approach
+# 2. Use Figma MCP to extract design
+# 3. Follow the step-by-step process in CLAUDE.md
+# 4. Test with: npm run dev
+# 5. Verify against Figma design
+```
+
+**Common Pitfalls to Avoid:**
+- ❌ DON'T use nested groups in Figma (causes coordinate calculation issues)
+- ❌ DON'T forget to calculate BG offset (bgOffsetX, bgOffsetY)
+- ✅ DO flatten all layers directly under template Frame
+- ✅ DO use Figma metadata to verify coordinates
 
 ## 🔮 Roadmap
 
