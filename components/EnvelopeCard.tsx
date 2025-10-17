@@ -314,7 +314,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
               cursor: hasStarted ? 'default' : 'pointer',
               transform: phase === 'initial'
                 ? 'translateX(-50%) translateY(calc(-50% - 10vh)) scale(0.5)'
-                : 'translateX(-50%) translateY(calc(-50% + 60vh)) scale(1.0)',
+                : 'translateX(-50%) translateY(-50%) scale(1.0)',
               transition: 'all 2s cubic-bezier(0.445, 0.05, 0.55, 0.95)'
             }}
           >
@@ -494,7 +494,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                       ? 'translateX(-50%) translateY(-50%) translateZ(-0.1px) rotate(-90deg) scale(0.4)' // 봉투 안에 맞게
                       : phase === 'card-slide'
                       ? 'translateX(-50%) translateY(-100%) translateZ(10px) rotate(-90deg) scale(0.6)' // 슬라이드 시 조금 확대
-                      : 'translateX(-50%) translateY(calc(-50% - 62.5vh)) translateZ(0px) rotate(0deg) scale(1)', // 최종 크기
+                      : 'translateX(-50%) translateY(-50%) translateZ(0px) rotate(0deg) scale(1)', // 최종 크기 - 중앙 배치
                     transition: 'transform 0.8s ease-out, opacity 0.5s ease-out',
                     opacity: isSwipeEnabled ? 0 : 1, // Swiper 활성화되면 fadeout
                     pointerEvents: 'none',
