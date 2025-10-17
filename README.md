@@ -1,14 +1,38 @@
-# 📮 Envelope Card Animation
+# 📮 Envelope Card Animation - Template Development Tool
 
-봉투에서 카드가 나오는 인터랙티브 애니메이션 프로젝트
+Figma 디자인을 Server-Driven UI JSON 템플릿으로 변환하는 **템플릿 개발 도구**
+
+## 🎯 프로젝트 목적
+
+이 프로젝트는 **템플릿을 개발하고 생성**하는 도구입니다.
+
+```
+1. [이 프로젝트 - 템플릿 개발 도구]
+   ↓ Figma MCP로 디자인 가져오기
+   ↓ React 컴포넌트로 템플릿 개발
+   ↓ 실시간 미리보기 & 수정
+   ↓ Server-Driven UI JSON 스키마 추출
+   ↓ 어드민에서 백엔드 API로 저장
+
+2. [백엔드 API]
+   ↓ 템플릿 데이터 저장 및 관리
+
+3. [하객뷰 프로젝트]
+   ↓ 저장된 템플릿을 불러와 렌더링
+   ↓ 사용자에게 청첩장 표시
+```
+
+**이 프로젝트는 사용자 카드 생성 기능을 포함하지 않습니다.** 사용자별 카드 생성은 하객뷰 프로젝트의 책임입니다.
 
 ## ✨ Features
 
+- **Figma MCP Integration**: Figma 디자인을 자동으로 가져와 React 컴포넌트로 변환
+- **실시간 미리보기**: 템플릿을 로컬에서 즉시 확인하며 개발
 - **봉투 열림 애니메이션**: 봉투를 클릭하면 뚜껑이 열리고 카드가 슬라이드되어 나옵니다
-- **Figma 디자인 시스템**: Figma MCP를 활용한 정확한 디자인 구현
 - **반응형 디자인**: 모바일부터 데스크톱까지 모든 화면 크기 지원
 - **Swiper 카드 스택**: 여러 카드를 스와이프하여 넘길 수 있습니다
-- **웨딩 카드 템플릿**: 절대 픽셀 레이아웃 기반 청첩장 디자인
+- **절대 픽셀 레이아웃**: Figma 기반 정확한 디자인 구현
+- **Server-Driven UI**: JSONPath 기반 데이터 바인딩 시스템
 
 ## 🎨 Design Specifications
 
@@ -67,28 +91,32 @@ npm run build
 ```
 envelope-card-animation/
 ├── app/                          # Next.js App Router
-│   ├── page.tsx                  # Main page with envelope animation
+│   ├── page.tsx                  # 템플릿 미리보기 페이지
 │   ├── layout.tsx                # Root layout
 │   └── globals.css               # Global styles
 ├── components/
-│   ├── EnvelopeCard.tsx          # Main envelope component
-│   ├── EnvelopeCard.module.css   # Envelope styles
+│   ├── EnvelopeCard.tsx          # 봉투 애니메이션 컴포넌트
+│   ├── EnvelopeCard.module.css   # 봉투 스타일
 │   └── cards/
-│       └── WeddingCard.tsx       # Wedding card template
+│       └── WeddingCard.tsx       # 웨딩 카드 템플릿 (Figma 2072:68405)
 ├── public/
-│   └── assets/
-│       └── figma/                # Figma design assets
-│           ├── bg.png            # Background pattern
-│           ├── pattern.png       # Envelope texture
-│           ├── seal.png          # Seal decoration
-│           ├── card-bg.png       # Card background
-│           └── decoration.png    # Card decoration
+│   ├── assets/
+│   │   └── figma/                # Figma 디자인 에셋
+│   │       ├── bg.png            # 배경 패턴
+│   │       ├── pattern.png       # 봉투 텍스처
+│   │       ├── seal.png          # 봉투 씰 장식
+│   │       ├── card-bg.png       # 카드 배경
+│   │       └── decoration.png    # 카드 장식
+│   └── templates/
+│       └── wedding-card-001.json # Server-Driven UI JSON 스키마
 ├── types/
-│   ├── wedding.ts                # Wedding data types
-│   └── card-layout.ts            # Card layout types
-└── lib/
-    └── server-driven-ui/         # Server-driven UI system
-        └── renderer.tsx          # Dynamic component renderer
+│   ├── wedding.ts                # 웨딩 데이터 타입
+│   └── card-layout.ts            # 카드 레이아웃 타입
+├── lib/
+│   └── server-driven-ui/         # Server-Driven UI 시스템
+│       └── renderer.tsx          # 동적 컴포넌트 렌더러
+├── API_SPEC.md                   # 백엔드 API 명세
+└── README.md                     # 프로젝트 문서
 ```
 
 ## 🎯 Animation Flow
@@ -125,17 +153,56 @@ envelope-card-animation/
 - **정확한 픽셀 레이아웃**: Figma에서 추출한 절대 좌표 사용
 - **디자인 토큰**: 컬러, 사이즈, 그림자 등 Figma 스펙 그대로 적용
 
-## 📝 Server-Driven UI
+## 📝 Server-Driven UI Template System
 
-동적 템플릿 시스템 (현재 개발 환경에서만 사용 가능):
+이 프로젝트의 핵심 기능:
 
-- **JSONPath 기반 데이터 바인딩**
-- **컴포넌트 기반 렌더링**
-- **템플릿 레지스트리**
+### Template Development Workflow
+
+1. **Figma MCP로 디자인 스펙 추출**
+   - Figma Node ID (예: 2072:68405)에서 정확한 픽셀 레이아웃 가져오기
+   - 컬러, 폰트, 간격 등 디자인 토큰 추출
+
+2. **React 컴포넌트로 템플릿 구현**
+   - `components/cards/WeddingCard.tsx` 같은 템플릿 컴포넌트 개발
+   - 절대 픽셀 레이아웃 시스템 적용
+
+3. **Server-Driven UI JSON 스키마 생성**
+   - `public/templates/wedding-card-001.json`
+   - JSONPath 기반 데이터 바인딩 (`$.data.wedding.groom`)
+   - 컴포넌트 타입 및 레이아웃 정의
+
+4. **백엔드 API로 저장** (구현 예정)
+   - 어드민 UI에서 "저장" 버튼 클릭
+   - `POST /api/templates`로 JSON + 이미지 전송
+
+### JSONPath Data Binding Example
+
+```json
+{
+  "data": {
+    "wedding": {
+      "groom": "이준서",
+      "bride": "김은재"
+    }
+  },
+  "components": [{
+    "type": "wedding-card-template-001",
+    "data": {
+      "groom": "$.data.wedding.groom",
+      "bride": "$.data.wedding.bride"
+    }
+  }]
+}
+```
+
+자세한 내용은 [API_SPEC.md](./API_SPEC.md) 참조
 
 ## 🌐 Deployment
 
-GitHub Pages에 정적 사이트로 배포됨:
+### GitHub Pages (템플릿 미리보기)
+
+템플릿 미리보기를 위해 GitHub Pages에 정적 사이트로 배포:
 
 ```bash
 # Build and deploy
@@ -146,6 +213,8 @@ npx gh-pages -d out
 **배포 설정:**
 - `output: 'export'` - 정적 HTML export
 - `basePath: '/envelope-card-animation'` - GitHub repo 경로
+
+> **참고**: GitHub Pages는 템플릿 미리보기 용도입니다. 실제 프로덕션 배포는 백엔드 API 연동 후 어드민 환경에서 사용됩니다.
 
 ## 🤝 Contributing
 
@@ -163,8 +232,23 @@ This project is private and proprietary.
 
 - **Barunn Technical Office** - Initial work
 
+## 📚 Documentation
+
+- **[API_SPEC.md](./API_SPEC.md)**: 백엔드 API 명세서
+- **[public/templates/](./public/templates/)**: Server-Driven UI JSON 템플릿 예시
+
+## 🔮 Roadmap
+
+- [ ] 어드민 UI 구현 (템플릿 저장 버튼)
+- [ ] 백엔드 API 연동 (`POST /api/templates`)
+- [ ] 이미지 업로드 기능
+- [ ] 템플릿 버전 관리 UI
+- [ ] 템플릿 미리보기 썸네일 자동 생성
+- [ ] 추가 템플릿 개발 (wedding-card-002, birthday-card-001 등)
+
 ## 🙏 Acknowledgments
 
-- Figma for design specifications
-- Next.js team for the amazing framework
-- Swiper.js for smooth card animations
+- **Figma MCP**: 디자인 스펙 자동 추출
+- **Next.js**: 강력한 React 프레임워크
+- **Swiper.js**: 부드러운 카드 애니메이션
+- **Barunn Technical Office**: 프로젝트 개발 및 유지보수
