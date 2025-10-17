@@ -13,11 +13,22 @@ export default function TemplatePageClient({ templateId }: TemplatePageClientPro
   const [template, setTemplate] = useState<any>(null)
 
   useEffect(() => {
-    // 템플릿 JSON 로드
+    // 템플릿 JSON 로드 (public 폴더 기준)
     fetch(`/templates/${templateId}.json`)
-      .then(res => res.json())
-      .then(data => setTemplate(data))
-      .catch(err => console.error('Failed to load template:', err))
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to load template: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then(data => {
+        console.log('Loaded template:', templateId, data)
+        setTemplate(data)
+      })
+      .catch(err => {
+        console.error('Failed to load template:', err)
+        setTemplate(null)
+      })
   }, [templateId])
 
   if (!template) {

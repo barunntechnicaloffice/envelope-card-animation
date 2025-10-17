@@ -8,6 +8,11 @@ export function generateStaticParams() {
   ]
 }
 
-export default function TemplatePage({ params }: { params: { id: string } }) {
-  return <TemplatePageClient templateId={params.id} />
+export default async function TemplatePage({
+  params
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  return <TemplatePageClient templateId={id} />
 }
