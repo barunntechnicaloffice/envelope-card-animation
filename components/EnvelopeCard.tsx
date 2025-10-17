@@ -212,7 +212,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
       {isSwipeEnabled && typeof window !== 'undefined' && createPortal(
         <div
           style={{
-            position: 'fixed',
+            position: 'absolute',
             top: swiperPosition.top,
             left: swiperPosition.left,
             transform: swiperPosition.transform,

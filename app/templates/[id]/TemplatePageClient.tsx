@@ -43,91 +43,16 @@ export default function TemplatePageClient({ templateId }: TemplatePageClientPro
       backgroundRepeat: 'no-repeat',
       backgroundColor: '#fefbf6',
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px',
-      position: 'relative'
+      padding: '0'
     }}>
-      {/* 헤더 */}
-      <div style={{
-        position: 'absolute',
-        top: '20px',
-        left: '20px',
-        right: '20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        zIndex: 10
-      }}>
-        <Link
-          href="/templates"
-          style={{
-            padding: '8px 16px',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            color: '#333',
-            fontWeight: 600,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-          }}
-        >
-          ← 템플릿 목록
-        </Link>
-        <h2 style={{
-          margin: 0,
-          padding: '8px 16px',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderRadius: '8px',
-          fontSize: '18px',
-          fontWeight: 600,
-          color: '#333',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        }}>
-          {template.name}
-        </h2>
-      </div>
-
-      {/* 봉투 카드 */}
-      <div style={{ width: '100%', maxWidth: '672px', marginTop: '80px' }}>
+      <div style={{ width: '100%', maxWidth: '672px' }}>
         <EnvelopeCard
           isAnimating={isAnimating}
           onAnimationStart={() => setIsAnimating(true)}
           templateId={templateId}
         />
-      </div>
-
-      {/* 하단 정보 */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        left: '20px',
-        right: '20px',
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '12px',
-        zIndex: 10
-      }}>
-        <div style={{
-          padding: '8px 16px',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderRadius: '8px',
-          fontSize: '14px',
-          color: '#666',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        }}>
-          템플릿 ID: {template.id}
-        </div>
-        <div style={{
-          padding: '8px 16px',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderRadius: '8px',
-          fontSize: '14px',
-          color: '#666',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        }}>
-          버전: {template.version}
-        </div>
       </div>
     </main>
   )
