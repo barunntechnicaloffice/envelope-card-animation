@@ -65,7 +65,8 @@
       "y": 226,
       "width": 144,
       "height": 144,
-      "zIndex": 1
+      "zIndex": 1,
+      "editable": true
     },
     "decoration": {
       "x": 139.6845,
