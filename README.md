@@ -198,24 +198,6 @@ envelope-card-animation/
 
 자세한 내용은 [API_SPEC.md](./API_SPEC.md) 참조
 
-## 🌐 Deployment
-
-### GitHub Pages (템플릿 미리보기)
-
-템플릿 미리보기를 위해 GitHub Pages에 정적 사이트로 배포:
-
-```bash
-# Build and deploy
-npm run build
-npx gh-pages -d out
-```
-
-**배포 설정:**
-- `output: 'export'` - 정적 HTML export
-- `basePath: '/envelope-card-animation'` - GitHub repo 경로
-
-> **참고**: GitHub Pages는 템플릿 미리보기 용도입니다. 실제 프로덕션 배포는 백엔드 API 연동 후 어드민 환경에서 사용됩니다.
-
 ## 🤝 Contributing
 
 1. Fork the repository
