@@ -15,12 +15,22 @@ export function WeddingCard002({
   const baseWidth = 335
   const baseHeight = 515
 
+  // Figma 캔버스 기준 BG 시작점
+  const bgOffsetY = 148
+  const bgOffsetX = 20
+
+  // 백분율 변환 헬퍼 함수 (BG 기준 상대 좌표)
+  const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
+    `${((canvasPx - canvasOffset) / base) * 100}%`
+
   return (
     <div
       className={className}
       style={{
         ...style,
         position: 'relative',
+        width: '100%',
+        height: '100%',
         backgroundColor: '#FFFFFF'
       }}
     >
@@ -38,80 +48,31 @@ export function WeddingCard002({
         />
       )}
 
-      {/* D-day (우측 상단) */}
+      {/* D-day (우측 상단) - canvas y:164 → BG 기준 16px */}
       <p style={{
         position: 'absolute',
-        right: `${(20 / baseWidth) * 100}%`,
-        top: `${(164 / baseHeight) * 100}%`,
+        left: pxToPercent(33, bgOffsetX, baseWidth),
+        top: pxToPercent(164, bgOffsetY, baseHeight),
+        width: pxToPercent(310, 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontWeight: 700,
         fontSize: '20px',
         color: '#333333',
         letterSpacing: '-0.316px',
+        textAlign: 'right',
         margin: 0,
         zIndex: 2
       }}>
         D-999
       </p>
 
-      {/* 날짜 (좌측 세로 배치) */}
+      {/* 사진 (중앙) - canvas y:226 → BG 기준 78px */}
       <div style={{
         position: 'absolute',
-        left: `${(20 / baseWidth) * 100}%`,
-        top: `${(241 / baseHeight) * 100}%`,
-        zIndex: 2
-      }}>
-        {/* 월 */}
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '30px',
-          color: '#333333',
-          letterSpacing: '-0.474px',
-          textAlign: 'center',
-          width: '40px',
-          margin: 0,
-          marginBottom: '22.83px'
-        }}>
-          10
-        </p>
-
-        {/* 구분선 */}
-        <div style={{
-          width: '14.795px',
-          height: '1.904px',
-          margin: '0 auto 19.366px'
-        }}>
-          <img
-            src="/assets/wedding-card-002/date-divider.svg"
-            alt=""
-            style={{ width: '100%', height: '100%' }}
-          />
-        </div>
-
-        {/* 일 */}
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '30px',
-          color: '#333333',
-          letterSpacing: '-0.474px',
-          textAlign: 'center',
-          width: '40px',
-          margin: 0
-        }}>
-          28
-        </p>
-      </div>
-
-      {/* 사진 (중앙 정사각형) */}
-      <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: `${(226 / baseHeight) * 100}%`,
-        transform: 'translateX(-50%)',
-        width: '144px',
-        height: '144px',
+        left: pxToPercent(116, bgOffsetX, baseWidth),
+        top: pxToPercent(226, bgOffsetY, baseHeight),
+        width: pxToPercent(144, 0, baseWidth),
+        height: pxToPercent(144, 0, baseHeight),
         overflow: 'hidden',
         zIndex: 1
       }}>
@@ -126,138 +87,198 @@ export function WeddingCard002({
         />
       </div>
 
-      {/* "lnLove" 텍스트 장식 */}
-      <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: `${(389.9 / baseHeight) * 100}%`,
-        transform: 'translateX(-50%)',
-        width: '55.631px',
-        height: '14.1px',
-        zIndex: 2
-      }}>
-        <img
-          src="/assets/wedding-card-002/decoration.svg"
-          alt="lnLove"
-          style={{ width: '100%', height: '100%' }}
-        />
-      </div>
-
-      {/* 영문 날짜 */}
+      {/* 날짜 월 (좌측) - canvas y:241 → BG 기준 93px */}
       <p style={{
         position: 'absolute',
-        left: '50%',
-        top: `${(453 / baseHeight) * 100}%`,
-        transform: 'translateX(-50%)',
+        left: pxToPercent(54, bgOffsetX, baseWidth),
+        top: pxToPercent(241, bgOffsetY, baseHeight),
+        width: pxToPercent(40, 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontWeight: 700,
         fontSize: '30px',
         color: '#333333',
         letterSpacing: '-0.474px',
         textAlign: 'center',
-        width: '313px',
+        margin: 0,
+        zIndex: 2
+      }}>
+        10
+      </p>
+
+      {/* 날짜 구분선 - canvas y:294.724 → BG 기준 146.724px */}
+      <div style={{
+        position: 'absolute',
+        left: pxToPercent(67, bgOffsetX, baseWidth),
+        top: pxToPercent(294.724609375, bgOffsetY, baseHeight),
+        width: pxToPercent(14.794921875, 0, baseWidth),
+        height: pxToPercent(1.904296875, 0, baseHeight),
+        zIndex: 2
+      }}>
+        {data.dateDivider && (
+          <img
+            src={data.dateDivider}
+            alt=""
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
+      </div>
+
+      {/* 날짜 일 (좌측) - canvas y:312 → BG 기준 164px */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(54, bgOffsetX, baseWidth),
+        top: pxToPercent(312, bgOffsetY, baseHeight),
+        width: pxToPercent(40, 0, baseWidth),
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '30px',
+        color: '#333333',
+        letterSpacing: '-0.474px',
+        textAlign: 'center',
+        margin: 0,
+        zIndex: 2
+      }}>
+        28
+      </p>
+
+      {/* 장식 - canvas y:389.9 → BG 기준 241.9px */}
+      <div style={{
+        position: 'absolute',
+        left: pxToPercent(159.93157958984375, bgOffsetX, baseWidth),
+        top: pxToPercent(389.8999938964844, bgOffsetY, baseHeight),
+        width: pxToPercent(55.6312141418457, 0, baseWidth),
+        height: pxToPercent(14.10001277923584, 0, baseHeight),
+        zIndex: 2
+      }}>
+        {data.decoration && (
+          <img
+            src={data.decoration}
+            alt=""
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
+      </div>
+
+      {/* 영문 날짜 - canvas y:453 → BG 기준 305px */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(31, bgOffsetX, baseWidth),
+        top: pxToPercent(453, bgOffsetY, baseHeight),
+        width: pxToPercent(313, 0, baseWidth),
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '30px',
+        color: '#333333',
+        letterSpacing: '-0.474px',
+        textAlign: 'center',
         margin: 0,
         zIndex: 2
       }}>
         October 23, 2038
       </p>
 
-      {/* GROOM 라벨 + 신랑 이름 */}
-      <div style={{
-        position: 'absolute',
-        left: `${(20 / baseWidth) * 100}%`,
-        top: `${(511 / baseHeight) * 100}%`,
-        textAlign: 'right',
-        zIndex: 2
-      }}>
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '10px',
-          color: '#333333',
-          letterSpacing: '-0.158px',
-          textTransform: 'uppercase',
-          margin: 0,
-          marginBottom: '8px'
-        }}>
-          GROOM
-        </p>
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '18px',
-          color: '#333333',
-          letterSpacing: '-0.2844px',
-          width: '116px',
-          margin: 0
-        }}>
-          {data.groom}
-        </p>
-      </div>
-
-      {/* BRIDE 라벨 + 신부 이름 */}
-      <div style={{
-        position: 'absolute',
-        right: `${(20 / baseWidth) * 100}%`,
-        top: `${(511 / baseHeight) * 100}%`,
-        textAlign: 'left',
-        zIndex: 2
-      }}>
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '10px',
-          color: '#333333',
-          letterSpacing: '-0.158px',
-          textTransform: 'uppercase',
-          margin: 0,
-          marginBottom: '8px'
-        }}>
-          BRIDE
-        </p>
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '18px',
-          color: '#333333',
-          letterSpacing: '-0.2844px',
-          width: '112px',
-          margin: 0
-        }}>
-          {data.bride}
-        </p>
-      </div>
-
-      {/* 날짜 텍스트 (하단) */}
+      {/* GROOM 라벨 - canvas y:511 → BG 기준 363px */}
       <p style={{
         position: 'absolute',
-        left: '50%',
-        top: `${(582 / baseHeight) * 100}%`,
-        transform: 'translateX(-50%)',
+        left: pxToPercent(87, bgOffsetX, baseWidth),
+        top: pxToPercent(511, bgOffsetY, baseHeight),
+        width: pxToPercent(42, 0, baseWidth),
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '10px',
+        color: '#333333',
+        letterSpacing: '-0.158px',
+        textAlign: 'right',
+        textTransform: 'uppercase',
+        margin: 0,
+        zIndex: 2
+      }}>
+        GROOM
+      </p>
+
+      {/* 신랑 이름 - canvas y:530 → BG 기준 382px */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(20, bgOffsetX, baseWidth),
+        top: pxToPercent(530, bgOffsetY, baseHeight),
+        width: pxToPercent(116, 0, baseWidth),
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '18px',
+        color: '#333333',
+        letterSpacing: '-0.2844px',
+        textAlign: 'right',
+        margin: 0,
+        zIndex: 2
+      }}>
+        {data.groom}
+      </p>
+
+      {/* BRIDE 라벨 - canvas y:511 → BG 기준 363px */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(259, bgOffsetX, baseWidth),
+        top: pxToPercent(511, bgOffsetY, baseHeight),
+        width: pxToPercent(30, 0, baseWidth),
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '10px',
+        color: '#333333',
+        letterSpacing: '-0.158px',
+        textAlign: 'left',
+        textTransform: 'uppercase',
+        margin: 0,
+        zIndex: 2
+      }}>
+        BRIDE
+      </p>
+
+      {/* 신부 이름 - canvas y:530 → BG 기준 382px */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(243, bgOffsetX, baseWidth),
+        top: pxToPercent(530, bgOffsetY, baseHeight),
+        width: pxToPercent(112, 0, baseWidth),
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '18px',
+        color: '#333333',
+        letterSpacing: '-0.2844px',
+        textAlign: 'left',
+        margin: 0,
+        zIndex: 2
+      }}>
+        {data.bride}
+      </p>
+
+      {/* 한글 날짜 - canvas y:582 → BG 기준 434px */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(32, bgOffsetX, baseWidth),
+        top: pxToPercent(582, bgOffsetY, baseHeight),
+        width: pxToPercent(311, 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontSize: '12px',
         color: '#333333',
         lineHeight: '20px',
         textAlign: 'center',
-        width: '311px',
         margin: 0,
         zIndex: 2
       }}>
         {data.date}
       </p>
 
-      {/* 장소 텍스트 (하단) */}
+      {/* 장소 - canvas y:602 → BG 기준 454px */}
       <p style={{
         position: 'absolute',
-        left: '50%',
-        top: `${(602 / baseHeight) * 100}%`,
-        transform: 'translateX(-50%)',
+        left: pxToPercent(32, bgOffsetX, baseWidth),
+        top: pxToPercent(602, bgOffsetY, baseHeight),
+        width: pxToPercent(311, 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontSize: '12px',
         color: '#333333',
         lineHeight: '20px',
         textAlign: 'center',
-        width: '311px',
         margin: 0,
         zIndex: 2
       }}>
