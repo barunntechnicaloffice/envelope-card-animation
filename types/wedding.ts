@@ -4,8 +4,10 @@ export interface WeddingData {
   date: string
   venue: string
   photo: string
-  backgroundImage: string
-  decorationImage: string
+  backgroundImage?: string  // wedding-card-001용
+  decorationImage?: string  // wedding-card-001용
+  cardBackground?: string   // wedding-card-002용
+  decoration?: string       // wedding-card-002용
 }
 
 // Mock 데이터 (Figma assets 사용)

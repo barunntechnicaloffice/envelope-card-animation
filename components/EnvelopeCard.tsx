@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCreative } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
 import { WeddingCard } from './cards/WeddingCard'
+import { WeddingCard002 } from './cards/WeddingCard002'
 import { MOCK_WEDDING_DATA, type WeddingData } from '@/types/wedding'
 
 // Swiper CSS
@@ -87,6 +88,7 @@ interface Card {
 interface EnvelopeCardProps {
   isAnimating: boolean
   onAnimationStart: () => void
+  templateId?: string
 }
 
 const ALL_CARDS: Card[] = [
@@ -96,7 +98,7 @@ const ALL_CARDS: Card[] = [
   { id: 4, title: "Birthday Party", subtitle: "Let's Celebrate Together", decoration: "" },
 ]
 
-export default function EnvelopeCard({ isAnimating, onAnimationStart }: EnvelopeCardProps) {
+export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId = 'wedding-card-001' }: EnvelopeCardProps) {
   const [phase, setPhase] = useState<'initial' | 'start' | 'flap-open' | 'card-slide' | 'card-rotate'>('initial')
   const [hasStarted, setHasStarted] = useState(false)
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(false)
@@ -201,6 +203,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
     window.location.reload()
   }
 
+  // 템플릿 ID에 따라 카드 컴포넌트 선택
+  const CardComponent = templateId === 'wedding-card-002' ? WeddingCard002 : WeddingCard
+
   return (
     <>
       {/* Swiper 카드 스택 - Portal로 body에 직접 렌더링 */}
@@ -248,8 +253,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
             {ALL_CARDS.map((card, index) => (
               <SwiperSlide key={card.id}>
                 {index === 0 ? (
-                  /* 첫 번째 카드 - WeddingCard 사용 */
-                  <WeddingCard
+                  /* 첫 번째 카드 - 템플릿에 따라 동적 컴포넌트 사용 */
+                  <CardComponent
                     data={weddingData}
                     className={styles.envelopeCardInner}
                     style={{
@@ -496,9 +501,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart }: Envelope
                     cursor: 'default'
                   }}
                 >
-                  {/* 봉투 카드 - WeddingCard 사용 (Swiper와 동일한 컴포넌트!) */}
+                  {/* 봉투 카드 - 템플릿에 따라 동적 컴포넌트 사용 (Swiper와 동일한 컴포넌트!) */}
                   <div id="envelope-card-inner" style={{ width: '100%', height: '100%' }}>
-                    <WeddingCard
+                    <CardComponent
                       data={weddingData}
                       className={styles.envelopeCardInner}
                       style={{ width: '100%', height: '100%' }}
