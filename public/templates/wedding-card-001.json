@@ -5,6 +5,13 @@
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-001/card-bg.png",
   "figmaNodeId": "2072:68405",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-001/pattern.png",
+      "seal": "/assets/wedding-card-001/seal.png"
+    },
+    "background": "/assets/wedding-card-001/bg.png"
+  },
   "layout": {
     "baseSize": {
       "width": 335,
@@ -69,8 +76,8 @@
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-001/photo.png",
-      "backgroundImage": "/assets/wedding-card-001/card-bg.png",
-      "decorationImage": "/assets/wedding-card-001/decoration.png"
+      "cardBackground": "/assets/wedding-card-001/card-bg.png",
+      "decoration": "/assets/wedding-card-001/decoration.png"
     }
   },
   "components": [
@@ -83,8 +90,8 @@
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
-        "backgroundImage": "$.data.wedding.backgroundImage",
-        "decorationImage": "$.data.wedding.decorationImage"
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
       }
     }
   ]

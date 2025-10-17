@@ -359,11 +359,15 @@ templateId: "wedding-card-001" (optional)
 | id | string | ✅ | 템플릿 고유 ID |
 | version | string | ✅ | 템플릿 버전 (Semantic Versioning) |
 | name | string | ✅ | 템플릿 이름 |
-| description | string | ❌ | 템플릿 설명 |
-| metadata | object | ❌ | 메타데이터 (category, thumbnail 등) |
+| category | string | ✅ | 템플릿 카테고리 (wedding, birthday 등) |
+| thumbnail | string | ✅ | 템플릿 썸네일 이미지 URL |
+| figmaNodeId | string | ❌ | Figma 디자인 노드 ID (개발 참고용) |
+| **common** | object | ✅ | **공통 리소스** (봉투, 배경 등) |
+| common.envelope | object | ✅ | 봉투 관련 에셋 (pattern, seal) |
+| common.background | string | ✅ | 전체 배경 이미지 URL |
 | layout | object | ✅ | Figma 기반 절대 픽셀 레이아웃 |
-| data | object | ✅ | 기본 데이터 (샘플) |
-| components | array | ✅ | 렌더링할 컴포넌트 정의 |
+| data | object | ✅ | 샘플 데이터 (템플릿 미리보기용) |
+| components | array | ✅ | Server-Driven UI 컴포넌트 정의 |
 
 ### Component Schema
 
