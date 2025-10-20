@@ -52,10 +52,10 @@ export function WeddingCard003({
         />
       )}
 
-      {/* THE WEDDING OF (제목) - canvas y:175.5, x:128 → BG 기준 27.5px, 108px */}
+      {/* THE WEDDING OF (제목) - 카드 중앙 정렬, canvas y:175.5 → BG 기준 27.5px */}
       <p style={{
         position: 'absolute',
-        left: pxToPercent(128, bgOffsetX, baseWidth),
+        left: '50%',
         top: pxToPercent(175.5, bgOffsetY, baseHeight),
         width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
@@ -130,10 +130,10 @@ export function WeddingCard003({
         {data.groom}
       </p>
 
-      {/* "그리고" 텍스트 - canvas y:562, x:161 → BG 기준 414px, 141px (width: auto) */}
+      {/* "그리고" 텍스트 - 카드 중앙 정렬, canvas y:562 → BG 기준 414px (width: auto) */}
       <p style={{
         position: 'absolute',
-        left: pxToPercent(161, bgOffsetX, baseWidth),
+        left: '50%',
         top: pxToPercent(562, bgOffsetY, baseHeight),
         width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
@@ -168,10 +168,10 @@ export function WeddingCard003({
         {data.bride}
       </p>
 
-      {/* 날짜 - canvas y:592, x:99 → BG 기준 444px, 79px (width: auto) */}
+      {/* 날짜 - 카드 중앙 정렬, canvas y:592 → BG 기준 444px (width: auto) */}
       <p style={{
         position: 'absolute',
-        left: pxToPercent(99, bgOffsetX, baseWidth),
+        left: '50%',
         top: pxToPercent(592, bgOffsetY, baseHeight),
         width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
@@ -186,10 +186,10 @@ export function WeddingCard003({
         {data.date}
       </p>
 
-      {/* 장소 - canvas y:612, x:110 → BG 기준 464px, 90px (width: auto) */}
+      {/* 장소 - 카드 중앙 정렬, canvas y:612 → BG 기준 464px (width: auto) */}
       <p style={{
         position: 'absolute',
-        left: pxToPercent(110, bgOffsetX, baseWidth),
+        left: '50%',
         top: pxToPercent(612, bgOffsetY, baseHeight),
         width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
