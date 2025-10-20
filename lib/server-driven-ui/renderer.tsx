@@ -12,6 +12,7 @@ import type {
   ContainerComponent,
   WeddingCardTemplate001Component,
   WeddingCardTemplate002Component,
+  WeddingCardTemplate003Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -246,6 +247,9 @@ export function renderComponent(
 
     case 'wedding-card-template-002':
       return renderWeddingCardTemplate002(component as WeddingCardTemplate002Component, data, style, className, key)
+
+    case 'wedding-card-template-003':
+      return renderWeddingCardTemplate003(component as WeddingCardTemplate003Component, data, style, className, key)
 
     default:
       console.warn(`Unknown component type: ${(component as any).type}`)
@@ -494,6 +498,44 @@ function renderWeddingCardTemplate002(
 
   return (
     <WeddingCard002
+      key={key}
+      data={weddingData}
+      style={style}
+      className={className}
+    />
+  )
+}
+
+function renderWeddingCardTemplate003(
+  component: WeddingCardTemplate003Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  // WeddingCard003 컴포넌트 import
+  const { WeddingCard003 } = require('@/components/cards/WeddingCard003')
+
+  // JSONPath로 데이터 추출
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+
+    // ⚠️ 중요: photo 기본값은 반드시 /assets/common/photo.png 사용
+    photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
+
+    cardBackground: component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : undefined,
+    decoration: component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : undefined
+  }
+
+  return (
+    <WeddingCard003
       key={key}
       data={weddingData}
       style={style}

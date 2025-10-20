@@ -65,7 +65,11 @@ template
 #### 1-3. 레이어 네이밍 규칙
 - 소문자 + 언더스코어 사용: `photo`, `groom_name`, `date_text`
 - JSON 키값과 일치시키기: `groom`, `bride`, `date`, `venue`
-- 편집 가능 여부 태그: `[editable]` 또는 `[locked]`
+- **편집 가능 여부 태그 (중요!)**:
+  - 기본값: `editable: false` (편집 불가) - JSON에 명시 안 함
+  - `[editable]` 태그: 사용자 입력 필드 → JSON에 `"editable": true` 추가
+  - **예시**: `groom[editable]`, `bride[editable]`, `date[editable]`
+  - **디자인 요소는 태그 불필요**: `photo`, `decoration`, `cardBackground` 등은 기본적으로 잠김
 
 #### 1-4. Figma에서 Node ID 확인
 1. Figma에서 템플릿 프레임 선택
@@ -98,7 +102,44 @@ public/assets/common/
 └── photo.png           # 기본 샘플 사진
 ```
 
-#### 2-3. 에셋 최적화
+#### 2-3. Figma MCP로 에셋 자동 다운로드
+
+**⚠️ 중요: Claude Code는 Figma MCP를 통해 에셋을 자동으로 다운로드해야 합니다!**
+
+Figma MCP 서버에서 이미지를 추출하는 방법:
+
+```bash
+# 1. Figma MCP로 디자인 코드 추출
+mcp__figma-dev-mode-mcp-server__get_design_context({
+  nodeId: "37:456",
+  clientLanguages: "typescript,html,css",
+  clientFrameworks: "react"
+})
+
+# 2. 응답에서 이미지 URL 확인
+# 예: http://localhost:62894/figma-assets/1005x1545_c5f3af2c9e6cd8c3...
+
+# 3. curl로 이미지 다운로드
+curl -s "http://localhost:62894/figma-assets/1005x1545_c5f3af2c9e6cd8c3..." \
+  -o public/assets/wedding-card-003/card-bg.png
+
+curl -s "http://localhost:62894/figma-assets/2010x209_e7f9bc4d1a2e5f8b..." \
+  -o public/assets/wedding-card-003/decoration.png
+```
+
+**SVG 파일의 경우:**
+
+SVG는 Figma MCP가 CSS 변수를 사용하여 내보내므로 **반드시 수정 필요**:
+
+```svg
+<!-- ❌ Figma MCP 출력 (CSS 변수 사용) -->
+<circle fill="var(--fill-0, #C0B7A8)"/>
+
+<!-- ✅ 수정 후 (직접 색상 값 사용) -->
+<circle fill="#C0B7A8"/>
+```
+
+#### 2-4. 에셋 최적화
 ```bash
 # 이미지 최적화 (선택 사항)
 npm run optimize-images  # 만약 스크립트가 있다면
@@ -274,7 +315,8 @@ touch public/templates/wedding-card-003.json
       "color": "#333333",
       "letterSpacing": -0.316,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
     "bride": {
       "x": 193,
@@ -285,7 +327,8 @@ touch public/templates/wedding-card-003.json
       "color": "#333333",
       "letterSpacing": -0.316,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
     "dateVenue": {
       "x": 0,
@@ -336,10 +379,41 @@ touch public/templates/wedding-card-003.json
 }
 ```
 
-⚠️ **중요: Figma 좌표를 JSON에 그대로 입력**
-- JSON의 `layout` 섹션에는 **Figma의 절대 좌표(픽셀)** 그대로 입력
-- 렌더링 시 `layout-utils.ts`가 **자동으로 백분율 변환**
-- 디자이너가 Figma 좌표를 바로 사용할 수 있어 편리함
+⚠️ **중요 사항**
+
+1. **Figma 좌표를 JSON에 그대로 입력**
+   - JSON의 `layout` 섹션에는 **Figma의 절대 좌표(픽셀)** 그대로 입력
+   - 렌더링 시 `layout-utils.ts`가 **자동으로 백분율 변환**
+   - 디자이너가 Figma 좌표를 바로 사용할 수 있어 편리함
+
+2. **`editable` 필드 규칙 (중요!)**
+   - **기본값: `editable: false`** (모든 요소는 기본적으로 편집 불가)
+   - Figma에서 `[editable]` 태그가 있는 요소만 JSON에 `"editable": true` 추가
+   - **편집 가능 요소**: 신랑/신부 이름, 날짜, 장소 등 사용자 입력 필드
+   - **편집 불가 요소**: 배경, 사진, 장식 등 디자인 요소 (JSON에 명시 안 함)
+
+   ```json
+   // ❌ 잘못된 예: 편집 가능 필드인데 editable 누락
+   "groom": {
+     "x": 24,
+     "y": 395,
+     "fontSize": 20
+   }
+
+   // ✅ 올바른 예: 편집 가능 필드에만 editable: true
+   "groom": {
+     "x": 24,
+     "y": 395,
+     "fontSize": 20,
+     "editable": true  // [editable] 태그
+   },
+   "photo": {
+     "x": 52,
+     "y": 106,
+     "width": 233
+     // editable 필드 없음 = 기본값 false
+   }
+   ```
 
 ---
 
@@ -495,16 +569,26 @@ function renderWeddingCardTemplate003(
 
 ### 7️⃣ EnvelopeCard 업데이트
 
+**🚨 중요: 이 단계를 빠뜨리면 이미지가 로드되지 않습니다!**
+
+`EnvelopeCard.tsx`는 봉투 애니메이션과 카드 렌더링을 담당하는 핵심 컴포넌트입니다.
+**새 템플릿을 추가했는데 이미지가 표시되지 않는다면, 이 단계를 빠뜨린 것입니다.**
+
 `components/EnvelopeCard.tsx`:
 ```typescript
-import { WeddingCard003 } from './cards/WeddingCard003'  // import 추가
+import { WeddingCard003 } from './cards/WeddingCard003'  // ← 1. import 추가
 
-// 템플릿 ID에 따라 컴포넌트 선택
+// ← 2. 템플릿 ID에 따라 컴포넌트 선택
 const CardComponent =
-  templateId === 'wedding-card-003' ? WeddingCard003 :
+  templateId === 'wedding-card-003' ? WeddingCard003 :  // ← 추가
   templateId === 'wedding-card-002' ? WeddingCard002 :
   WeddingCard
 ```
+
+**왜 중요한가?**
+- `EnvelopeCard`는 `templateId`를 기반으로 올바른 카드 컴포넌트를 선택합니다
+- 이 로직이 없으면 기본 `WeddingCard` 컴포넌트가 사용되어 템플릿별 에셋이 로드되지 않습니다
+- Network 탭에서 `/assets/common/` 파일만 로드되고 `/assets/wedding-card-003/` 파일이 로드되지 않는다면 이 단계를 확인하세요
 
 ---
 
@@ -639,6 +723,27 @@ photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png'
 ### Q7. 봉투 애니메이션은 자동으로 적용되나요?
 **A:** 네, `EnvelopeCard` 컴포넌트가 모든 템플릿에 봉투 애니메이션을 자동 적용합니다.
 
+### Q8. Figma의 [editable] 태그를 JSON에 어떻게 반영하나요?
+**A:** **기본값은 `editable: false`**이므로, Figma에서 `[editable]` 태그가 있는 요소만 JSON에 추가합니다:
+
+```
+Figma: groom[editable] → JSON: "editable": true
+Figma: photo (태그 없음) → JSON: editable 필드 없음 (기본값 false)
+```
+
+**편집 가능 여부 가이드:**
+- **editable: true 명시** (사용자 입력 필드만)
+  - `groom[editable]`: 신랑 이름
+  - `bride[editable]`: 신부 이름
+  - `date[editable]`: 날짜
+  - `venue[editable]`: 장소
+
+- **editable 필드 없음** (기본값 false, 디자인 요소)
+  - `photo`: 사진 프레임
+  - `decoration`: 장식 이미지
+  - `title`: 고정 제목 텍스트
+  - `cardBackground`: 카드 배경
+
 ---
 
 ## 추가 리소스
@@ -667,6 +772,70 @@ photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png'
 1. `types/wedding.ts`에 필드 추가
 2. `types/server-driven-ui/schema.ts`에 타입 정의
 3. TypeScript 컴파일 재실행
+
+### SVG가 표시되지 않는 경우
+
+**원인:** Figma MCP가 SVG를 CSS 변수로 내보냄
+
+**해결 방법:**
+
+1. SVG 파일 열기:
+```bash
+cat public/assets/wedding-card-003/date-divider.svg
+```
+
+2. CSS 변수 확인:
+```svg
+<!-- ❌ 문제: CSS 변수 사용 -->
+<circle fill="var(--fill-0, #C0B7A8)"/>
+<path stroke="var(--stroke-0, #E5E5E5)"/>
+```
+
+3. 직접 색상 값으로 변경:
+```svg
+<!-- ✅ 해결: 직접 색상 값 사용 -->
+<circle fill="#C0B7A8"/>
+<path stroke="#E5E5E5"/>
+```
+
+**자동화 스크립트 (선택사항):**
+```bash
+# SVG에서 CSS 변수 제거
+sed -i '' 's/var(--fill-0, \(#[0-9A-Fa-f]\{6\}\))/\1/g' public/assets/wedding-card-003/*.svg
+sed -i '' 's/var(--stroke-0, \(#[0-9A-Fa-f]\{6\}\))/\1/g' public/assets/wedding-card-003/*.svg
+```
+
+### EnvelopeCard를 업데이트했는데도 이미지가 안 나오는 경우
+
+**체크리스트:**
+
+1. **Import 확인**
+```typescript
+// components/EnvelopeCard.tsx 상단
+import { WeddingCard003 } from './cards/WeddingCard003'  // ✅ 있어야 함
+```
+
+2. **CardComponent 선택 로직 확인**
+```typescript
+const CardComponent =
+  templateId === 'wedding-card-003' ? WeddingCard003 :  // ✅ 있어야 함
+  templateId === 'wedding-card-002' ? WeddingCard002 :
+  WeddingCard
+```
+
+3. **templateId 전달 확인**
+```typescript
+// app/templates/[id]/TemplatePageClient.tsx
+<EnvelopeCard
+  templateId={templateId}  // ✅ 'wedding-card-003'이 전달되는지 확인
+  {...}
+/>
+```
+
+4. **Network 탭 확인**
+- `/assets/wedding-card-003/card-bg.png` 요청이 있는가?
+- 404 에러가 나는가? (파일 경로 문제)
+- 요청 자체가 없는가? (EnvelopeCard 업데이트 문제)
 
 ---
 
