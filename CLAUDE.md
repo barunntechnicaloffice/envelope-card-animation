@@ -475,9 +475,36 @@ export function WeddingCard003({
 - 중앙 정렬이 필요 없는 텍스트 (left/right align)
 - "그리고" 같은 짧은 단어
 
+**⚠️ 권장 규칙: 텍스트는 기본적으로 auto width 사용**
+
+Figma에서 `auto` 태그가 없더라도, **모든 텍스트 요소는 기본적으로 `width: auto`를 사용하는 것을 권장**합니다:
+
+```typescript
+// ✅ 권장: 텍스트는 기본 auto
+<p style={{
+  width: toStyleValue("auto", 0, baseWidth),  // 항상 auto 사용
+  textAlign: 'center'
+}}>
+  {data.groom}
+</p>
+
+// ❌ 비권장: 고정 너비는 특별한 경우만
+<p style={{
+  width: pxToPercent(311, 0, baseWidth),  // 레이아웃 제약이 있을 때만
+}}>
+  {data.groom}
+</p>
+```
+
+**이유:**
+- 텍스트 길이는 가변적 (이름, 날짜, 장소 등)
+- 반응형 레이아웃에 유리
+- 다국어 지원 시 자동 대응
+- 고정 너비로 인한 텍스트 잘림 방지
+
 **주의사항:**
-- `textAlign: 'center'`와 함께 사용 시 부모 컨테이너 너비 고려 필요
-- 고정 레이아웃이 필요한 경우 일반 백분율 사용
+- `textAlign: 'center'`와 함께 사용 시 `left: '50%', transform: 'translateX(-50%)'` 필요
+- 이미지나 컨테이너는 고정 너비 사용 (레이아웃 유지)
 
 ---
 
