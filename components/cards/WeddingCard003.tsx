@@ -23,6 +23,10 @@ export function WeddingCard003({
   const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
     `${((canvasPx - canvasOffset) / base) * 100}%`
 
+  // "auto" 또는 픽셀 값을 처리하는 헬퍼 함수
+  const toStyleValue = (value: number | "auto", offset: number, base: number): string | number =>
+    value === "auto" ? "auto" : pxToPercent(value, offset, base)
+
   return (
     <div
       className={className}
@@ -106,12 +110,12 @@ export function WeddingCard003({
         </div>
       )}
 
-      {/* 신랑 이름 - canvas y:555, x:82 → BG 기준 407px, 62px */}
+      {/* 신랑 이름 - canvas y:555, x:82 → BG 기준 407px, 62px (width: auto) */}
       <p style={{
         position: 'absolute',
         left: pxToPercent(82, bgOffsetX, baseWidth),
         top: pxToPercent(555, bgOffsetY, baseHeight),
-        width: pxToPercent(68, 0, baseWidth),
+        width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontWeight: 700,
         fontSize: '20px',
@@ -125,12 +129,12 @@ export function WeddingCard003({
         {data.groom}
       </p>
 
-      {/* "그리고" 텍스트 - canvas y:562 → BG 기준 414px */}
+      {/* "그리고" 텍스트 - canvas y:562 → BG 기준 414px (width: auto) */}
       <p style={{
         position: 'absolute',
         left: pxToPercent(32, bgOffsetX, baseWidth),
         top: pxToPercent(562, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
+        width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontSize: '10px',
         lineHeight: 'normal',
@@ -143,12 +147,12 @@ export function WeddingCard003({
         그리고
       </p>
 
-      {/* 신부 이름 - canvas y:555, x:225 → BG 기준 407px, 205px */}
+      {/* 신부 이름 - canvas y:555, x:225 → BG 기준 407px, 205px (width: auto) */}
       <p style={{
         position: 'absolute',
         left: pxToPercent(225, bgOffsetX, baseWidth),
         top: pxToPercent(555, bgOffsetY, baseHeight),
-        width: pxToPercent(68, 0, baseWidth),
+        width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontWeight: 700,
         fontSize: '20px',
@@ -162,12 +166,12 @@ export function WeddingCard003({
         {data.bride}
       </p>
 
-      {/* 날짜 - canvas y:592 → BG 기준 444px */}
+      {/* 날짜 - canvas y:592 → BG 기준 444px (width: auto) */}
       <p style={{
         position: 'absolute',
         left: pxToPercent(32, bgOffsetX, baseWidth),
         top: pxToPercent(592, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
+        width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontSize: '12px',
         color: '#C0B7A8',
@@ -179,12 +183,12 @@ export function WeddingCard003({
         {data.date}
       </p>
 
-      {/* 장소 - canvas y:612 → BG 기준 464px */}
+      {/* 장소 - canvas y:612 → BG 기준 464px (width: auto) */}
       <p style={{
         position: 'absolute',
         left: pxToPercent(32, bgOffsetX, baseWidth),
         top: pxToPercent(612, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
+        width: toStyleValue("auto", 0, baseWidth),
         fontFamily: "'NanumMyeongjo', serif",
         fontSize: '12px',
         color: '#C0B7A8',

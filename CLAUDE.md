@@ -398,6 +398,87 @@ mcp__figma-dev-mode-mcp-server__get_metadata({
 // → BG 기준: (116-20, 226-148) = (96, 78)
 ```
 
+#### 3. Figma의 "auto" 태그 처리하기
+
+**⚠️ 새로운 기능: Figma에서 요소 이름에 `auto` 태그가 있으면 CSS `width: auto` 적용**
+
+Figma 메타데이터에서 요소 이름에 `auto` 태그가 있는 경우 (예: `groom auto`, `date auto`), 해당 요소의 width를 CSS `auto`로 설정할 수 있습니다. 이는 텍스트 길이에 따라 자동으로 너비가 조정되도록 합니다.
+
+**구현 방법:**
+
+```typescript
+export function WeddingCard003({
+  data,
+  className,
+  style
+}: WeddingCard003Props) {
+  const baseWidth = 335
+  const baseHeight = 515
+  const bgOffsetY = 148
+  const bgOffsetX = 20
+
+  // 백분율 변환 헬퍼 함수
+  const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
+    `${((canvasPx - canvasOffset) / base) * 100}%`
+
+  // ✨ "auto" 또는 픽셀 값을 처리하는 헬퍼 함수
+  const toStyleValue = (value: number | "auto", offset: number, base: number): string | number =>
+    value === "auto" ? "auto" : pxToPercent(value, offset, base)
+
+  return (
+    <div>
+      {/* Figma에서 "groom auto"로 표시된 경우 */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(82, bgOffsetX, baseWidth),
+        top: pxToPercent(555, bgOffsetY, baseHeight),
+        width: toStyleValue("auto", 0, baseWidth), // ✨ "auto" 사용
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '20px',
+        textAlign: 'right'
+      }}>
+        {data.groom}
+      </p>
+
+      {/* Figma에서 "date auto"로 표시된 경우 */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(32, bgOffsetX, baseWidth),
+        top: pxToPercent(592, bgOffsetY, baseHeight),
+        width: toStyleValue("auto", 0, baseWidth), // ✨ "auto" 사용
+        fontFamily: "'NanumMyeongjo', serif",
+        fontSize: '12px',
+        textAlign: 'center'
+      }}>
+        {data.date}
+      </p>
+
+      {/* 고정 너비가 필요한 경우 */}
+      <p style={{
+        width: pxToPercent(311, 0, baseWidth) // 일반 백분율 사용
+      }}>
+        고정 너비 텍스트
+      </p>
+    </div>
+  )
+}
+```
+
+**장점:**
+- 텍스트 길이에 따라 자동으로 너비 조정
+- 반응형 레이아웃에 유용
+- Figma 디자인 의도를 그대로 반영
+
+**사용 시점:**
+- 이름, 날짜 등 길이가 가변적인 텍스트
+- 중앙 정렬이 필요 없는 텍스트 (left/right align)
+- "그리고" 같은 짧은 단어
+
+**주의사항:**
+- `textAlign: 'center'`와 함께 사용 시 부모 컨테이너 너비 고려 필요
+- 고정 레이아웃이 필요한 경우 일반 백분율 사용
+
 ---
 
 ## 어떤 방법을 선택할까?
