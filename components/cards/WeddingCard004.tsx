@@ -38,36 +38,44 @@ export function WeddingCard004({
         backgroundColor: '#000000'
       }}
     >
-      {/* 배경 사진 - 전체 화면 */}
+      {/* 배경 사진 - 카드 전체, 약간 크롭 */}
       <div style={{
         position: 'absolute',
         inset: 0,
+        overflow: 'hidden',
         zIndex: 0
       }}>
         <img
           src={data.photo}
           alt="Wedding Photo"
           style={{
-            width: '100%',
-            height: '100%',
+            position: 'absolute',
+            width: '103.06%',
+            height: '103.89%',
+            left: '-1.36%',
+            top: '-3.25%',
             objectFit: 'cover'
           }}
         />
       </div>
 
-      {/* GIF 장식 오버레이 - 전체 화면 */}
+      {/* GIF 장식 오버레이 - 카드 전체 */}
       {data.decoration && (
         <div style={{
           position: 'absolute',
           inset: 0,
+          overflow: 'hidden',
           zIndex: 1
         }}>
           <img
             src={data.decoration}
             alt=""
             style={{
+              position: 'absolute',
               width: '100%',
-              height: '100%',
+              height: '115.71%',
+              left: 0,
+              top: '-0.18%',
               objectFit: 'cover',
               pointerEvents: 'none'
             }}
@@ -75,62 +83,65 @@ export function WeddingCard004({
         </div>
       )}
 
-      {/* 이름 텍스트 영역 - canvas y:260.5 → BG 기준 112.5px */}
-      <div style={{
+      {/* 신랑 이름 - canvas x:92.5 y:260.5 → BG 기준 (72.5, 112.5) */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(123, bgOffsetX, baseWidth),
+        top: pxToPercent(260.5, bgOffsetY, baseHeight),
+        transform: 'translateX(-50%)',
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '18px',
+        lineHeight: 'normal',
+        color: '#FFFFFF',
+        letterSpacing: '-0.2844px',
+        textAlign: 'center',
+        margin: 0,
+        whiteSpace: 'nowrap',
+        zIndex: 2
+      }}>
+        {data.groom}
+      </p>
+
+      {/* & 구분자 - 완전 중앙 */}
+      <p style={{
         position: 'absolute',
         left: '50%',
         top: pxToPercent(260.5, bgOffsetY, baseHeight),
         transform: 'translateX(-50%)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '18px',
+        lineHeight: 'normal',
+        color: '#FFFFFF',
+        letterSpacing: '-0.2844px',
+        textAlign: 'center',
+        margin: 0,
+        whiteSpace: 'nowrap',
         zIndex: 2
       }}>
-        {/* 신랑 이름 */}
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '18px',
-          lineHeight: 'normal',
-          color: '#FFFFFF',
-          letterSpacing: '-0.2844px',
-          textAlign: 'center',
-          margin: 0,
-          whiteSpace: 'nowrap'
-        }}>
-          {data.groom}
-        </p>
+        &
+      </p>
 
-        {/* & 구분자 */}
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '18px',
-          lineHeight: 'normal',
-          color: '#FFFFFF',
-          letterSpacing: '-0.2844px',
-          textAlign: 'center',
-          margin: 0,
-          whiteSpace: 'nowrap'
-        }}>
-          &
-        </p>
-
-        {/* 신부 이름 */}
-        <p style={{
-          fontFamily: "'NanumMyeongjo', serif",
-          fontWeight: 700,
-          fontSize: '18px',
-          lineHeight: 'normal',
-          color: '#FFFFFF',
-          letterSpacing: '-0.2844px',
-          textAlign: 'center',
-          margin: 0,
-          whiteSpace: 'nowrap'
-        }}>
-          {data.bride}
-        </p>
-      </div>
+      {/* 신부 이름 - canvas x:221.5 y:260.5 → BG 기준 (201.5, 112.5) */}
+      <p style={{
+        position: 'absolute',
+        left: pxToPercent(252, bgOffsetX, baseWidth),
+        top: pxToPercent(260.5, bgOffsetY, baseHeight),
+        transform: 'translateX(-50%)',
+        fontFamily: "'NanumMyeongjo', serif",
+        fontWeight: 700,
+        fontSize: '18px',
+        lineHeight: 'normal',
+        color: '#FFFFFF',
+        letterSpacing: '-0.2844px',
+        textAlign: 'center',
+        margin: 0,
+        whiteSpace: 'nowrap',
+        zIndex: 2
+      }}>
+        {data.bride}
+      </p>
     </div>
   )
 }
