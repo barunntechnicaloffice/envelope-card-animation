@@ -9,6 +9,7 @@ import type { Swiper as SwiperType } from 'swiper'
 import { WeddingCard } from './cards/WeddingCard'
 import { WeddingCard002 } from './cards/WeddingCard002'
 import { WeddingCard003 } from './cards/WeddingCard003'
+import { WeddingCard004 } from './cards/WeddingCard004'
 import { MOCK_WEDDING_DATA, type WeddingData } from '@/types/wedding'
 
 // Swiper CSS
@@ -207,8 +208,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
 
   // 템플릿 ID에 따라 카드 컴포넌트 선택
   const CardComponent =
-    templateId === 'wedding-card-002' ? WeddingCard002 :
+    templateId === 'wedding-card-004' ? WeddingCard004 :
     templateId === 'wedding-card-003' ? WeddingCard003 :
+    templateId === 'wedding-card-002' ? WeddingCard002 :
     WeddingCard
 
   return (

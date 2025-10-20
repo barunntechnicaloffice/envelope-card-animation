@@ -1,0 +1,69 @@
+{
+  "id": "wedding-card-004",
+  "version": "1.0.0",
+  "name": "웨딩 청첩장 템플릿 004",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-004/photo.png",
+  "figmaNodeId": "41-1037",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-004/pattern.png",
+      "seal": "/assets/wedding-card-004/seal.png"
+    },
+    "background": "/assets/wedding-card-004/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "photo": {
+      "type": "image",
+      "x": 20,
+      "y": 148,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0
+    },
+    "decoration": {
+      "type": "image",
+      "x": 20,
+      "y": 148,
+      "width": 335,
+      "height": 515,
+      "zIndex": 1
+    },
+    "names": {
+      "type": "text",
+      "x": 187.5,
+      "y": 260.5,
+      "fontSize": 18,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#FFFFFF",
+      "letterSpacing": -0.2844,
+      "align": "center",
+      "zIndex": 2
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "photo": "/assets/wedding-card-004/photo.png",
+      "decoration": "/assets/wedding-card-004/decoration.gif"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-004",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "photo": "$.data.wedding.photo",
+        "decoration": "$.data.wedding.decoration"
+      }
+    }
+  ]
+}
