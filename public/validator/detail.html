@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Validator - Detail</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      transition: all 0.2s;
+    }
+
+    .back-button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .header {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .template-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .template-id {
+      font-size: 1rem;
+      color: #999;
+    }
+
+    .status-badge {
+      padding: 0.75rem 1.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .status-badge.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-badge.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1.5rem;
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+
+    .metadata-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .metadata-label {
+      font-size: 0.75rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metadata-value {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .comparison-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comparison-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .comparison-side {
+      position: relative;
+    }
+
+    .comparison-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    .card-container {
+      width: 100%;
+      aspect-ratio: 335 / 515;
+      background: #f9fafb;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .error-message {
+      padding: 2rem;
+      background: #fee2e2;
+      color: #991b1b;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .json-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .json-viewer {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .loading-spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 3rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 1024px) {
+      .comparison-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-button">
+      ← Back to List
+    </a>
+
+    <div id="content">
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const templateId = urlParams.get('id');
+
+    if (!templateId) {
+      document.getElementById('content').innerHTML = `
+        <div class="error-message">
+          <h2>❌ No template ID specified</h2>
+          <p>Please select a template from the list.</p>
+        </div>
+      `;
+    }
+
+    async function loadTemplate() {
+      try {
+        const response = await fetch(`/public/templates/${templateId}.json`);
+        if (!response.ok) throw new Error(`Failed to load ${templateId}.json`);
+
+        const data = await response.json();
+        renderDetailPage(data);
+      } catch (error) {
+        document.getElementById('content').innerHTML = `
+          <div class="error-message">
+            <h2>❌ Failed to load template</h2>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderDetailPage(data) {
+      const elementCount = Object.keys(data.layout || {}).length - 1;
+      const hasSDUISupport = data.layout && Object.values(data.layout).some(el => el.type);
+
+      document.getElementById('content').innerHTML = `
+        <div class="header">
+          <div class="header-top">
+            <div>
+              <h1 class="template-title">${data.name || templateId}</h1>
+              <p class="template-id">${templateId}</p>
+            </div>
+            <span class="status-badge ${hasSDUISupport ? 'success' : 'error'}">
+              ${hasSDUISupport ? '✅ SDUI Supported' : '❌ No SDUI Support'}
+            </span>
+          </div>
+
+          <div class="metadata-grid">
+            <div class="metadata-item">
+              <span class="metadata-label">Version</span>
+              <span class="metadata-value">${data.version || 'N/A'}</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Category</span>
+              <span class="metadata-value">${data.category || 'wedding'}</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Base Size</span>
+              <span class="metadata-value">${data.layout?.baseSize?.width || '?'} × ${data.layout?.baseSize?.height || '?'}</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Elements</span>
+              <span class="metadata-value">${elementCount}</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Figma Node ID</span>
+              <span class="metadata-value">${data.figmaNodeId || 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="comparison-section">
+          <h2 class="section-title">🔍 SDUI Rendering Comparison</h2>
+
+          <div class="comparison-container">
+            <div class="comparison-side">
+              <div class="comparison-label">
+                🔨 Hardcoded Component
+              </div>
+              <div id="hardcoded-container" class="card-container"></div>
+            </div>
+
+            <div class="comparison-side">
+              <div class="comparison-label">
+                🤖 SDUI Dynamic Renderer
+              </div>
+              <div id="sdui-container" class="card-container"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="json-section">
+          <h2 class="section-title">📄 JSON Schema</h2>
+          <div class="json-viewer">
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          </div>
+        </div>
+      `;
+
+      // Render cards after DOM is ready
+      setTimeout(() => {
+        renderHardcodedCard(data);
+        renderSDUICard(data);
+      }, 100);
+    }
+
+    function renderHardcodedCard(data) {
+      const container = document.getElementById('hardcoded-container');
+      const weddingData = data.data.wedding;
+      const layout = data.layout;
+      const baseWidth = layout.baseSize.width;
+      const baseHeight = layout.baseSize.height;
+
+      // Template-specific bgOffset (from Figma metadata)
+      const bgOffsets = {
+        'wedding-card-001': { x: 0, y: 0 },
+        'wedding-card-002': { x: 20, y: 148 },
+        'wedding-card-003': { x: 20, y: 148 },
+        'wedding-card-004': { x: 20, y: 148 }
+      };
+      const offset = bgOffsets[data.id] || { x: 0, y: 0 };
+      const bgOffsetX = offset.x;
+      const bgOffsetY = offset.y;
+
+      const pxToPercent = (canvasPx, canvasOffset, base) =>
+        `${((canvasPx - canvasOffset) / base) * 100}%`;
+
+      container.innerHTML = `
+        <div style="
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background-color: #FFFFFF;
+        ">
+          ${weddingData.backgroundImage ? `
+            <div style="
+              position: absolute;
+              inset: 0;
+              background-image: url(/public${weddingData.backgroundImage});
+              background-size: cover;
+              background-position: center;
+              background-color: #f5f5f5;
+              z-index: 0;
+            "></div>
+          ` : `
+            <div style="
+              position: absolute;
+              inset: 0;
+              background-color: #ffffff;
+              z-index: 0;
+            "></div>
+          `}
+
+          ${Object.entries(layout).filter(([key]) => key !== 'baseSize').map(([key, element]) => {
+            if (element.type === 'background') return '';
+
+            if (element.type === 'image') {
+              // Get image source from weddingData using the key
+              let imgSrc = weddingData[key];
+
+              // Debug log
+              console.log('🔍 Rendering image:', key, 'Source:', imgSrc, 'Element:', element);
+
+              // If not found, no rendering
+              if (!imgSrc) {
+                console.warn('⚠️ No image source for:', key, 'Available keys:', Object.keys(weddingData));
+                return '';
+              }
+
+              // Check if element has custom style properties (for wedding-card-004)
+              const hasCustomStyle = element.style && typeof element.style === 'object';
+              let imgStyleOverride = '';
+
+              if (hasCustomStyle) {
+                // Use custom style properties directly (already in percentages or absolute values)
+                imgStyleOverride = 'position: absolute; ' +
+                  'width: ' + (element.style.width || '100%') + '; ' +
+                  'height: ' + (element.style.height || '100%') + '; ' +
+                  'left: ' + (element.style.left || '0') + '; ' +
+                  'top: ' + (element.style.top || '0') + '; ' +
+                  'object-fit: ' + (element.objectFit || 'cover') + ';';
+              } else {
+                imgStyleOverride = 'width: 100%; height: 100%; object-fit: ' + (element.objectFit || 'cover') + ';';
+              }
+
+              return `
+                <div style="
+                  position: absolute;
+                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
+                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
+                  height: ${pxToPercent(element.height, 0, baseHeight)};
+                  overflow: hidden;
+                  z-index: ${element.zIndex};
+                ">
+                  <img src="/public${imgSrc}" alt="${key}" style="${imgStyleOverride}" onerror="console.error('❌ Failed to load:', '/public${imgSrc}'); this.style.background='#fee2e2'; this.style.border='2px solid red';">
+                </div>
+              `;
+            }
+
+            if (element.type === 'text') {
+              const textAlign = element.align || 'center';
+              const useCenterAlign = element.centerAlign === true;
+              const transform = useCenterAlign ? 'translateX(-50%)' : 'none';
+
+              return `
+                <p style="
+                  position: absolute;
+                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
+                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
+                  transform: ${transform};
+                  font-family: ${element.fontFamily || "'NanumMyeongjo', serif"};
+                  font-weight: ${element.fontWeight || 400};
+                  font-size: ${element.fontSize || 16}px;
+                  color: ${element.color || '#333333'};
+                  letter-spacing: ${element.letterSpacing || 0}px;
+                  text-align: ${textAlign};
+                  text-transform: ${element.textTransform || 'none'};
+                  line-height: ${element.lineHeight || 1.5};
+                  margin: 0;
+                  white-space: nowrap;
+                  z-index: ${element.zIndex};
+                ">${weddingData[key] || key}</p>
+              `;
+            }
+
+            return '';
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderSDUICard(data) {
+      const container = document.getElementById('sdui-container');
+      const weddingData = data.data.wedding;
+      const layout = data.layout;
+      const baseWidth = layout.baseSize.width;
+      const baseHeight = layout.baseSize.height;
+
+      // Template-specific bgOffset (from Figma metadata)
+      const bgOffsets = {
+        'wedding-card-001': { x: 0, y: 0 },
+        'wedding-card-002': { x: 20, y: 148 },
+        'wedding-card-003': { x: 20, y: 148 },
+        'wedding-card-004': { x: 20, y: 148 }
+      };
+      const offset = bgOffsets[data.id] || { x: 0, y: 0 };
+      const bgOffsetX = offset.x;
+      const bgOffsetY = offset.y;
+
+      const pxToPercent = (canvasPx, canvasOffset, base) =>
+        `${((canvasPx - canvasOffset) / base) * 100}%`;
+
+      container.innerHTML = `
+        <div style="
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background-color: #FFFFFF;
+        ">
+          ${Object.entries(layout).filter(([key]) => key !== 'baseSize').map(([key, element]) => {
+            if (element.type === 'background') {
+              return `
+                <div style="
+                  position: absolute;
+                  inset: 0;
+                  background-image: url(/public${weddingData.backgroundImage || ''});
+                  background-size: ${element.backgroundSize || 'cover'};
+                  background-position: ${element.backgroundPosition || 'center'};
+                  z-index: ${element.zIndex};
+                "></div>
+              `;
+            }
+
+            if (element.type === 'image') {
+              // Get image source from weddingData using the key
+              let imgSrc = weddingData[key];
+
+              // Debug log for SDUI
+              console.log('🤖 SDUI Rendering image:', key, 'Source:', imgSrc, 'Element:', element);
+
+              // If not found, no rendering
+              if (!imgSrc) {
+                console.warn('⚠️ SDUI: No image source for:', key, 'Available keys:', Object.keys(weddingData));
+                return '';
+              }
+
+              // Check if element has custom style properties (for wedding-card-004)
+              const hasCustomStyle = element.style && typeof element.style === 'object';
+              let imgStyleOverride = '';
+
+              if (hasCustomStyle) {
+                // Use custom style properties directly (already in percentages or absolute values)
+                imgStyleOverride = 'position: absolute; ' +
+                  'width: ' + (element.style.width || '100%') + '; ' +
+                  'height: ' + (element.style.height || '100%') + '; ' +
+                  'left: ' + (element.style.left || '0') + '; ' +
+                  'top: ' + (element.style.top || '0') + '; ' +
+                  'object-fit: ' + (element.objectFit || 'cover') + ';';
+              } else {
+                imgStyleOverride = 'width: 100%; height: 100%; object-fit: ' + (element.objectFit || 'cover') + ';';
+              }
+
+              return `
+                <div style="
+                  position: absolute;
+                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
+                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
+                  height: ${pxToPercent(element.height, 0, baseHeight)};
+                  overflow: hidden;
+                  z-index: ${element.zIndex};
+                ">
+                  <img src="/public${imgSrc}" alt="${key}" style="${imgStyleOverride}" onerror="console.error('❌ Failed to load:', '/public${imgSrc}'); this.style.background='#fee2e2'; this.style.border='2px solid red';">
+                </div>
+              `;
+            }
+
+            if (element.type === 'text') {
+              const textAlign = element.align || 'center';
+              const useCenterAlign = element.centerAlign === true;
+              const transform = useCenterAlign ? 'translateX(-50%)' : 'none';
+
+              return `
+                <p style="
+                  position: absolute;
+                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
+                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
+                  transform: ${transform};
+                  font-family: ${element.fontFamily || "'NanumMyeongjo', serif"};
+                  font-weight: ${element.fontWeight || 400};
+                  font-size: ${element.fontSize || 16}px;
+                  color: ${element.color || '#333333'};
+                  letter-spacing: ${element.letterSpacing || 0}px;
+                  text-align: ${textAlign};
+                  text-transform: ${element.textTransform || 'none'};
+                  line-height: ${element.lineHeight || 1.5};
+                  margin: 0;
+                  white-space: nowrap;
+                  z-index: ${element.zIndex};
+                ">${weddingData[key] || key}</p>
+              `;
+            }
+
+            return '';
+          }).join('')}
+        </div>
+      `;
+    }
+
+    if (templateId) {
+      loadTemplate();
+    }
+  </script>
+</body>
+</html>

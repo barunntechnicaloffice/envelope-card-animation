@@ -1,9 +1,9 @@
 {
   "id": "wedding-card-002",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "name": "웨딩 청첩장 템플릿 002",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-002/card-bg.png",
+  "thumbnail": "/assets/wedding-card-002/decoration.svg",
   "figmaNodeId": "13:263",
   "common": {
     "envelope": {
@@ -13,9 +13,13 @@
     "background": "/assets/common/bg.png"
   },
   "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
     "dday": {
       "type": "text",
-      "x": 315,
+      "x": 33,
       "y": 164,
       "width": 310,
       "fontSize": 20,
@@ -27,9 +31,19 @@
       "zIndex": 2,
       "editable": false
     },
+    "photo": {
+      "type": "image",
+      "x": 116,
+      "y": 226,
+      "width": 144,
+      "height": 144,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
     "dateMonth": {
       "type": "text",
-      "x": 20,
+      "x": 54,
       "y": 241,
       "width": 40,
       "fontSize": 30,
@@ -42,17 +56,18 @@
       "editable": false
     },
     "dateDivider": {
-      "type": "vector",
+      "type": "image",
       "x": 67,
       "y": 294.724609375,
       "width": 14.794921875,
       "height": 1.904296875,
       "zIndex": 2,
-      "editable": false
+      "editable": false,
+      "objectFit": "contain"
     },
     "dateDay": {
       "type": "text",
-      "x": 20,
+      "x": 54,
       "y": 312,
       "width": 40,
       "fontSize": 30,
@@ -64,27 +79,19 @@
       "zIndex": 2,
       "editable": false
     },
-    "photo": {
-      "type": "image",
-      "x": 95.5,
-      "y": 226,
-      "width": 144,
-      "height": 144,
-      "zIndex": 1,
-      "editable": true
-    },
     "decoration": {
-      "type": "vector",
-      "x": 139.6845,
-      "y": 389.9,
-      "width": 55.631,
-      "height": 14.1,
+      "type": "image",
+      "x": 159.93157958984375,
+      "y": 389.8999938964844,
+      "width": 55.6312141418457,
+      "height": 14.10001277923584,
       "zIndex": 2,
-      "editable": false
+      "editable": false,
+      "objectFit": "contain"
     },
     "dateEnglish": {
       "type": "text",
-      "x": 11,
+      "x": 31,
       "y": 453,
       "width": 313,
       "fontSize": 30,
@@ -93,6 +100,21 @@
       "color": "#333333",
       "letterSpacing": -0.474,
       "align": "center",
+      "zIndex": 2,
+      "editable": false
+    },
+    "groomLabel": {
+      "type": "text",
+      "x": 87,
+      "y": 511,
+      "width": 42,
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.158,
+      "align": "right",
+      "textTransform": "uppercase",
       "zIndex": 2,
       "editable": false
     },
@@ -110,23 +132,24 @@
       "zIndex": 2,
       "editable": true
     },
-    "groomLabel": {
+    "brideLabel": {
       "type": "text",
-      "x": 20,
+      "x": 259,
       "y": 511,
+      "width": 30,
       "fontSize": 10,
       "fontFamily": "'NanumMyeongjo', serif",
       "fontWeight": 700,
       "color": "#333333",
       "letterSpacing": -0.158,
-      "align": "right",
+      "align": "left",
       "textTransform": "uppercase",
       "zIndex": 2,
       "editable": false
     },
     "bride": {
       "type": "text",
-      "x": 199,
+      "x": 243,
       "y": 530,
       "width": 112,
       "fontSize": 18,
@@ -138,23 +161,9 @@
       "zIndex": 2,
       "editable": true
     },
-    "brideLabel": {
-      "type": "text",
-      "x": 199,
-      "y": 511,
-      "fontSize": 10,
-      "fontFamily": "'NanumMyeongjo', serif",
-      "fontWeight": 700,
-      "color": "#333333",
-      "letterSpacing": -0.158,
-      "align": "left",
-      "textTransform": "uppercase",
-      "zIndex": 2,
-      "editable": false
-    },
     "dateKorean": {
       "type": "text",
-      "x": 12,
+      "x": 32,
       "y": 582,
       "width": 311,
       "fontSize": 12,
@@ -167,7 +176,7 @@
     },
     "venue": {
       "type": "text",
-      "x": 12,
+      "x": 32,
       "y": 602,
       "width": 311,
       "fontSize": 12,
@@ -187,7 +196,14 @@
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/common/photo.png",
       "decoration": "/assets/wedding-card-002/decoration.svg",
-      "dateDivider": "/assets/wedding-card-002/date-divider.svg"
+      "dateDivider": "/assets/wedding-card-002/date-divider.svg",
+      "dday": "D-100",
+      "dateMonth": "10",
+      "dateDay": "12",
+      "dateEnglish": "OCTOBER 12, 2038",
+      "dateKorean": "2038년 10월 12일 토요일 오후 2시",
+      "groomLabel": "GROOM",
+      "brideLabel": "BRIDE"
     }
   },
   "components": [

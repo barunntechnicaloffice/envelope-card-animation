@@ -50,10 +50,35 @@ Figma 디자인을 Server-Driven UI JSON 템플릿으로 변환하는 **템플�
 
 ## 🚀 Getting Started
 
+### ⚡ Quick Start (Validator)
+
+**가장 빠르게 프로젝트를 이해하는 방법:**
+
+```bash
+# 1. 프로젝트 디렉토리로 이동
+cd envelope-card-animation
+
+# 2. HTTP 서버 시작
+python3 -m http.server 8080
+
+# 3. 브라우저에서 Validator 열기
+open http://localhost:8080/public/validator/index.html
+```
+
+**Validator에서 확인할 수 있는 것:**
+- ✅ 모든 템플릿 리스트 (wedding-card-001 ~ 004)
+- ✅ Hardcoded vs SDUI 비교
+- ✅ JSON 스키마가 디자인을 완벽하게 재현하는지 검증
+
+**➡️ 다음 단계: [TEMPLATE_GUIDE.md](./TEMPLATE_GUIDE.md) 읽기**
+
+---
+
 ### Prerequisites
 
 - Node.js 18+
 - npm or yarn
+- Python 3 (Validator용)
 
 ### Installation
 
@@ -71,10 +96,19 @@ npm install
 ### Development
 
 ```bash
-# Start development server
+# Start development server (Next.js)
 npm run dev
 
 # Open http://localhost:3000
+```
+
+### Validator
+
+```bash
+# Start HTTP server for Validator
+python3 -m http.server 8080
+
+# Open http://localhost:8080/public/validator/index.html
 ```
 
 ### Build
@@ -216,49 +250,77 @@ This project is private and proprietary.
 
 ## 📚 Documentation
 
-- **[CLAUDE.md](./CLAUDE.md)**: 📖 **새로운 템플릿 개발 가이드** (Claude AI 사용 시 필수 참고)
-- **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)**: 🎨 **Figma 디자인 작성 가이드** (디자이너용)
-- **[API_SPEC.md](./API_SPEC.md)**: 백엔드 API 명세서
-- **[public/templates/](./public/templates/)**: Server-Driven UI JSON 템플릿 예시
+### 🎯 시작하기 (필독!)
+
+**1. [TEMPLATE_GUIDE.md](./TEMPLATE_GUIDE.md)** ⭐ **가장 먼저 읽어야 할 문서**
+   - 프로젝트 소개 및 핵심 개념 (SDUI, Validator, 좌표 시스템)
+   - 빠른 시작 (5분 안에 Validator 실행)
+   - Figma → JSON → SDUI 검증 전체 워크플로우
+   - Step-by-step 템플릿 개발 가이드
+   - 트러블슈팅 및 체크리스트
+
+**2. [DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** 🎨 **Figma 디자인 가이드** (디자이너용)
+   - ⚠️ 중요: 프레임 구조 제약사항 (중첩 그룹 금지!)
+   - 레이어 네이밍 규칙 (JSON 키값과 일치)
+   - [locked] / [editable] 태그 시스템
+   - 필수 레이어 이름 (groom, bride, date, venue, photo)
+
+**3. [CLAUDE.md](./CLAUDE.md)** 📖 **상세 개발 가이드** (개발자용)
+   - wedding-card-001 vs wedding-card-002 방법 비교
+   - React 컴포넌트 개발 방법 (타입 시스템 vs 수동 계산)
+   - 좌표 계산 및 레이아웃 유틸리티
+   - Renderer 등록 방법
+
+**4. [API_SPEC.md](./API_SPEC.md)** 🔌 **API 명세서**
+   - 백엔드 API 구조
+   - Server-Driven UI JSON 스키마
+   - JSONPath 데이터 바인딩
+
+**5. [public/templates/](./public/templates/)** 📂 **템플릿 예시**
+   - wedding-card-001.json ~ wedding-card-004.json
+   - JSON 스키마 v3.0.0 예시
 
 ### 🤖 For Claude AI / Next Development Session
 
-**새로운 개발자나 Claude AI가 이 프로젝트를 이어서 작업할 때 반드시 읽어야 할 문서:**
+**새로운 개발자나 Claude AI가 이 프로젝트를 이어서 작업할 때:**
 
-1. **[CLAUDE.md](./CLAUDE.md)** - 새로운 템플릿 개발 완벽 가이드
-   - ✅ wedding-card-001 vs wedding-card-002 방법 비교
-   - ✅ 단계별 템플릿 개발 프로세스
-   - ✅ Figma MCP 좌표 계산 방법
-   - ✅ BG 오프셋 처리 방법
-   - ✅ 체크리스트 및 트러블슈팅
-
-2. **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** - Figma 디자인 규칙
-   - ⚠️ 중요: 프레임 구조 제약사항 (중첩 그룹 금지!)
-   - ✅ 레이어 네이밍 규칙 (JSON 키값과 일치)
-   - ✅ [locked] / [editable] 태그 시스템
-   - ✅ 필수 레이어 이름 (groom, bride, date, venue, photo)
-
-3. **Key Files to Reference**:
-   - `types/card-layout.ts` - Layout type definitions
-   - `lib/layout-utils.ts` - Percentage conversion utilities
-   - `components/cards/WeddingCard.tsx` - Template 001 (type system approach)
-   - `components/cards/WeddingCard002.tsx` - Template 002 (manual calculation approach)
-   - `lib/server-driven-ui/renderer.tsx` - Component renderer registry
-
-**Quick Start for New Templates:**
+**Step 1: Validator 실행해보기 (5분)**
 ```bash
-# 1. Read CLAUDE.md to choose development approach
-# 2. Use Figma MCP to extract design
-# 3. Follow the step-by-step process in CLAUDE.md
-# 4. Test with: npm run dev
-# 5. Verify against Figma design
+python3 -m http.server 8080
+open http://localhost:8080/public/validator/index.html
+```
+- 템플릿 리스트 확인
+- Hardcoded vs SDUI 비교 이해
+- 프로젝트 목적 파악
+
+**Step 2: 문서 읽기 (15분)**
+1. **[TEMPLATE_GUIDE.md](./TEMPLATE_GUIDE.md)** - 전체 워크플로우 이해
+2. **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** - Figma 디자인 규칙
+3. **[CLAUDE.md](./CLAUDE.md)** - 상세 개발 가이드
+
+**Step 3: 새 템플릿 개발**
+```bash
+# 1. Figma 디자인 준비 (335×515px, 평평한 구조)
+# 2. Figma MCP로 메타데이터 추출
+# 3. JSON 스키마 작성 (public/templates/wedding-card-XXX.json)
+# 4. Validator로 검증 (detail.html)
+# 5. 통과하면 완료!
 ```
 
+**Key Files to Reference:**
+- `public/validator/detail.html` - SDUI 검증 시스템
+- `public/templates/*.json` - JSON 스키마 v3.0.0 예시
+- `types/card-layout.ts` - Layout type definitions
+- `lib/layout-utils.ts` - 좌표 변환 유틸리티
+- `components/cards/WeddingCard.tsx` - Template 001 (참고용)
+
 **Common Pitfalls to Avoid:**
-- ❌ DON'T use nested groups in Figma (causes coordinate calculation issues)
-- ❌ DON'T forget to calculate BG offset (bgOffsetX, bgOffsetY)
+- ❌ DON'T use nested groups in Figma (좌표 계산 문제)
+- ❌ DON'T forget bgOffset (BG 좌표 확인 필수)
+- ❌ DON'T skip Validator (검증 필수!)
 - ✅ DO flatten all layers directly under template Frame
-- ✅ DO use Figma metadata to verify coordinates
+- ✅ DO use Figma absolute coordinates in JSON
+- ✅ DO test in Validator before deploying
 
 ## 🔮 Roadmap
 

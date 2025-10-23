@@ -20,8 +20,109 @@ export type ComponentType =
 
 export type LayoutType = 'flex' | 'grid' | 'absolute' | 'relative';
 
+/**
+ * Layout Element Type
+ * JSON 스키마의 layout 객체에서 사용되는 요소 타입
+ */
+export type LayoutElementType =
+  | 'text'       // 텍스트 요소 (이름, 날짜, 장소 등)
+  | 'image'      // 이미지 요소 (사진, 배경, 장식 이미지 등)
+  | 'vector'     // SVG 벡터 요소 (아이콘, 구분선 등)
+  | 'container'  // 컨테이너 요소 (여러 요소를 감싸는 그룹)
+  | 'background'; // 배경 요소 (전체 배경)
+
 export type AlignItems = 'start' | 'center' | 'end' | 'stretch';
 export type JustifyContent = 'start' | 'center' | 'end' | 'between' | 'around';
+
+// ============================================================================
+// 1.5. Layout Element (for JSON Schema)
+// ============================================================================
+
+/**
+ * 기본 Layout 요소 속성
+ */
+export interface BaseLayoutElement {
+  type: LayoutElementType;
+  x: number;
+  y: number;
+  width?: number | 'auto';
+  height?: number;
+  zIndex: number;
+  editable: boolean;
+}
+
+/**
+ * 텍스트 Layout 요소
+ */
+export interface TextLayoutElement extends BaseLayoutElement {
+  type: 'text';
+  fontSize?: number;
+  fontFamily?: string;
+  fontWeight?: number | string;
+  color?: string;
+  letterSpacing?: number;
+  lineHeight?: number;
+  align?: 'left' | 'center' | 'right';
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize';
+}
+
+/**
+ * 이미지 Layout 요소
+ */
+export interface ImageLayoutElement extends BaseLayoutElement {
+  type: 'image';
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none';
+}
+
+/**
+ * 벡터 Layout 요소
+ */
+export interface VectorLayoutElement extends BaseLayoutElement {
+  type: 'vector';
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: number;
+}
+
+/**
+ * 컨테이너 Layout 요소
+ */
+export interface ContainerLayoutElement extends BaseLayoutElement {
+  type: 'container';
+  overflow?: 'visible' | 'hidden' | 'scroll' | 'auto';
+}
+
+/**
+ * 배경 Layout 요소
+ */
+export interface BackgroundLayoutElement extends BaseLayoutElement {
+  type: 'background';
+  backgroundColor?: string;
+  backgroundImage?: string;
+  backgroundSize?: 'cover' | 'contain' | 'auto';
+  backgroundPosition?: string;
+}
+
+/**
+ * Layout 요소 Union Type
+ */
+export type LayoutElement =
+  | TextLayoutElement
+  | ImageLayoutElement
+  | VectorLayoutElement
+  | ContainerLayoutElement
+  | BackgroundLayoutElement;
+
+/**
+ * Layout 스키마 구조
+ */
+export interface LayoutSchema {
+  baseSize?: {
+    width: number;
+    height: number;
+  };
+  [elementName: string]: LayoutElement | { width: number; height: number } | undefined;
+}
 
 // ============================================================================
 // 2. Style System

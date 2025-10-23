@@ -22,6 +22,18 @@ const TEMPLATES: Template[] = [
     name: '웨딩 청첩장 템플릿 002',
     thumbnail: '/assets/wedding-card-002/card-bg.png',
     category: 'wedding'
+  },
+  {
+    id: 'wedding-card-003',
+    name: '웨딩 청첩장 템플릿 003',
+    thumbnail: '/assets/wedding-card-003/card-bg.png',
+    category: 'wedding'
+  },
+  {
+    id: 'wedding-card-004',
+    name: '웨딩 청첩장 템플릿 004',
+    thumbnail: '/assets/wedding-card-004/photo.png',
+    category: 'wedding'
   }
 ]
 

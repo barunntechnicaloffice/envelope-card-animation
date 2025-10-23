@@ -1,6 +1,6 @@
 {
   "id": "wedding-card-003",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "name": "웨딩 청첩장 템플릿 003",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-003/card-bg.png",
@@ -13,6 +13,21 @@
     "background": "/assets/common/bg.png"
   },
   "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false,
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
     "title": {
       "type": "text",
       "x": 32,
@@ -105,8 +120,9 @@
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/common/photo.png",
-      "cardBackground": "/assets/wedding-card-003/card-bg.png",
-      "decoration": "/assets/wedding-card-003/decoration.png"
+      "backgroundImage": "/assets/wedding-card-003/card-bg.png",
+      "decoration": "/assets/wedding-card-003/decoration.png",
+      "title": "WEDDING INVITATION"
     }
   },
   "components": [

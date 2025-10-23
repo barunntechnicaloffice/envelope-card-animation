@@ -6,11 +6,8 @@ import styles from './EnvelopeCard.module.css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCreative } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
-import { WeddingCard } from './cards/WeddingCard'
-import { WeddingCard002 } from './cards/WeddingCard002'
-import { WeddingCard003 } from './cards/WeddingCard003'
-import { WeddingCard004 } from './cards/WeddingCard004'
-import { MOCK_WEDDING_DATA, type WeddingData } from '@/types/wedding'
+import { renderComponent } from '@/lib/server-driven-ui/renderer'
+import type { Component, PageSchema } from '@/types/server-driven-ui/schema'
 
 // Swiper CSS
 import 'swiper/css'
@@ -111,8 +108,10 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
   const [swiperPosition, setSwiperPosition] = useState({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' })
   const [swiperOpacity, setSwiperOpacity] = useState(0)
 
-  // Wedding data - 템플릿 데이터 또는 MOCK 데이터 사용
-  const weddingData: WeddingData = templateData?.wedding || MOCK_WEDDING_DATA
+  // ✨ SDUI: templateData가 전체 JSON 스키마라고 가정
+  // templateData.components 배열의 첫 번째 컴포넌트를 렌더링
+  const templateComponent: Component | undefined = templateData?.components?.[0]
+  const fullData = templateData || {}
 
   // 초기 Swiper 스타일 설정
   useEffect(() => {
@@ -206,12 +205,19 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
     window.location.reload()
   }
 
-  // 템플릿 ID에 따라 카드 컴포넌트 선택
-  const CardComponent =
-    templateId === 'wedding-card-004' ? WeddingCard004 :
-    templateId === 'wedding-card-003' ? WeddingCard003 :
-    templateId === 'wedding-card-002' ? WeddingCard002 :
-    WeddingCard
+  // ✨ SDUI: renderComponent를 사용하여 동적 렌더링
+  // CardComponent 함수형태로 wrapping
+  const CardComponent = ({ className, style }: { className?: string; style?: React.CSSProperties }) => {
+    if (!templateComponent) {
+      return <div style={{...style, backgroundColor: '#fff', padding: '20px'}}>템플릿 로딩 중...</div>
+    }
+
+    return (
+      <div className={className} style={style}>
+        {renderComponent(templateComponent, fullData, 'envelope-card')}
+      </div>
+    )
+  }
 
   return (
     <>
@@ -260,9 +266,8 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
             {ALL_CARDS.map((card, index) => (
               <SwiperSlide key={card.id}>
                 {index === 0 ? (
-                  /* 첫 번째 카드 - 템플릿에 따라 동적 컴포넌트 사용 */
+                  /* 첫 번째 카드 - SDUI로 동적 렌더링 */
                   <CardComponent
-                    data={weddingData}
                     className={styles.envelopeCardInner}
                     style={{
                       width: '100%',
@@ -508,10 +513,9 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                     cursor: 'default'
                   }}
                 >
-                  {/* 봉투 카드 - 템플릿에 따라 동적 컴포넌트 사용 (Swiper와 동일한 컴포넌트!) */}
+                  {/* 봉투 카드 - SDUI로 동적 렌더링 (Swiper와 동일한 컴포넌트!) */}
                   <div id="envelope-card-inner" style={{ width: '100%', height: '100%' }}>
                     <CardComponent
-                      data={weddingData}
                       className={styles.envelopeCardInner}
                       style={{ width: '100%', height: '100%' }}
                     />

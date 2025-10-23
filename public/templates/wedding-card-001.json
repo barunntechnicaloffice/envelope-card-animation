@@ -1,6 +1,6 @@
 {
   "id": "wedding-card-001",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "name": "웨딩 청첩장 템플릿 001",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-001/card-bg.png",
@@ -13,53 +13,96 @@
     "background": "/assets/common/bg.png"
   },
   "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false,
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
     "photo": {
+      "type": "image",
       "x": 52,
       "y": 106,
       "width": 233.076,
       "height": 257.502,
-      "zIndex": 1
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "decoration": {
+      "type": "image",
+      "x": 146.66,
+      "y": 384,
+      "width": 41.675,
+      "height": 39.546,
+      "zIndex": 2,
+      "editable": false,
+      "objectFit": "contain"
     },
     "groom": {
+      "type": "text",
       "x": 24,
       "y": 395,
       "width": 111,
       "fontSize": 20,
       "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
       "color": "#333333",
       "letterSpacing": -0.316,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
     "bride": {
+      "type": "text",
       "x": 193,
       "y": 395,
       "width": 117,
       "fontSize": 20,
       "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
       "color": "#333333",
       "letterSpacing": -0.316,
       "align": "center",
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
-    "dateVenue": {
-      "x": 0,
+    "date": {
+      "type": "text",
+      "x": 33.5,
       "y": 437.49,
-      "width": 335,
+      "width": 268,
       "fontSize": 12,
       "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
       "color": "#333333",
       "lineHeight": 1.67,
       "align": "center",
-      "paddingX": 33.5,
-      "zIndex": 2
+      "zIndex": 2,
+      "editable": true
     },
-    "decoration": {
-      "x": 135.22,
-      "y": 384,
-      "width": 41.675,
-      "height": 39.546,
-      "zIndex": 2
+    "venue": {
+      "type": "text",
+      "x": 33.5,
+      "y": 457.49,
+      "width": 268,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "lineHeight": 1.67,
+      "align": "center",
+      "zIndex": 2,
+      "editable": true
     }
   },
   "data": {
