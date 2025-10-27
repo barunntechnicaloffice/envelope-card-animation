@@ -14,6 +14,7 @@ import type {
   WeddingCardTemplate002Component,
   WeddingCardTemplate003Component,
   WeddingCardTemplate004Component,
+  WeddingCardTemplate005Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -254,6 +255,9 @@ export function renderComponent(
 
     case 'wedding-card-template-004':
       return renderWeddingCardTemplate004(component as WeddingCardTemplate004Component, data, style, className, key)
+
+    case 'wedding-card-template-005':
+      return renderWeddingCardTemplate005(component as WeddingCardTemplate005Component, data, style, className, key)
 
     default:
       console.warn(`Unknown component type: ${(component as any).type}`)
@@ -574,6 +578,46 @@ function renderWeddingCardTemplate004(
 
   return (
     <WeddingCard004
+      key={key}
+      data={weddingData}
+      style={style}
+      className={className}
+    />
+  )
+}
+
+function renderWeddingCardTemplate005(
+  component: WeddingCardTemplate005Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  // WeddingCard005 컴포넌트 import
+  const { WeddingCard005 } = require('@/components/cards/WeddingCard005')
+
+  // JSONPath로 데이터 추출
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+
+    backgroundImage: component.data.backgroundImage
+      ? resolveJSONPath(data, component.data.backgroundImage)
+      : '/assets/wedding-card-005/card-bg.png',
+
+    decorationFrame: component.data.decorationFrame
+      ? resolveJSONPath(data, component.data.decorationFrame)
+      : undefined,
+
+    decoration: component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : undefined
+  }
+
+  return (
+    <WeddingCard005
       key={key}
       data={weddingData}
       style={style}
