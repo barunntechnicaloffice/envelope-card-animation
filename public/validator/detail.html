@@ -341,7 +341,8 @@
         'wedding-card-001': { x: 0, y: 0 },
         'wedding-card-002': { x: 20, y: 148 },
         'wedding-card-003': { x: 20, y: 148 },
-        'wedding-card-004': { x: 20, y: 148 }
+        'wedding-card-004': { x: 20, y: 148 },
+        'wedding-card-005': { x: 21, y: 148.5 }
       };
       const offset = bgOffsets[data.id] || { x: 0, y: 0 };
       const bgOffsetX = offset.x;
@@ -377,7 +378,30 @@
           `}
 
           ${Object.entries(layout).filter(([key]) => key !== 'baseSize').map(([key, element]) => {
-            if (element.type === 'background') return '';
+            if (element.type === 'background') {
+              // Render cardBackground image if available
+              const bgSrc = weddingData.cardBackground;
+              if (bgSrc) {
+                return `
+                  <div style="
+                    position: absolute;
+                    inset: 0;
+                    overflow: hidden;
+                    z-index: ${element.zIndex || 0};
+                  ">
+                    <img src="/public${bgSrc}" alt="background" style="
+                      position: absolute;
+                      left: -1.54%;
+                      top: 0;
+                      width: 102.49%;
+                      height: 100%;
+                      object-fit: cover;
+                    " onerror="console.error('❌ Failed to load background:', '/public${bgSrc}');">
+                  </div>
+                `;
+              }
+              return '';
+            }
 
             if (element.type === 'image') {
               // Get image source from weddingData using the key
@@ -468,7 +492,8 @@
         'wedding-card-001': { x: 0, y: 0 },
         'wedding-card-002': { x: 20, y: 148 },
         'wedding-card-003': { x: 20, y: 148 },
-        'wedding-card-004': { x: 20, y: 148 }
+        'wedding-card-004': { x: 20, y: 148 },
+        'wedding-card-005': { x: 21, y: 148.5 }
       };
       const offset = bgOffsets[data.id] || { x: 0, y: 0 };
       const bgOffsetX = offset.x;
@@ -486,15 +511,26 @@
         ">
           ${Object.entries(layout).filter(([key]) => key !== 'baseSize').map(([key, element]) => {
             if (element.type === 'background') {
+              // Support both backgroundImage (old) and cardBackground (new)
+              const bgSrc = weddingData.cardBackground || weddingData.backgroundImage || '';
+              if (!bgSrc) return '';
+
               return `
                 <div style="
                   position: absolute;
                   inset: 0;
-                  background-image: url(/public${weddingData.backgroundImage || ''});
-                  background-size: ${element.backgroundSize || 'cover'};
-                  background-position: ${element.backgroundPosition || 'center'};
-                  z-index: ${element.zIndex};
-                "></div>
+                  overflow: hidden;
+                  z-index: ${element.zIndex || 0};
+                ">
+                  <img src="/public${bgSrc}" alt="background" style="
+                    position: absolute;
+                    left: -1.54%;
+                    top: 0;
+                    width: 102.49%;
+                    height: 100%;
+                    object-fit: cover;
+                  " onerror="console.error('❌ SDUI: Failed to load background:', '/public${bgSrc}');">
+                </div>
               `;
             }
 
