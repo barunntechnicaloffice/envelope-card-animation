@@ -3,12 +3,121 @@
 이 프로젝트의 새로운 템플릿 개발을 위한 완벽 가이드입니다.
 
 ## 📋 목차
+- [⚠️ 필수 주의사항](#️-필수-주의사항)
+  - [좌표 시스템 변환 필수 (bgOffset)](#-좌표-시스템-변환-필수-bgoffset)
+  - [SDUI 아키텍처 필수 사용](#️-sdui-아키텍처-필수-사용)
 - [템플릿 구조 개요](#템플릿-구조-개요)
 - [방법 1: wedding-card-001 기반 (타입 시스템)](#방법-1-wedding-card-001-기반-타입-시스템)
 - [방법 2: wedding-card-002 기반 (수동 계산)](#방법-2-wedding-card-002-기반-수동-계산)
 - [어떤 방법을 선택할까?](#어떤-방법을-선택할까)
 - [단계별 템플릿 개발 프로세스](#단계별-템플릿-개발-프로세스)
 - [체크리스트](#체크리스트)
+
+---
+
+## ⚠️ 필수 주의사항
+
+### 🚨 좌표 시스템 변환 필수 (bgOffset)
+
+**모든 Figma 좌표는 반드시 BG(배경) 기준 상대 좌표로 변환해야 합니다!**
+
+#### 잘못된 예시: wedding-card-005 초기 버전
+팀원이 작성한 wedding-card-005의 JSON은 Figma 캔버스 절대 좌표를 그대로 사용하여 모든 요소가 잘못된 위치에 렌더링되었습니다.
+
+```json
+// ❌ 잘못된 예시 - Figma 캔버스 절대 좌표
+{
+  "background": { "x": 21, "y": 148.5 },
+  "groom": { "x": 188.5, "y": 336.9375 },
+  "bride": { "x": 188.5, "y": 431.0625 }
+}
+```
+
+#### 올바른 예시: BG 오프셋 빼기
+```json
+// ✅ 올바른 예시 - BG 기준 상대 좌표 (bgOffsetX=21, bgOffsetY=148.5를 뺀 값)
+{
+  "background": { "x": 0, "y": 0 },
+  "groom": { "x": 167.5, "y": 188.4375 },     // 188.5-21, 336.9375-148.5
+  "bride": { "x": 167.5, "y": 282.5625 }      // 188.5-21, 431.0625-148.5
+}
+```
+
+#### 변환 공식
+```typescript
+// 1. Figma 메타데이터에서 BG 좌표 확인
+<rounded-rectangle id="2:2" name="BG" x="21" y="148.5" />
+
+// 2. bgOffset 값 설정
+const bgOffsetX = 21
+const bgOffsetY = 148.5
+
+// 3. 모든 요소의 좌표에서 bgOffset 빼기
+JSON에서 모든 x 좌표 → x - bgOffsetX
+JSON에서 모든 y 좌표 → y - bgOffsetY
+```
+
+**⚠️ 이 단계를 빠뜨리면 모든 요소가 엉뚱한 위치에 표시됩니다!**
+
+---
+
+### 🏗️ SDUI 아키텍처 필수 사용
+
+**2025년 10월 27일부터 모든 새 템플릿은 SDUI 패턴을 사용해야 합니다.**
+
+#### ❌ 더 이상 사용 금지: Hardcoded 방식
+```typescript
+// ❌ Deprecated - 하드코딩된 pxToPercent 방식
+const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
+  `${((canvasPx - canvasOffset) / base) * 100}%`
+
+<p style={{
+  left: pxToPercent(188.5, bgOffsetX, baseWidth),
+  top: pxToPercent(336.9375, bgOffsetY, baseHeight)
+}}>
+  {data.groom}
+</p>
+```
+
+#### ✅ 필수 사용: SDUI 방식
+```typescript
+// ✅ Required - renderLayoutElement 사용
+import { renderLayoutElement } from '@/lib/layout-utils'
+
+export function WeddingCardXXX({ data, layout, className, style }) {
+  if (!layout) {
+    return <div>Layout이 필요합니다</div>
+  }
+
+  const { baseSize } = layout
+
+  return (
+    <div>
+      {/* JSON layout으로 동적 렌더링 */}
+      {layout.groom && (
+        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
+          {data.groom}
+        </p>
+      )}
+    </div>
+  )
+}
+```
+
+#### SDUI 패턴 필수 요소
+1. **`layout` prop 받기**: 컴포넌트는 반드시 `layout` prop을 받아야 함
+2. **`renderLayoutElement` 사용**: 모든 요소는 이 함수로 스타일 생성
+3. **JSON 기반 렌더링**: 하드코딩된 좌표/스타일 사용 금지
+4. **동적 요소 렌더링**: `layout.elementName &&` 조건부 렌더링
+
+#### 왜 SDUI를 사용해야 하는가?
+- ✅ **유지보수성**: JSON만 수정하면 레이아웃 변경 가능
+- ✅ **일관성**: 모든 템플릿이 동일한 렌더링 로직 사용
+- ✅ **확장성**: 새로운 템플릿 추가 시 빠른 개발
+- ✅ **타입 안정성**: TypeScript로 완벽한 타입 체크
+- ✅ **Server-Driven**: 서버에서 JSON만 내려주면 클라이언트가 자동 렌더링
+
+**⚠️ Hardcoded 방식으로 PR을 제출하면 승인되지 않습니다!**
 
 ---
 
@@ -510,17 +619,29 @@ Figma에서 `auto` 태그가 없더라도, **모든 텍스트 요소는 기본�
 
 ## 어떤 방법을 선택할까?
 
-### 방법 1 (wedding-card-001) 선택 시점:
+### ⚠️ 2025년 10월 27일부터: SDUI 필수 사용
+
+**모든 새 템플릿은 방법 1 (SDUI 패턴)을 사용해야 합니다.**
+
+### ✅ 방법 1 (wedding-card-001 SDUI) - **필수 사용**
+- ✅ **모든 새 템플릿에 필수** (2025-10-27부터)
 - ✅ 템플릿이 복잡할 때 (10개 이상의 요소)
 - ✅ 여러 변형이 필요할 때 (레이아웃 재사용)
 - ✅ 타입 안정성이 중요할 때
 - ✅ 장기적으로 유지보수할 템플릿
+- ✅ Server-Driven UI 아키텍처 준수
 
-### 방법 2 (wedding-card-002) 선택 시점:
-- ✅ 템플릿이 간단할 때 (5~10개 요소)
-- ✅ 빠른 프로토타입이 필요할 때
-- ✅ 일회성 템플릿
-- ✅ Figma 좌표를 그대로 사용하고 싶을 때
+### ❌ 방법 2 (wedding-card-002 Hardcoded) - **사용 금지**
+- ❌ **더 이상 사용하지 마세요** (Deprecated)
+- ⚠️ 기존 템플릿 (001-004) 참고용으로만 남김
+- ⚠️ 새 템플릿 개발 시 사용 금지
+- ⚠️ PR 리뷰 시 Hardcoded 방식은 승인 거부됨
+
+**이유:**
+- SDUI 아키텍처로 프로젝트 전체 통일
+- JSON 기반 동적 렌더링으로 유지보수성 향상
+- 서버에서 레이아웃 제어 가능
+- 타입 안정성 및 확장성 확보
 
 ---
 
@@ -573,17 +694,52 @@ mcp__figma-dev-mode-mcp-server__get_screenshot({
 ```
 
 ### 4️⃣ 컴포넌트 개발
-```
-방법 1 선택:
-- types/card-layout.ts에 레이아웃 타입 추가
-- components/cards/WeddingCardXXX.tsx 생성
-- layout-utils.ts의 헬퍼 함수 사용
 
-방법 2 선택:
-- components/cards/WeddingCardXXX.tsx 생성
-- pxToPercent 함수 직접 구현
-- Figma 좌표 수동 변환
+**⚠️ 필수: SDUI 패턴 사용**
+
+```typescript
+// ✅ WeddingCard005.tsx를 참고하세요 (SDUI 패턴)
+import { renderLayoutElement } from '@/lib/layout-utils'
+
+export function WeddingCardXXX({ data, layout, className, style }) {
+  if (!layout) {
+    return <div style={{...style, padding: '20px'}}>Layout이 필요합니다</div>
+  }
+
+  const { baseSize } = layout
+
+  return (
+    <div className={className} style={{...style, position: 'relative', width: '100%', height: '100%'}}>
+      {/* 배경 이미지 */}
+      {data.backgroundImage && layout.background && (
+        <div style={{position: 'absolute', inset: 0, zIndex: layout.background.zIndex || 0}}>
+          <img src={data.backgroundImage} alt="" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+        </div>
+      )}
+
+      {/* 모든 요소는 renderLayoutElement 사용 */}
+      {layout.groom && (
+        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
+          {data.groom}
+        </p>
+      )}
+
+      {layout.bride && (
+        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
+          {data.bride}
+        </p>
+      )}
+
+      {/* ... 나머지 요소들도 동일한 패턴 */}
+    </div>
+  )
+}
 ```
+
+**참고 파일:**
+- ✅ `/components/cards/WeddingCard005.tsx` - 완벽한 SDUI 패턴 예시
+- ✅ `/lib/layout-utils.ts` - renderLayoutElement 함수
+- ✅ `/public/templates/wedding-card-005.json` - JSON 레이아웃 스키마
 
 ### 5️⃣ JSON 스키마 생성
 
@@ -874,11 +1030,19 @@ open http://localhost:8080/template-validator.html
 - [ ] Node ID 확인 및 기록
 
 ### 🔧 개발
-- [ ] 방법 선택 (wedding-card-001 vs wedding-card-002)
-- [ ] Figma MCP로 메타데이터 확인
-- [ ] BG 오프셋 계산 (bgOffsetX, bgOffsetY)
+- [ ] ⚠️ **필수**: SDUI 패턴 사용 (Hardcoded 방식 금지)
+- [ ] ⚠️ **필수**: Figma MCP로 메타데이터 확인
+- [ ] ⚠️ **필수**: BG 오프셋 계산 및 JSON 좌표 변환
+  - [ ] Figma 메타데이터에서 BG의 x, y 좌표 확인
+  - [ ] bgOffsetX, bgOffsetY 값 기록
+  - [ ] JSON의 **모든 x 좌표에서 bgOffsetX 빼기**
+  - [ ] JSON의 **모든 y 좌표에서 bgOffsetY 빼기**
+  - [ ] 변환 후 좌표가 BG 기준 상대 좌표인지 검증
 - [ ] 컴포넌트 생성 (WeddingCardXXX.tsx)
-- [ ] 타입 정의 추가 (방법 1 선택 시)
+  - [ ] `layout` prop 받기 (필수)
+  - [ ] `renderLayoutElement` import 및 사용
+  - [ ] 모든 요소 동적 렌더링 (`layout.elementName &&` 패턴)
+  - [ ] WeddingCard005.tsx 참고
 - [ ] JSON 스키마 생성
 - [ ] ⚠️ 중요: Layout의 모든 요소에 `type` 필드 추가
   - [ ] text 타입: groom, bride, date, venue 등
@@ -886,6 +1050,8 @@ open http://localhost:8080/template-validator.html
   - [ ] vector 타입: SVG 아이콘, 구분선 등
 - [ ] ⚠️ 중요: Layout의 모든 요소에 `editable` 필드 추가 (true/false)
 - [ ] 렌더러 등록 (renderer.tsx)
+  - [ ] `layout` prop 전달 확인
+  - [ ] resolveJSONPath로 layout 가져오기
 - [ ] 타입 정의 추가 (schema.ts)
 - [ ] 라우트 등록 (generateStaticParams)
 

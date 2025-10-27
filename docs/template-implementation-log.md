@@ -84,9 +84,30 @@ public/assets/wedding-card-005/decoration.png
 - **Type Safety**: 100%
 
 ### ✅ Status
-- **Review**: Pending Validator Testing
-- **Production**: Ready for Testing
+- **Review**: ✅ Completed - Converted to SDUI
+- **Production**: ✅ Ready for Production
 - **Developer**: Claude (Sonnet 4.5)
+
+### 🔄 Update History
+
+#### 2025-10-27: SDUI 패턴 전환 및 좌표 수정
+**Problem**: 팀원(박호준)이 작성한 초기 버전은 Hardcoded 방식 + Figma 캔버스 절대 좌표 사용으로 위치 오류 발생
+
+**Changes**:
+1. **컴포넌트 리팩토링**: WeddingCard005.tsx를 SDUI 패턴으로 완전 재작성
+   - `pxToPercent` 수동 계산 제거
+   - `renderLayoutElement` 함수 사용으로 전환
+   - `layout` prop 추가 및 동적 렌더링 구현
+2. **좌표 시스템 수정**: wedding-card-005.json 모든 좌표를 BG 기준 상대 좌표로 변환
+   - bgOffsetX=21, bgOffsetY=148.5 빼기
+   - Before: `groom.x=188.5, y=336.9375` (캔버스 절대)
+   - After: `groom.x=167.5, y=188.4375` (BG 상대)
+3. **문서화**: CLAUDE.md에 좌표 변환 및 SDUI 필수 사용 경고 추가
+
+**Result**:
+- ✅ 모든 요소가 올바른 위치에 렌더링
+- ✅ SDUI 아키텍처 준수
+- ✅ 향후 템플릿 개발 가이드라인 확립
 
 ---
 
