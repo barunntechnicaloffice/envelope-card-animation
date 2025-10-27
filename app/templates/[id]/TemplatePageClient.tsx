@@ -14,19 +14,22 @@ export default function TemplatePageClient({ templateId }: TemplatePageClientPro
 
   useEffect(() => {
     // 템플릿 JSON 로드 (public 폴더 기준)
+    console.log('🔍 Fetching template:', templateId)
     fetch(`/templates/${templateId}.json`)
       .then(res => {
+        console.log('📡 Fetch response status:', res.status, res.ok)
         if (!res.ok) {
           throw new Error(`Failed to load template: ${res.status}`)
         }
         return res.json()
       })
       .then(data => {
-        console.log('Loaded template:', templateId, data)
+        console.log('✅ Loaded template:', templateId, data)
+        console.log('📦 Template components:', data?.components)
         setTemplate(data)
       })
       .catch(err => {
-        console.error('Failed to load template:', err)
+        console.error('❌ Failed to load template:', err)
         setTemplate(null)
       })
   }, [templateId])
@@ -63,7 +66,7 @@ export default function TemplatePageClient({ templateId }: TemplatePageClientPro
           isAnimating={isAnimating}
           onAnimationStart={() => setIsAnimating(true)}
           templateId={templateId}
-          templateData={template.data}
+          templateData={template}
         />
       </div>
     </main>

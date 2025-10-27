@@ -30,8 +30,8 @@
     },
     "title": {
       "type": "text",
-      "x": 32,
-      "y": 175.5,
+      "x": 12,
+      "y": 27.5,
       "width": 311,
       "height": 12,
       "fontSize": 10,
@@ -44,24 +44,24 @@
     },
     "photo": {
       "type": "image",
-      "x": 51.25,
-      "y": 203,
+      "x": 31.25,
+      "y": 55,
       "width": 272.5,
       "height": 314.5,
       "zIndex": 1
     },
     "decoration": {
       "type": "image",
-      "x": 20,
-      "y": 505.333,
+      "x": 0,
+      "y": 357.333,
       "width": 335,
       "height": 34.833,
       "zIndex": 1
     },
     "groom": {
       "type": "text",
-      "x": 82,
-      "y": 555,
+      "x": 62,
+      "y": 407,
       "width": 68,
       "fontSize": 20,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -74,8 +74,8 @@
     },
     "bride": {
       "type": "text",
-      "x": 225,
-      "y": 555,
+      "x": 205,
+      "y": 407,
       "width": 68,
       "fontSize": 20,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -88,8 +88,8 @@
     },
     "date": {
       "type": "text",
-      "x": 32,
-      "y": 592,
+      "x": 12,
+      "y": 444,
       "width": 311,
       "fontSize": 12,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -101,8 +101,8 @@
     },
     "venue": {
       "type": "text",
-      "x": 32,
-      "y": 612,
+      "x": 12,
+      "y": 464,
       "width": 311,
       "fontSize": 12,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -135,8 +135,9 @@
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
-        "cardBackground": "$.data.wedding.cardBackground",
-        "decoration": "$.data.wedding.decoration"
+        "cardBackground": "$.data.wedding.backgroundImage",
+        "decoration": "$.data.wedding.decoration",
+        "title": "$.data.wedding.title"
       }
     }
   ]

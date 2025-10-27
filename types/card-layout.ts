@@ -66,8 +66,10 @@ export interface WeddingCardLayout {
   // 신부 이름
   bride: TextElementLayout
 
-  // 날짜 및 장소 (텍스트 블록)
-  dateVenue: TextBlockLayout
+  // 날짜 및 장소 (두 방식 지원)
+  dateVenue?: TextBlockLayout  // 통합 레이아웃
+  date?: TextElementLayout     // 별도 레이아웃 (옵셔널)
+  venue?: TextElementLayout    // 별도 레이아웃 (옵셔널)
 
   // 장식 이미지
   decoration: ElementLayout

@@ -113,6 +113,13 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
   const templateComponent: Component | undefined = templateData?.components?.[0]
   const fullData = templateData || {}
 
+  // 디버깅 로그
+  useEffect(() => {
+    console.log('🎴 EnvelopeCard received templateData:', templateData)
+    console.log('🎯 templateComponent:', templateComponent)
+    console.log('📄 fullData:', fullData)
+  }, [templateData, templateComponent, fullData])
+
   // 초기 Swiper 스타일 설정
   useEffect(() => {
     const { width, height } = calculateCardSize()
@@ -212,8 +219,19 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
       return <div style={{...style, backgroundColor: '#fff', padding: '20px'}}>템플릿 로딩 중...</div>
     }
 
+    // 335:515 비율 계산
+    const CARD_RATIO = 515 / 335 // 1.537...
+
     return (
-      <div className={className} style={style}>
+      <div
+        className={className}
+        style={{
+          ...style,
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '335 / 515', // ✅ 비율 유지하면서 반응형
+        }}
+      >
         {renderComponent(templateComponent, fullData, 'envelope-card')}
       </div>
     )
@@ -514,7 +532,11 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                   }}
                 >
                   {/* 봉투 카드 - SDUI로 동적 렌더링 (Swiper와 동일한 컴포넌트!) */}
-                  <div id="envelope-card-inner" style={{ width: '100%', height: '100%' }}>
+                  <div id="envelope-card-inner" style={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%'
+                  }}>
                     <CardComponent
                       className={styles.envelopeCardInner}
                       style={{ width: '100%', height: '100%' }}

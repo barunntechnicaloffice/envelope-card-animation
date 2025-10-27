@@ -239,7 +239,7 @@
 
     async function loadTemplate() {
       try {
-        const response = await fetch(`/public/templates/${templateId}.json`);
+        const response = await fetch(`/templates/${templateId}.json`);
         if (!response.ok) throw new Error(`Failed to load ${templateId}.json`);
 
         const data = await response.json();
@@ -341,8 +341,7 @@
         'wedding-card-001': { x: 0, y: 0 },
         'wedding-card-002': { x: 20, y: 148 },
         'wedding-card-003': { x: 20, y: 148 },
-        'wedding-card-004': { x: 20, y: 148 },
-        'wedding-card-005': { x: 21, y: 148.5 }
+        'wedding-card-004': { x: 20, y: 148 }
       };
       const offset = bgOffsets[data.id] || { x: 0, y: 0 };
       const bgOffsetX = offset.x;
@@ -362,7 +361,7 @@
             <div style="
               position: absolute;
               inset: 0;
-              background-image: url(/public${weddingData.backgroundImage});
+              background-image: url(${weddingData.backgroundImage});
               background-size: cover;
               background-position: center;
               background-color: #f5f5f5;
@@ -378,30 +377,7 @@
           `}
 
           ${Object.entries(layout).filter(([key]) => key !== 'baseSize').map(([key, element]) => {
-            if (element.type === 'background') {
-              // Render cardBackground image if available
-              const bgSrc = weddingData.cardBackground;
-              if (bgSrc) {
-                return `
-                  <div style="
-                    position: absolute;
-                    inset: 0;
-                    overflow: hidden;
-                    z-index: ${element.zIndex || 0};
-                  ">
-                    <img src="/public${bgSrc}" alt="background" style="
-                      position: absolute;
-                      left: -1.54%;
-                      top: 0;
-                      width: 102.49%;
-                      height: 100%;
-                      object-fit: cover;
-                    " onerror="console.error('❌ Failed to load background:', '/public${bgSrc}');">
-                  </div>
-                `;
-              }
-              return '';
-            }
+            if (element.type === 'background') return '';
 
             if (element.type === 'image') {
               // Get image source from weddingData using the key
@@ -442,7 +418,7 @@
                   overflow: hidden;
                   z-index: ${element.zIndex};
                 ">
-                  <img src="/public${imgSrc}" alt="${key}" style="${imgStyleOverride}" onerror="console.error('❌ Failed to load:', '/public${imgSrc}'); this.style.background='#fee2e2'; this.style.border='2px solid red';">
+                  <img src="${imgSrc}" alt="${key}" style="${imgStyleOverride}" onerror="console.error('❌ Failed to load:', '${imgSrc}'); this.style.background='#fee2e2'; this.style.border='2px solid red';">
                 </div>
               `;
             }
@@ -492,8 +468,7 @@
         'wedding-card-001': { x: 0, y: 0 },
         'wedding-card-002': { x: 20, y: 148 },
         'wedding-card-003': { x: 20, y: 148 },
-        'wedding-card-004': { x: 20, y: 148 },
-        'wedding-card-005': { x: 21, y: 148.5 }
+        'wedding-card-004': { x: 20, y: 148 }
       };
       const offset = bgOffsets[data.id] || { x: 0, y: 0 };
       const bgOffsetX = offset.x;
@@ -511,26 +486,15 @@
         ">
           ${Object.entries(layout).filter(([key]) => key !== 'baseSize').map(([key, element]) => {
             if (element.type === 'background') {
-              // Support both backgroundImage (old) and cardBackground (new)
-              const bgSrc = weddingData.cardBackground || weddingData.backgroundImage || '';
-              if (!bgSrc) return '';
-
               return `
                 <div style="
                   position: absolute;
                   inset: 0;
-                  overflow: hidden;
-                  z-index: ${element.zIndex || 0};
-                ">
-                  <img src="/public${bgSrc}" alt="background" style="
-                    position: absolute;
-                    left: -1.54%;
-                    top: 0;
-                    width: 102.49%;
-                    height: 100%;
-                    object-fit: cover;
-                  " onerror="console.error('❌ SDUI: Failed to load background:', '/public${bgSrc}');">
-                </div>
+                  background-image: url(${weddingData.backgroundImage || ''});
+                  background-size: ${element.backgroundSize || 'cover'};
+                  background-position: ${element.backgroundPosition || 'center'};
+                  z-index: ${element.zIndex};
+                "></div>
               `;
             }
 
@@ -573,7 +537,7 @@
                   overflow: hidden;
                   z-index: ${element.zIndex};
                 ">
-                  <img src="/public${imgSrc}" alt="${key}" style="${imgStyleOverride}" onerror="console.error('❌ Failed to load:', '/public${imgSrc}'); this.style.background='#fee2e2'; this.style.border='2px solid red';">
+                  <img src="${imgSrc}" alt="${key}" style="${imgStyleOverride}" onerror="console.error('❌ Failed to load:', '${imgSrc}'); this.style.background='#fee2e2'; this.style.border='2px solid red';">
                 </div>
               `;
             }

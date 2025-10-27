@@ -1,34 +1,24 @@
 import type { WeddingData } from '@/types/wedding'
+import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCard002Props {
   data: WeddingData
+  layout?: any  // JSON layout 객체
   className?: string
   style?: React.CSSProperties
 }
 
 export function WeddingCard002({
   data,
+  layout,
   className,
   style
 }: WeddingCard002Props) {
-  // 디버깅: data 확인
-  console.log('WeddingCard002 data:', {
-    decoration: data.decoration,
-    dateDivider: data.dateDivider,
-    photo: data.photo
-  })
+  if (!layout) {
+    return <div style={{...style, padding: '20px', backgroundColor: '#fff'}}>Layout이 필요합니다</div>
+  }
 
-  // Figma baseSize: 335px × 515px
-  const baseWidth = 335
-  const baseHeight = 515
-
-  // Figma 캔버스 기준 BG 시작점
-  const bgOffsetY = 148
-  const bgOffsetX = 20
-
-  // 백분율 변환 헬퍼 함수 (BG 기준 상대 좌표)
-  const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
-    `${((canvasPx - canvasOffset) / base) * 100}%`
+  const { baseSize } = layout
 
   return (
     <div
@@ -42,255 +32,145 @@ export function WeddingCard002({
       }}
     >
       {/* 배경 이미지 */}
-      {data.cardBackground && (
+      {data.cardBackground && layout.background && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
             backgroundImage: `url(${data.cardBackground})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            zIndex: 0
+            backgroundSize: layout.background.backgroundSize || 'cover',
+            backgroundPosition: layout.background.backgroundPosition || 'center',
+            zIndex: layout.background.zIndex || 0
           }}
         />
       )}
 
-      {/* D-day (우측 상단) - canvas y:164 → BG 기준 16px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(33, bgOffsetX, baseWidth),
-        top: pxToPercent(164, bgOffsetY, baseHeight),
-        width: pxToPercent(310, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '20px',
-        color: '#333333',
-        letterSpacing: '-0.316px',
-        textAlign: 'right',
-        margin: 0,
-        zIndex: 2
-      }}>
-        D-999
-      </p>
+      {/* D-Day */}
+      {(data as any).dday && layout.dday && (
+        <p style={renderLayoutElement('dday', layout.dday, baseSize, data)}>
+          {(data as any).dday}
+        </p>
+      )}
 
-      {/* 사진 (중앙) - canvas y:226 → BG 기준 78px */}
-      <div style={{
-        position: 'absolute',
-        left: pxToPercent(116, bgOffsetX, baseWidth),
-        top: pxToPercent(226, bgOffsetY, baseHeight),
-        width: pxToPercent(144, 0, baseWidth),
-        height: pxToPercent(144, 0, baseHeight),
-        overflow: 'hidden',
-        zIndex: 1
-      }}>
-        <img
-          src={data.photo}
-          alt="Wedding Photo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-          }}
-        />
-      </div>
-
-      {/* 날짜 월 (좌측) - canvas y:241 → BG 기준 93px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(54, bgOffsetX, baseWidth),
-        top: pxToPercent(241, bgOffsetY, baseHeight),
-        width: pxToPercent(40, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '30px',
-        color: '#333333',
-        letterSpacing: '-0.474px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        10
-      </p>
-
-      {/* 날짜 구분선 - 월과 일 사이 중간 */}
-      <div style={{
-        position: 'absolute',
-        left: pxToPercent(67, bgOffsetX, baseWidth),
-        top: '25.49%',
-        width: pxToPercent(14.794921875, 0, baseWidth),
-        height: pxToPercent(1.904296875, 0, baseHeight),
-        zIndex: 2
-      }}>
-        {data.dateDivider && (
+      {/* 사진 */}
+      {layout.photo && (
+        <div style={{
+          ...renderLayoutElement('photo', layout.photo, baseSize, data),
+          overflow: 'hidden'
+        }}>
           <img
-            src={data.dateDivider}
-            alt=""
-            style={{ width: '100%', height: '100%' }}
+            src={data.photo}
+            alt="Wedding Photo"
+            style={{
+              width: layout.photo.style?.width || '100%',
+              height: layout.photo.style?.height || '100%',
+              left: layout.photo.style?.left || '0',
+              top: layout.photo.style?.top || '0',
+              position: layout.photo.style ? 'absolute' : 'relative',
+              objectFit: layout.photo.objectFit || 'cover'
+            }}
           />
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* 날짜 일 (좌측) - canvas y:312 → BG 기준 164px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(54, bgOffsetX, baseWidth),
-        top: pxToPercent(312, bgOffsetY, baseHeight),
-        width: pxToPercent(40, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '30px',
-        color: '#333333',
-        letterSpacing: '-0.474px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        28
-      </p>
+      {/* 날짜 월 */}
+      {(data as any).dateMonth && layout.dateMonth && (
+        <p style={renderLayoutElement('dateMonth', layout.dateMonth, baseSize, data)}>
+          {(data as any).dateMonth}
+        </p>
+      )}
 
-      {/* 장식 - canvas y:389.9 → BG 기준 241.9px */}
-      <div style={{
-        position: 'absolute',
-        left: pxToPercent(159.93157958984375, bgOffsetX, baseWidth),
-        top: pxToPercent(389.8999938964844, bgOffsetY, baseHeight),
-        width: pxToPercent(55.6312141418457, 0, baseWidth),
-        height: pxToPercent(14.10001277923584, 0, baseHeight),
-        zIndex: 2
-      }}>
-        {data.decoration && (
+      {/* 날짜 구분선 */}
+      {(data as any).dateDivider && layout.dateDivider && (
+        <div style={{
+          ...renderLayoutElement('dateDivider', layout.dateDivider, baseSize, data),
+          overflow: 'hidden'
+        }}>
           <img
-            src={data.decoration}
+            src={(data as any).dateDivider}
             alt=""
-            style={{ width: '100%', height: '100%' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain'
+            }}
           />
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* 영문 날짜 - canvas y:453 → BG 기준 305px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(31, bgOffsetX, baseWidth),
-        top: pxToPercent(453, bgOffsetY, baseHeight),
-        width: pxToPercent(313, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '30px',
-        color: '#333333',
-        letterSpacing: '-0.474px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        October 23, 2038
-      </p>
+      {/* 날짜 일 */}
+      {(data as any).dateDay && layout.dateDay && (
+        <p style={renderLayoutElement('dateDay', layout.dateDay, baseSize, data)}>
+          {(data as any).dateDay}
+        </p>
+      )}
 
-      {/* GROOM 라벨 - canvas y:511 → BG 기준 363px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(87, bgOffsetX, baseWidth),
-        top: pxToPercent(511, bgOffsetY, baseHeight),
-        width: pxToPercent(42, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '10px',
-        color: '#333333',
-        letterSpacing: '-0.158px',
-        textAlign: 'right',
-        textTransform: 'uppercase',
-        margin: 0,
-        zIndex: 2
-      }}>
-        GROOM
-      </p>
+      {/* 장식 이미지 */}
+      {(data as any).decoration && layout.decoration && (
+        <div style={{
+          ...renderLayoutElement('decoration', layout.decoration, baseSize, data),
+          overflow: 'hidden'
+        }}>
+          <img
+            src={(data as any).decoration}
+            alt="Decoration"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: layout.decoration.objectFit || 'contain'
+            }}
+          />
+        </div>
+      )}
 
-      {/* 신랑 이름 - canvas y:530 → BG 기준 382px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(20, bgOffsetX, baseWidth),
-        top: pxToPercent(530, bgOffsetY, baseHeight),
-        width: pxToPercent(116, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '18px',
-        color: '#333333',
-        letterSpacing: '-0.2844px',
-        textAlign: 'right',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.groom}
-      </p>
+      {/* 날짜 영문 */}
+      {(data as any).dateEnglish && layout.dateEnglish && (
+        <p style={renderLayoutElement('dateEnglish', layout.dateEnglish, baseSize, data)}>
+          {(data as any).dateEnglish}
+        </p>
+      )}
 
-      {/* BRIDE 라벨 - canvas y:511 → BG 기준 363px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(259, bgOffsetX, baseWidth),
-        top: pxToPercent(511, bgOffsetY, baseHeight),
-        width: pxToPercent(30, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '10px',
-        color: '#333333',
-        letterSpacing: '-0.158px',
-        textAlign: 'left',
-        textTransform: 'uppercase',
-        margin: 0,
-        zIndex: 2
-      }}>
-        BRIDE
-      </p>
+      {/* 신랑 라벨 */}
+      {(data as any).groomLabel && layout.groomLabel && (
+        <p style={renderLayoutElement('groomLabel', layout.groomLabel, baseSize, data)}>
+          {(data as any).groomLabel}
+        </p>
+      )}
 
-      {/* 신부 이름 - canvas y:530 → BG 기준 382px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(243, bgOffsetX, baseWidth),
-        top: pxToPercent(530, bgOffsetY, baseHeight),
-        width: pxToPercent(112, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '18px',
-        color: '#333333',
-        letterSpacing: '-0.2844px',
-        textAlign: 'left',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.bride}
-      </p>
+      {/* 신랑 이름 */}
+      {layout.groom && (
+        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
+          {data.groom}
+        </p>
+      )}
 
-      {/* 한글 날짜 - canvas y:582 → BG 기준 434px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(32, bgOffsetX, baseWidth),
-        top: pxToPercent(582, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontSize: '12px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.date}
-      </p>
+      {/* 신부 라벨 */}
+      {(data as any).brideLabel && layout.brideLabel && (
+        <p style={renderLayoutElement('brideLabel', layout.brideLabel, baseSize, data)}>
+          {(data as any).brideLabel}
+        </p>
+      )}
 
-      {/* 장소 - canvas y:602 → BG 기준 454px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(32, bgOffsetX, baseWidth),
-        top: pxToPercent(602, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontSize: '12px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.venue}
-      </p>
+      {/* 신부 이름 */}
+      {layout.bride && (
+        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
+          {data.bride}
+        </p>
+      )}
+
+      {/* 날짜 한글 */}
+      {(data as any).dateKorean && layout.dateKorean && (
+        <p style={renderLayoutElement('dateKorean', layout.dateKorean, baseSize, data)}>
+          {(data as any).dateKorean}
+        </p>
+      )}
+
+      {/* 장소 */}
+      {layout.venue && (
+        <p style={renderLayoutElement('venue', layout.venue, baseSize, data)}>
+          {data.venue}
+        </p>
+      )}
     </div>
   )
 }

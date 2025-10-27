@@ -1,30 +1,24 @@
 import type { WeddingData } from '@/types/wedding'
-import type { WeddingCardLayout } from '@/types/card-layout'
-import { DEFAULT_WEDDING_CARD_LAYOUT } from '@/types/card-layout'
-import {
-  elementLayoutToStyle,
-  textLayoutToStyle,
-  textBlockLayoutToStyle
-} from '@/lib/layout-utils'
+import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCardProps {
   data: WeddingData
-  layout?: WeddingCardLayout  // 레이아웃 커스터마이징 가능
+  layout?: any  // JSON layout 객체
   className?: string
   style?: React.CSSProperties
 }
 
 export function WeddingCard({
   data,
-  layout = DEFAULT_WEDDING_CARD_LAYOUT,
+  layout,
   className,
   style
 }: WeddingCardProps) {
-  const { baseSize } = layout
+  if (!layout) {
+    return <div style={{...style, padding: '20px', backgroundColor: '#fff'}}>Layout이 필요합니다</div>
+  }
 
-  console.log('WeddingCard received data:', data)
-  console.log('backgroundImage:', data.backgroundImage)
-  console.log('decorationImage:', data.decorationImage)
+  const { baseSize } = layout
 
   return (
     <div
@@ -32,52 +26,48 @@ export function WeddingCard({
       style={{
         ...style,
         position: 'relative',
+        width: '100%',
+        height: '100%',
         backgroundColor: '#EFEEEB'
       }}
     >
-      {/* 배경 이미지 (card-bg.png) */}
-      {data.backgroundImage ? (
+      {/* 배경 이미지 */}
+      {data.backgroundImage && layout.background && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
             backgroundImage: `url(${data.backgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            zIndex: layout.background.zIndex
+            backgroundSize: layout.background.backgroundSize || 'cover',
+            backgroundPosition: layout.background.backgroundPosition || 'center',
+            zIndex: layout.background.zIndex || 0
           }}
         />
-      ) : (
-        <div style={{ display: 'none' }}>No backgroundImage</div>
       )}
 
-      {/* 사진 - 픽셀 기반 레이아웃 → 백분율 자동 변환 */}
-      <div style={{
-        ...elementLayoutToStyle(layout.photo, baseSize),
-        overflow: 'hidden'
-      }}>
-        <img
-          src={data.photo}
-          alt="Wedding Photo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-          }}
-        />
-      </div>
-
-      {/* 장식 이미지 - 정중앙 배치 */}
-      {data.decorationImage && (
+      {/* 사진 */}
+      {layout.photo && (
         <div style={{
-          position: 'absolute',
-          left: '50%',
-          top: `${(layout.decoration.y / baseSize.height) * 100}%`,
-          transform: 'translateX(-50%)',
-          width: `${(layout.decoration.width / baseSize.width) * 100}%`,
-          height: `${(layout.decoration.height / baseSize.height) * 100}%`,
-          zIndex: layout.decoration.zIndex
+          ...renderLayoutElement('photo', layout.photo, baseSize, data),
+          overflow: 'hidden'
+        }}>
+          <img
+            src={data.photo}
+            alt="Wedding Photo"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: layout.photo.objectFit || 'cover'
+            }}
+          />
+        </div>
+      )}
+
+      {/* 장식 이미지 */}
+      {data.decorationImage && layout.decoration && (
+        <div style={{
+          ...renderLayoutElement('decoration', layout.decoration, baseSize, data),
+          overflow: 'hidden'
         }}>
           <img
             src={data.decorationImage}
@@ -92,20 +82,32 @@ export function WeddingCard({
       )}
 
       {/* 신랑 이름 */}
-      <p style={textLayoutToStyle(layout.groom, baseSize)}>
-        {data.groom}
-      </p>
+      {layout.groom && (
+        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
+          {data.groom}
+        </p>
+      )}
 
       {/* 신부 이름 */}
-      <p style={textLayoutToStyle(layout.bride, baseSize)}>
-        {data.bride}
-      </p>
+      {layout.bride && (
+        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
+          {data.bride}
+        </p>
+      )}
 
-      {/* 날짜 및 장소 */}
-      <div style={textBlockLayoutToStyle(layout.dateVenue, baseSize)}>
-        <p style={{ margin: 0, marginBottom: 0 }}>{data.date}</p>
-        <p style={{ margin: 0 }}>{data.venue}</p>
-      </div>
+      {/* 날짜 */}
+      {layout.date && (
+        <p style={renderLayoutElement('date', layout.date, baseSize, data)}>
+          {data.date}
+        </p>
+      )}
+
+      {/* 장소 */}
+      {layout.venue && (
+        <p style={renderLayoutElement('venue', layout.venue, baseSize, data)}>
+          {data.venue}
+        </p>
+      )}
     </div>
   )
 }

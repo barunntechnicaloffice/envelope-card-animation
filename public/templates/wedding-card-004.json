@@ -19,8 +19,8 @@
     },
     "photo": {
       "type": "image",
-      "x": 20,
-      "y": 148,
+      "x": 0,
+      "y": 0,
       "width": 335,
       "height": 515,
       "zIndex": 0,
@@ -35,8 +35,8 @@
     },
     "decoration": {
       "type": "image",
-      "x": 20,
-      "y": 148,
+      "x": 0,
+      "y": 0,
       "width": 335,
       "height": 515,
       "zIndex": 1,
@@ -51,8 +51,8 @@
     },
     "groom": {
       "type": "text",
-      "x": 123,
-      "y": 260.5,
+      "x": 103,
+      "y": 112.5,
       "width": "auto",
       "fontSize": 18,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -66,8 +66,8 @@
     },
     "separator": {
       "type": "text",
-      "x": 187.5,
-      "y": 260.5,
+      "x": 167.5,
+      "y": 112.5,
       "width": "auto",
       "fontSize": 18,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -81,8 +81,8 @@
     },
     "bride": {
       "type": "text",
-      "x": 252,
-      "y": 260.5,
+      "x": 232,
+      "y": 112.5,
       "width": "auto",
       "fontSize": 18,
       "fontFamily": "'NanumMyeongjo', serif",
@@ -112,7 +112,8 @@
         "groom": "$.data.wedding.groom",
         "bride": "$.data.wedding.bride",
         "photo": "$.data.wedding.photo",
-        "decoration": "$.data.wedding.decoration"
+        "decoration": "$.data.wedding.decoration",
+        "separator": "$.data.wedding.separator"
       }
     }
   ]

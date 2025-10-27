@@ -495,19 +495,44 @@ function renderWeddingCardTemplate002(
     photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
     cardBackground: component.data.cardBackground
       ? resolveJSONPath(data, component.data.cardBackground)
-      : undefined,  // 기본값 없음 - backgroundColor: #fff 사용
+      : undefined,
     decoration: component.data.decoration
       ? resolveJSONPath(data, component.data.decoration)
       : undefined,
     dateDivider: component.data.dateDivider
       ? resolveJSONPath(data, component.data.dateDivider)
+      : undefined,
+    dday: component.data.dday
+      ? resolveJSONPath(data, component.data.dday)
+      : undefined,
+    dateMonth: component.data.dateMonth
+      ? resolveJSONPath(data, component.data.dateMonth)
+      : undefined,
+    dateDay: component.data.dateDay
+      ? resolveJSONPath(data, component.data.dateDay)
+      : undefined,
+    dateEnglish: component.data.dateEnglish
+      ? resolveJSONPath(data, component.data.dateEnglish)
+      : undefined,
+    dateKorean: component.data.dateKorean
+      ? resolveJSONPath(data, component.data.dateKorean)
+      : undefined,
+    groomLabel: component.data.groomLabel
+      ? resolveJSONPath(data, component.data.groomLabel)
+      : undefined,
+    brideLabel: component.data.brideLabel
+      ? resolveJSONPath(data, component.data.brideLabel)
       : undefined
   }
+
+  // Layout 정보 - JSON의 layout 사용
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
 
   return (
     <WeddingCard002
       key={key}
       data={weddingData}
+      layout={layout}
       style={style}
       className={className}
     />
@@ -530,22 +555,26 @@ function renderWeddingCardTemplate003(
     bride: resolveJSONPath(data, component.data.bride) || '신부',
     date: resolveJSONPath(data, component.data.date) || '날짜 미정',
     venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
-
-    // ⚠️ 중요: photo 기본값은 반드시 /assets/common/photo.png 사용
     photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
-
     cardBackground: component.data.cardBackground
       ? resolveJSONPath(data, component.data.cardBackground)
       : undefined,
     decoration: component.data.decoration
       ? resolveJSONPath(data, component.data.decoration)
+      : undefined,
+    title: component.data.title
+      ? resolveJSONPath(data, component.data.title)
       : undefined
   }
+
+  // Layout 정보 - JSON의 layout 사용
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
 
   return (
     <WeddingCard003
       key={key}
       data={weddingData}
+      layout={layout}
       style={style}
       className={className}
     />
@@ -566,20 +595,23 @@ function renderWeddingCardTemplate004(
   const weddingData = {
     groom: resolveJSONPath(data, component.data.groom) || '신랑',
     bride: resolveJSONPath(data, component.data.bride) || '신부',
-
-    // ⚠️ 중요: photo 기본값은 반드시 /assets/common/photo.png 사용
     photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
-
-    // decoration은 GIF 애니메이션 오버레이 (옵셔널)
     decoration: component.data.decoration
       ? resolveJSONPath(data, component.data.decoration)
+      : undefined,
+    separator: component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
       : undefined
   }
+
+  // Layout 정보 - JSON의 layout 사용
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
 
   return (
     <WeddingCard004
       key={key}
       data={weddingData}
+      layout={layout}
       style={style}
       className={className}
     />
@@ -603,6 +635,7 @@ function renderWeddingCardTemplate005(
     date: resolveJSONPath(data, component.data.date) || '날짜 미정',
     venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
 
+    // ⚠️ 중요: backgroundImage는 기본값 제공
     backgroundImage: component.data.backgroundImage
       ? resolveJSONPath(data, component.data.backgroundImage)
       : '/assets/wedding-card-005/card-bg.png',
@@ -616,10 +649,14 @@ function renderWeddingCardTemplate005(
       : undefined
   }
 
+  // Layout 정보 - JSON의 layout 사용
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
   return (
     <WeddingCard005
       key={key}
       data={weddingData}
+      layout={layout}
       style={style}
       className={className}
     />

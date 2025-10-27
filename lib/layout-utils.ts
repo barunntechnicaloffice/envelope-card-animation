@@ -165,3 +165,64 @@ export function eventToCanvasCoords(
     y: (event.clientY - rect.top) / scale
   }
 }
+
+/**
+ * 범용 레이아웃 요소 렌더링 헬퍼
+ * JSON layout의 모든 타입을 자동으로 처리
+ */
+export function renderLayoutElement(
+  key: string,
+  element: any,
+  baseSize: BaseSize,
+  data: Record<string, any>
+): React.CSSProperties {
+  const pxToPercent = (px: number, base: number) => `${(px / base) * 100}%`
+
+  const style: React.CSSProperties = {
+    position: 'absolute',
+    left: pxToPercent(element.x, baseSize.width),
+    top: pxToPercent(element.y, baseSize.height),
+    zIndex: element.zIndex || 0,
+    margin: 0
+  }
+
+  // width 처리 (auto 지원)
+  if (element.width !== undefined) {
+    style.width = element.width === 'auto' ? 'auto' : pxToPercent(element.width, baseSize.width)
+  }
+
+  // height 처리
+  if (element.height !== undefined) {
+    style.height = pxToPercent(element.height, baseSize.height)
+  }
+
+  // 텍스트 스타일
+  if (element.type === 'text') {
+    style.fontFamily = element.fontFamily || "'NanumMyeongjo', serif"
+    style.fontSize = `${element.fontSize || 16}px`
+    style.fontWeight = element.fontWeight || 400
+    style.color = element.color || '#333333'
+    style.textAlign = element.align || 'center'
+    style.lineHeight = element.lineHeight || 'normal'
+
+    if (element.letterSpacing !== undefined) {
+      style.letterSpacing = `${element.letterSpacing}px`
+    }
+
+    if (element.textTransform) {
+      style.textTransform = element.textTransform as any
+    }
+
+    // centerAlign 처리
+    if (element.centerAlign) {
+      style.transform = 'translateX(-50%)'
+    }
+  }
+
+  // 이미지 스타일
+  if (element.type === 'image') {
+    style.overflow = 'hidden'
+  }
+
+  return style
+}
