@@ -6,9 +6,25 @@ export interface WeddingData {
   photo: string
   backgroundImage?: string  // wedding-card-001, 005용 card-bg.png
   decorationImage?: string  // wedding-card-001용
-  decoration?: string       // wedding-card-002, 005용 decoration.svg/png
+  decoration?: string       // wedding-card-002, 003, 004, 005용 decoration.svg/png
   dateDivider?: string      // wedding-card-002용 date-divider.svg
   decorationFrame?: string  // wedding-card-005용 decoration-frame.svg
+
+  // wedding-card-002 전용 필드
+  cardBackground?: string   // 카드 배경 이미지
+  dday?: string             // D-day 표시 (예: "D-100")
+  dateMonth?: string        // 월 (예: "10")
+  dateDay?: string          // 일 (예: "12")
+  dateEnglish?: string      // 영문 날짜 (예: "OCTOBER 12, 2038")
+  dateKorean?: string       // 한글 날짜 (예: "2038년 10월 12일 토요일 오후 2시")
+  groomLabel?: string       // 신랑 라벨 (예: "GROOM")
+  brideLabel?: string       // 신부 라벨 (예: "BRIDE")
+
+  // wedding-card-003 전용 필드
+  title?: string            // 타이틀 (예: "WEDDING INVITATION")
+
+  // wedding-card-004 전용 필드
+  separator?: string        // 구분자 (예: "&")
 }
 
 // Mock 데이터 (Figma assets 사용)

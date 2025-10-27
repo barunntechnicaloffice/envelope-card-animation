@@ -300,6 +300,13 @@ export interface WeddingCardTemplate002Component extends BaseComponent {
     cardBackground?: JSONPathExpression;
     decoration?: JSONPathExpression;
     dateDivider?: JSONPathExpression;
+    dday?: JSONPathExpression;
+    dateMonth?: JSONPathExpression;
+    dateDay?: JSONPathExpression;
+    dateEnglish?: JSONPathExpression;
+    dateKorean?: JSONPathExpression;
+    groomLabel?: JSONPathExpression;
+    brideLabel?: JSONPathExpression;
   };
 }
 
@@ -313,6 +320,7 @@ export interface WeddingCardTemplate003Component extends BaseComponent {
     photo: JSONPathExpression;
     cardBackground?: JSONPathExpression;
     decoration?: JSONPathExpression;
+    title?: JSONPathExpression;
   };
 }
 
@@ -323,6 +331,7 @@ export interface WeddingCardTemplate004Component extends BaseComponent {
     bride: JSONPathExpression;
     photo: JSONPathExpression;
     decoration?: JSONPathExpression;
+    separator?: JSONPathExpression;
   };
 }
 
