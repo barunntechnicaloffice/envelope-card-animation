@@ -1,0 +1,162 @@
+{
+  "id": "wedding-card-007",
+  "version": "3.0.0",
+  "name": "웨딩 청첩장 템플릿 007 (Navy Lunaria)",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-007/card-bg.png",
+  "figmaNodeId": "70:2133",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "date": {
+      "type": "text",
+      "x": 31.107421875,
+      "y": 40.3125,
+      "width": 221.892578125,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "fontStyle": "normal",
+      "color": "#c69a6e",
+      "letterSpacing": 0,
+      "lineHeight": "20px",
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "venue": {
+      "type": "text",
+      "x": 31.107421875,
+      "y": 61.3125,
+      "width": 221.892578125,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "fontStyle": "normal",
+      "color": "#c69a6e",
+      "letterSpacing": 0,
+      "lineHeight": "20px",
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "groomLabel": {
+      "type": "text",
+      "x": 31.107421875,
+      "y": 134.6875,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "fontStyle": "normal",
+      "color": "#c69a6e",
+      "letterSpacing": 0,
+      "lineHeight": "normal",
+      "align": "left",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 104.607421875,
+      "y": 130.1875,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "fontStyle": "normal",
+      "color": "#c69a6e",
+      "letterSpacing": 2,
+      "lineHeight": "normal",
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "brideLabel": {
+      "type": "text",
+      "x": 31.107421875,
+      "y": 175.25,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "fontStyle": "normal",
+      "color": "#c69a6e",
+      "letterSpacing": 0,
+      "lineHeight": "normal",
+      "align": "left",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "bride": {
+      "type": "text",
+      "x": 104.607421875,
+      "y": 170.75,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "fontStyle": "normal",
+      "color": "#c69a6e",
+      "letterSpacing": 2,
+      "lineHeight": "normal",
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "decoration": {
+      "type": "image",
+      "x": 253,
+      "y": 295.6640625,
+      "width": 72,
+      "height": 178.27659606933594,
+      "zIndex": 1,
+      "editable": false,
+      "objectFit": "cover"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 12일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "groomLabel": "GROOM",
+      "brideLabel": "BRIDE",
+      "cardBackground": "/assets/wedding-card-007/card-bg.png",
+      "decoration": "/assets/wedding-card-007/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-007",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "groomLabel": "$.data.wedding.groomLabel",
+        "brideLabel": "$.data.wedding.brideLabel",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      }
+    }
+  ]
+}
