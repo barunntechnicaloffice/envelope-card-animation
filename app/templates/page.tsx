@@ -52,6 +52,30 @@ const TEMPLATES: Template[] = [
     name: '웨딩 청첩장 템플릿 007 (Navy Lunaria)',
     thumbnail: '/assets/wedding-card-007/card-bg.png',
     category: 'wedding'
+  },
+  {
+    id: 'wedding-card-008',
+    name: '웨딩 청첩장 템플릿 008 (Romantic Garden)',
+    thumbnail: '/assets/wedding-card-008/card-bg.png',
+    category: 'wedding'
+  },
+  {
+    id: 'wedding-card-009',
+    name: '웨딩 청첩장 템플릿 009 (Minimal Photo)',
+    thumbnail: '/assets/wedding-card-009/card-bg.png',
+    category: 'wedding'
+  },
+  {
+    id: 'wedding-card-010',
+    name: '웨딩 청첩장 템플릿 010 (Classic Elegance)',
+    thumbnail: '/assets/wedding-card-010/card-bg.png',
+    category: 'wedding'
+  },
+  {
+    id: 'wedding-card-011',
+    name: '웨딩 청첩장 템플릿 011 (Floral Elegance)',
+    thumbnail: '/assets/wedding-card-011/card-bg.png',
+    category: 'wedding'
   }
 ]
 
