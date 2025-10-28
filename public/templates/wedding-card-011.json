@@ -1,0 +1,107 @@
+{
+  "id": "wedding-card-011",
+  "version": "1.0.0",
+  "name": "웨딩 청첩장 템플릿 011 (Floral Elegance)",
+  "description": "화이트 플로럴 엠보싱과 우아한 골드 타이포그래피의 고급스러운 웨딩 카드",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-011/card-bg.png",
+  "figmaNodeId": "29:267",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "decoration": {
+      "type": "image",
+      "x": 52.093,
+      "y": 124.89,
+      "width": 228.813,
+      "height": 102.722,
+      "zIndex": 2,
+      "editable": false,
+      "objectFit": "cover"
+    },
+    "groom": {
+      "type": "text",
+      "x": 167.5,
+      "y": 250.5,
+      "width": "auto",
+      "fontSize": 19,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c8b582",
+      "letterSpacing": -0.3002,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 167.5,
+      "y": 286.25,
+      "width": "auto",
+      "fontSize": 19,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c8b582",
+      "letterSpacing": -0.3002,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 331.25,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c8b582",
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 12일\n토요일 오후 2시",
+      "decoration": "/assets/wedding-card-011/decoration.png",
+      "cardBackground": "/assets/wedding-card-011/card-bg.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-011",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "decoration": "$.data.wedding.decoration",
+        "cardBackground": "$.data.wedding.cardBackground"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
