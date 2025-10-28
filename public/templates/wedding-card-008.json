@@ -1,0 +1,161 @@
+{
+  "id": "wedding-card-008",
+  "version": "1.0.0",
+  "name": "웨딩 청첩장 템플릿 008 (Garden Blossom)",
+  "description": "봄 정원의 하얀 꽃들이 둘러싼 로맨틱한 웨딩 카드",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-008/card-bg.png",
+  "figmaNodeId": "46:1686",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "dday": {
+      "type": "text",
+      "x": 25,
+      "y": 31.25,
+      "width": 292.671,
+      "fontSize": 30,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#FFFFFF",
+      "letterSpacing": -0.474,
+      "align": "left",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true
+    },
+    "mainText": {
+      "type": "text",
+      "x": 167.5,
+      "y": 93.4,
+      "width": 120,
+      "fontSize": 18,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#FFFFFF",
+      "align": "center",
+      "lineHeight": "25px",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "groom": {
+      "type": "text",
+      "x": 167,
+      "y": 227.75,
+      "width": "auto",
+      "fontSize": 26,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#FFFFFF",
+      "letterSpacing": -0.4108,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translate(-50%, -50%)"
+    },
+    "decoration": {
+      "type": "image",
+      "x": 167.5,
+      "y": 257.267,
+      "width": 32,
+      "height": 31.467,
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 167,
+      "y": 318.25,
+      "width": "auto",
+      "fontSize": 26,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#FFFFFF",
+      "letterSpacing": -0.4108,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translate(-50%, -50%)"
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 405.75,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#FFFFFF",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 428.725,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#FFFFFF",
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "dday": "D-999",
+      "mainText": "we are\ngetting married",
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "October 23, 2038",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/common/photo.png",
+      "cardBackground": "/assets/wedding-card-008/card-bg.png",
+      "decoration": "/assets/wedding-card-008/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-008",
+      "data": {
+        "dday": "$.data.wedding.dday",
+        "mainText": "$.data.wedding.mainText",
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}

@@ -224,5 +224,10 @@ export function renderLayoutElement(
     style.overflow = 'hidden'
   }
 
+  // transform 속성 처리 (JSON에서 명시적으로 제공된 경우)
+  if (element.transform) {
+    style.transform = element.transform
+  }
+
   return style
 }
