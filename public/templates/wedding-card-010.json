@@ -1,0 +1,158 @@
+{
+  "id": "wedding-card-010",
+  "version": "1.0.0",
+  "name": "웨딩 청첩장 템플릿 010 (Classic Elegance)",
+  "description": "정사각형 사진과 클래식한 레이아웃의 우아한 웨딩 카드",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-010/photo.png",
+  "figmaNodeId": "37:805",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "title": {
+      "type": "text",
+      "x": 167.5,
+      "y": 20.5,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c19c6f",
+      "letterSpacing": 1.2,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "photo": {
+      "type": "image",
+      "x": 32,
+      "y": 56,
+      "width": 270,
+      "height": 270,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "groom": {
+      "type": "text",
+      "x": 62,
+      "y": 407.083,
+      "width": 68,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c19c6f",
+      "letterSpacing": -0.316,
+      "align": "right",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 406.933,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c19c6f",
+      "letterSpacing": 0.6,
+      "align": "center",
+      "lineHeight": "23px",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 205,
+      "y": 407.083,
+      "width": 68,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c19c6f",
+      "letterSpacing": -0.316,
+      "align": "left",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 444,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c19c6f",
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 464,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c19c6f",
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "title": "The marriage of",
+      "groom": "이 준 서",
+      "separator": "and",
+      "bride": "김 은 재",
+      "date": "2038년 10월 12일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-010/photo.png",
+      "cardBackground": "/assets/wedding-card-010/card-bg.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-010",
+      "data": {
+        "title": "$.data.wedding.title",
+        "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}

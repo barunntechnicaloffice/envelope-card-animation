@@ -37,23 +37,12 @@ export function WeddingCard005({
           style={{
             position: 'absolute',
             inset: 0,
-            overflow: 'hidden',
+            backgroundImage: `url(${data.backgroundImage})`,
+            backgroundSize: layout.background.backgroundSize || 'cover',
+            backgroundPosition: layout.background.backgroundPosition || 'center',
             zIndex: layout.background.zIndex || 0
           }}
-        >
-          <img
-            src={data.backgroundImage}
-            alt=""
-            style={{
-              position: 'absolute',
-              left: '-1.54%',
-              top: 0,
-              width: '102.49%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
-        </div>
+        />
       )}
 
       {/* Decoration Frame (SVG 플로럴 프레임) */}

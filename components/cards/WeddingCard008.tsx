@@ -54,20 +54,12 @@ export function WeddingCard008({
           style={{
             position: 'absolute',
             inset: 0,
-            overflow: 'hidden',
+            backgroundImage: `url(${data.cardBackground})`,
+            backgroundSize: layout.background.backgroundSize || 'cover',
+            backgroundPosition: layout.background.backgroundPosition || 'center',
             zIndex: layout.background.zIndex || 0
           }}
-        >
-          <img
-            src={data.cardBackground}
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
-        </div>
+        />
       )}
 
       {/* D-day 텍스트 */}

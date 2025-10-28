@@ -19,6 +19,7 @@ import type {
   WeddingCardTemplate007Component,
   WeddingCardTemplate008Component,
   WeddingCardTemplate009Component,
+  WeddingCardTemplate010Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -274,6 +275,9 @@ export function renderComponent(
 
     case 'wedding-card-template-009':
       return renderWeddingCardTemplate009(component as WeddingCardTemplate009Component, data, style, className, key)
+
+    case 'wedding-card-template-010':
+      return renderWeddingCardTemplate010(component as WeddingCardTemplate010Component, data, style, className, key)
 
     default:
       console.warn(`Unknown component type: ${(component as any).type}`)
@@ -865,6 +869,54 @@ function renderWeddingCardTemplate009(
 
   return (
     <WeddingCard009
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
+function renderWeddingCardTemplate010(
+  component: WeddingCardTemplate010Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  // WeddingCard010 컴포넌트 import
+  const { WeddingCard010 } = require('@/components/cards/WeddingCard010')
+
+  // JSONPath로 데이터 추출
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+
+    title: component.data.title
+      ? resolveJSONPath(data, component.data.title)
+      : 'The marriage of',
+
+    separator: component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : 'and',
+
+    photo: component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : '/assets/common/photo.png',
+
+    cardBackground: component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : '/assets/wedding-card-010/card-bg.png'
+  }
+
+  // Layout 정보 - JSON의 layout 사용
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard010
       key={key}
       data={weddingData}
       layout={layout}
