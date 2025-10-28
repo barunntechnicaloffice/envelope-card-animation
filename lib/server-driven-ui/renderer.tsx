@@ -18,6 +18,7 @@ import type {
   WeddingCardTemplate006Component,
   WeddingCardTemplate007Component,
   WeddingCardTemplate008Component,
+  WeddingCardTemplate009Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -270,6 +271,9 @@ export function renderComponent(
 
     case 'wedding-card-template-008':
       return renderWeddingCardTemplate008(component as WeddingCardTemplate008Component, data, style, className, key)
+
+    case 'wedding-card-template-009':
+      return renderWeddingCardTemplate009(component as WeddingCardTemplate009Component, data, style, className, key)
 
     default:
       console.warn(`Unknown component type: ${(component as any).type}`)
@@ -810,6 +814,57 @@ function renderWeddingCardTemplate008(
 
   return (
     <WeddingCard008
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
+function renderWeddingCardTemplate009(
+  component: WeddingCardTemplate009Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  // WeddingCard009 컴포넌트 import
+  const { WeddingCard009 } = require('@/components/cards/WeddingCard009')
+
+  // JSONPath로 데이터 추출
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+
+    groomLabel: component.data.groomLabel
+      ? resolveJSONPath(data, component.data.groomLabel)
+      : 'GROOM',
+
+    brideLabel: component.data.brideLabel
+      ? resolveJSONPath(data, component.data.brideLabel)
+      : 'BRIDE',
+
+    photo: component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : '/assets/common/photo.png',
+
+    cardBackground: component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : '/assets/wedding-card-009/card-bg.png',
+
+    decoration: component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : undefined
+  }
+
+  // Layout 정보 - JSON의 layout 사용
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard009
       key={key}
       data={weddingData}
       layout={layout}

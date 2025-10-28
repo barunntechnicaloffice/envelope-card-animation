@@ -1,0 +1,154 @@
+{
+  "id": "wedding-card-009",
+  "version": "1.0.0",
+  "name": "웨딩 청첩장 템플릿 009 (Minimal Photo)",
+  "description": "사진이 돋보이는 미니멀한 웨딩 카드",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-009/photo.png",
+  "figmaNodeId": "41:753",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 353,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "groomLabel": {
+      "type": "text",
+      "x": 72,
+      "y": 387,
+      "width": 42,
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c2b4a3",
+      "letterSpacing": -0.158,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 62.5,
+      "y": 406,
+      "width": 61,
+      "fontSize": 18,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.2844,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "decoration": {
+      "type": "image",
+      "x": 167.5,
+      "y": 389.81,
+      "width": 40,
+      "height": 37.882,
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "brideLabel": {
+      "type": "text",
+      "x": 227,
+      "y": 387,
+      "width": 30,
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c2b4a3",
+      "letterSpacing": -0.158,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "bride": {
+      "type": "text",
+      "x": 211.5,
+      "y": 406,
+      "width": 61,
+      "fontSize": 18,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.2844,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 462.5,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c2b4a3",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groomLabel": "GROOM",
+      "groom": "이 준 서",
+      "brideLabel": "BRIDE",
+      "bride": "김 은 재",
+      "date": "October 23, 2038",
+      "photo": "/assets/wedding-card-009/photo.png",
+      "cardBackground": "/assets/wedding-card-009/card-bg.png",
+      "decoration": "/assets/wedding-card-009/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "wedding-card-template-009",
+      "data": {
+        "groomLabel": "$.data.wedding.groomLabel",
+        "groom": "$.data.wedding.groom",
+        "brideLabel": "$.data.wedding.brideLabel",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}

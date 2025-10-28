@@ -68,7 +68,7 @@
       "fontWeight": 700,
       "fontStyle": "normal",
       "color": "#b17f4a",
-      "letterSpacing": 4.8,
+      "letterSpacing": 0,
       "lineHeight": "25px",
       "align": "center",
       "textTransform": "uppercase",
