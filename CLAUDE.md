@@ -7,9 +7,7 @@
   - [좌표 시스템 변환 필수 (bgOffset)](#-좌표-시스템-변환-필수-bgoffset)
   - [SDUI 아키텍처 필수 사용](#️-sdui-아키텍처-필수-사용)
 - [템플릿 구조 개요](#템플릿-구조-개요)
-- [방법 1: wedding-card-001 기반 (타입 시스템)](#방법-1-wedding-card-001-기반-타입-시스템)
-- [방법 2: wedding-card-002 기반 (수동 계산)](#방법-2-wedding-card-002-기반-수동-계산)
-- [어떤 방법을 선택할까?](#어떤-방법을-선택할까)
+- [SDUI 템플릿 개발 방법](#sdui-템플릿-개발-방법)
 - [단계별 템플릿 개발 프로세스](#단계별-템플릿-개발-프로세스)
 - [체크리스트](#체크리스트)
 
@@ -127,110 +125,68 @@ export function WeddingCardXXX({ data, layout, className, style }) {
 ```
 envelope-card-animation/
 ├── components/cards/
-│   ├── WeddingCard.tsx        # 템플릿 001 (타입 시스템 기반)
-│   └── WeddingCard002.tsx     # 템플릿 002 (수동 계산 기반)
+│   ├── WeddingCard.tsx        # 템플릿 001 (SDUI)
+│   ├── WeddingCard002.tsx     # 템플릿 002 (SDUI)
+│   ├── WeddingCard003.tsx     # 템플릿 003 (SDUI)
+│   ├── WeddingCard004.tsx     # 템플릿 004 (SDUI)
+│   └── WeddingCard005.tsx     # 템플릿 005 (SDUI) ← 최신 예시
 ├── types/
-│   ├── card-layout.ts         # 레이아웃 타입 정의 (방법 1에서 사용)
+│   ├── server-driven-ui/
+│   │   └── schema.ts          # SDUI 타입 정의
 │   └── wedding.ts             # 데이터 타입 정의
 ├── lib/
-│   └── layout-utils.ts        # 백분율 변환 유틸리티
+│   ├── layout-utils.ts        # renderLayoutElement 유틸리티
+│   └── server-driven-ui/
+│       └── renderer.tsx       # SDUI 렌더러
 ├── public/templates/
-│   ├── wedding-card-001.json  # 템플릿 001 스키마
-│   └── wedding-card-002.json  # 템플릿 002 스키마
+│   ├── wedding-card-001.json  # 템플릿 001 JSON 스키마
+│   ├── wedding-card-002.json  # 템플릿 002 JSON 스키마
+│   ├── wedding-card-003.json  # 템플릿 003 JSON 스키마
+│   ├── wedding-card-004.json  # 템플릿 004 JSON 스키마
+│   └── wedding-card-005.json  # 템플릿 005 JSON 스키마
 └── app/templates/[id]/
     └── page.tsx               # 템플릿 라우트
 ```
 
 ---
 
-## 방법 1: wedding-card-001 기반 (타입 시스템)
+## SDUI 템플릿 개발 방법
 
-**권장 사항:** 복잡한 템플릿, 재사용 가능한 레이아웃
+### 필요한 파일
+1. `components/cards/WeddingCardXXX.tsx` - SDUI 컴포넌트
+2. `public/templates/wedding-card-xxx.json` - JSON 레이아웃 스키마
+3. `types/server-driven-ui/schema.ts` - TypeScript 타입 정의
+4. `lib/server-driven-ui/renderer.tsx` - 렌더러 함수 등록
 
-### ✅ 장점
-- 타입 안정성 (TypeScript)
-- 레이아웃 유틸리티 재사용
-- JSON으로 레이아웃 정의 가능
-- 유지보수 쉬움
-
-### 📁 필요한 파일
-1. `types/card-layout.ts` - 레이아웃 타입 정의
-2. `lib/layout-utils.ts` - 백분율 변환 함수
-3. `components/cards/WeddingCardXXX.tsx` - 컴포넌트
-4. `public/templates/wedding-card-xxx.json` - 템플릿 스키마
-
-### 📝 구현 단계
-
-#### 1. 타입 정의 추가 (`types/card-layout.ts`)
+### 컴포넌트 구현 예시
 
 ```typescript
-// 기존 타입 확장 또는 새 인터페이스 생성
-export interface WeddingCard003Layout {
-  baseSize: BaseSize
-  background: { zIndex: number }
-  photo: ElementLayout
-  groom: TextElementLayout
-  bride: TextElementLayout
-  // ... 템플릿 고유 요소 추가
-  specialElement: ElementLayout
-}
-
-// 기본 레이아웃 상수 정의
-export const DEFAULT_WEDDING_CARD_003_LAYOUT: WeddingCard003Layout = {
-  baseSize: {
-    width: 335,
-    height: 515
-  },
-  background: { zIndex: 0 },
-
-  photo: {
-    x: 52,        // Figma 좌표 - 컨테이너 오프셋
-    y: 106,       // Figma 좌표 - 컨테이너 오프셋
-    width: 144,
-    height: 144,
-    zIndex: 1
-  },
-
-  groom: {
-    x: 24,
-    y: 395,
-    width: 116,
-    fontSize: 20,
-    fontFamily: "'NanumMyeongjo', serif",
-    color: '#333333',
-    letterSpacing: -0.316,
-    align: 'center',
-    zIndex: 2
-  }
-  // ... 나머지 요소
-}
-```
-
-#### 2. 컴포넌트 생성 (`components/cards/WeddingCard003.tsx`)
-
-```typescript
+// components/cards/WeddingCard005.tsx
 import type { WeddingData } from '@/types/wedding'
-import type { WeddingCard003Layout } from '@/types/card-layout'
-import { DEFAULT_WEDDING_CARD_003_LAYOUT } from '@/types/card-layout'
-import {
-  elementLayoutToStyle,
-  textLayoutToStyle,
-  textBlockLayoutToStyle
-} from '@/lib/layout-utils'
+import { renderLayoutElement } from '@/lib/layout-utils'
 
-interface WeddingCard003Props {
+interface WeddingCard005Props {
   data: WeddingData
-  layout?: WeddingCard003Layout  // 레이아웃 커스터마이징 가능
+  layout?: any  // JSON layout 객체
   className?: string
   style?: React.CSSProperties
 }
 
-export function WeddingCard003({
+export function WeddingCard005({
   data,
-  layout = DEFAULT_WEDDING_CARD_003_LAYOUT,
+  layout,
   className,
   style
-}: WeddingCard003Props) {
+}: WeddingCard005Props) {
+  // Layout이 없으면 에러 메시지 표시
+  if (!layout) {
+    return (
+      <div style={{...style, padding: '20px', backgroundColor: '#fff'}}>
+        Layout이 필요합니다
+      </div>
+    )
+  }
+
   const { baseSize } = layout
 
   return (
@@ -244,404 +200,101 @@ export function WeddingCard003({
         backgroundColor: '#FFFFFF'
       }}
     >
-      {/* 배경 이미지 */}
-      <div
-        style={{
+      {/* 배경 이미지 - 조건부 렌더링 */}
+      {data.backgroundImage && layout.background && (
+        <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url(${data.cardBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          zIndex: layout.background.zIndex
-        }}
-      />
-
-      {/* 사진 - 레이아웃 유틸리티 사용 */}
-      <div style={{
-        ...elementLayoutToStyle(layout.photo, baseSize),
-        overflow: 'hidden'
-      }}>
-        <img
-          src={data.photo}
-          alt="Wedding Photo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-          }}
-        />
-      </div>
-
-      {/* 신랑 이름 - 텍스트 레이아웃 유틸리티 사용 */}
-      <p style={textLayoutToStyle(layout.groom, baseSize)}>
-        {data.groom}
-      </p>
-
-      {/* 신부 이름 */}
-      <p style={textLayoutToStyle(layout.bride, baseSize)}>
-        {data.bride}
-      </p>
-
-      {/* 날짜 및 장소 - 텍스트 블록 유틸리티 사용 */}
-      <div style={textBlockLayoutToStyle(layout.dateVenue, baseSize)}>
-        <p style={{ margin: 0 }}>{data.date}</p>
-        <p style={{ margin: 0 }}>{data.venue}</p>
-      </div>
-    </div>
-  )
-}
-```
-
-#### 3. 레이아웃 유틸리티 참고 (`lib/layout-utils.ts`)
-
-```typescript
-// 이미 구현되어 있는 유틸리티 함수들:
-
-// 1. 픽셀 → 백분율 변환
-pxToPercent(px: number, base: number): string
-
-// 2. Position → CSS 스타일
-positionToStyle(position: Position, baseSize: BaseSize): CSSProperties
-
-// 3. Size → CSS 스타일
-sizeToStyle(size: Size, baseSize: BaseSize): CSSProperties
-
-// 4. ElementLayout → CSS 스타일 (위치 + 크기)
-elementLayoutToStyle(layout: ElementLayout, baseSize: BaseSize): CSSProperties
-
-// 5. TextElementLayout → CSS 스타일 (텍스트)
-textLayoutToStyle(layout: TextElementLayout, baseSize: BaseSize): CSSProperties
-
-// 6. TextBlockLayout → CSS 스타일 (텍스트 블록)
-textBlockLayoutToStyle(layout: TextBlockLayout, baseSize: BaseSize): CSSProperties
-```
-
----
-
-## 방법 2: wedding-card-002 기반 (수동 계산)
-
-**권장 사항:** 간단한 템플릿, 빠른 프로토타입
-
-### ✅ 장점
-- 간단하고 직관적
-- 외부 의존성 없음
-- Figma 좌표를 바로 사용
-
-### ❌ 단점
-- 타입 안정성 부족
-- 코드 중복 발생 가능
-- 레이아웃 변경 시 수동 수정 필요
-
-### 📁 필요한 파일
-1. `components/cards/WeddingCardXXX.tsx` - 컴포넌트만 필요
-2. `public/templates/wedding-card-xxx.json` - 템플릿 스키마
-
-### 📝 구현 단계
-
-#### 1. 컴포넌트 생성 (`components/cards/WeddingCard003.tsx`)
-
-```typescript
-import type { WeddingData } from '@/types/wedding'
-
-interface WeddingCard003Props {
-  data: WeddingData
-  className?: string
-  style?: React.CSSProperties
-}
-
-export function WeddingCard003({
-  data,
-  className,
-  style
-}: WeddingCard003Props) {
-  // Figma baseSize: 335px × 515px
-  const baseWidth = 335
-  const baseHeight = 515
-
-  // ⚠️ 중요: Figma 캔버스 기준 BG 시작점 (메타데이터에서 확인)
-  const bgOffsetY = 148  // BG의 캔버스 Y 좌표
-  const bgOffsetX = 20   // BG의 캔버스 X 좌표
-
-  // 백분율 변환 헬퍼 함수 (BG 기준 상대 좌표)
-  const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
-    `${((canvasPx - canvasOffset) / base) * 100}%`
-
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#FFFFFF'
-      }}
-    >
-      {/* 배경 이미지 */}
-      {data.cardBackground && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${data.cardBackground})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            zIndex: 0
-          }}
-        />
+          zIndex: layout.background.zIndex || 0
+        }}>
+          <img
+            src={data.backgroundImage}
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
+        </div>
       )}
 
-      {/* 사진 - Figma 캔버스 y:226 → BG 기준 78px */}
-      <div style={{
-        position: 'absolute',
-        left: pxToPercent(116, bgOffsetX, baseWidth),
-        top: pxToPercent(226, bgOffsetY, baseHeight),
-        width: pxToPercent(144, 0, baseWidth),
-        height: pxToPercent(144, 0, baseHeight),
-        overflow: 'hidden',
-        zIndex: 1
-      }}>
-        <img
-          src={data.photo}
-          alt="Wedding Photo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-          }}
-        />
-      </div>
-
-      {/* 신랑 이름 - Figma 캔버스 y:530 → BG 기준 382px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(20, bgOffsetX, baseWidth),
-        top: pxToPercent(530, bgOffsetY, baseHeight),
-        width: pxToPercent(116, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '18px',
-        color: '#333333',
-        letterSpacing: '-0.2844px',
-        textAlign: 'right',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.groom}
-      </p>
+      {/* 신랑 이름 - renderLayoutElement 사용 */}
+      {layout.groom && (
+        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
+          {data.groom}
+        </p>
+      )}
 
       {/* 신부 이름 */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(243, bgOffsetX, baseWidth),
-        top: pxToPercent(530, bgOffsetY, baseHeight),
-        width: pxToPercent(112, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '18px',
-        color: '#333333',
-        letterSpacing: '-0.2844px',
-        textAlign: 'left',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.bride}
-      </p>
+      {layout.bride && (
+        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
+          {data.bride}
+        </p>
+      )}
 
-      {/* 날짜 - Figma 캔버스 y:582 → BG 기준 434px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(32, bgOffsetX, baseWidth),
-        top: pxToPercent(582, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontSize: '12px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.date}
-      </p>
+      {/* 날짜 */}
+      {layout.date && (
+        <p style={renderLayoutElement('date', layout.date, baseSize, data)}>
+          {data.date}
+        </p>
+      )}
 
-      {/* 장소 - Figma 캔버스 y:602 → BG 기준 454px */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(32, bgOffsetX, baseWidth),
-        top: pxToPercent(602, bgOffsetY, baseHeight),
-        width: pxToPercent(311, 0, baseWidth),
-        fontFamily: "'NanumMyeongjo', serif",
-        fontSize: '12px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        margin: 0,
-        zIndex: 2
-      }}>
-        {data.venue}
-      </p>
+      {/* 장소 */}
+      {layout.venue && (
+        <p style={renderLayoutElement('venue', layout.venue, baseSize, data)}>
+          {data.venue}
+        </p>
+      )}
     </div>
   )
 }
 ```
 
-#### 2. Figma 좌표 계산 방법
-
-**⚠️ 중요: 반드시 Figma 메타데이터로 BG 오프셋 확인!**
+### renderLayoutElement 함수 참고
 
 ```typescript
-// 1. Figma MCP로 메타데이터 확인
-mcp__figma-dev-mode-mcp-server__get_metadata({
-  nodeId: "13:263"
-})
+// lib/layout-utils.ts에 구현되어 있음
 
-// 2. 결과에서 BG(배경) 좌표 확인
-<frame id="13:263" name="template" x="20" y="148">
-  <rounded-rectangle id="2:2" name="BG" x="20" y="148" />
-                                           ^^^  ^^^
-  // bgOffsetX = 20, bgOffsetY = 148
+export function renderLayoutElement(
+  key: string,
+  element: any,
+  baseSize: BaseSize,
+  data: Record<string, any>
+): React.CSSProperties {
+  const pxToPercent = (px: number, base: number) => `${(px / base) * 100}%`
 
-// 3. 각 요소의 절대 좌표에서 BG 오프셋을 뺌
-// 예: photo x="116" y="226"
-// → BG 기준: (116-20, 226-148) = (96, 78)
-```
+  const style: React.CSSProperties = {
+    position: 'absolute',
+    left: pxToPercent(element.x, baseSize.width),
+    top: pxToPercent(element.y, baseSize.height),
+    zIndex: element.zIndex || 0,
+    margin: 0
+  }
 
-#### 3. Figma의 "auto" 태그 처리하기
+  // width 처리 (auto 지원)
+  if (element.width !== undefined) {
+    style.width = element.width === 'auto'
+      ? 'auto'
+      : pxToPercent(element.width, baseSize.width)
+  }
 
-**⚠️ 새로운 기능: Figma에서 요소 이름에 `auto` 태그가 있으면 CSS `width: auto` 적용**
+  // 텍스트 요소 스타일링
+  if (element.type === 'text') {
+    style.fontFamily = element.fontFamily || "'NanumMyeongjo', serif"
+    style.fontSize = `${element.fontSize || 16}px`
+    style.fontWeight = element.fontWeight || 400
+    style.color = element.color || '#333333'
+    style.textAlign = element.align || 'center'
 
-Figma 메타데이터에서 요소 이름에 `auto` 태그가 있는 경우 (예: `groom auto`, `date auto`), 해당 요소의 width를 CSS `auto`로 설정할 수 있습니다. 이는 텍스트 길이에 따라 자동으로 너비가 조정되도록 합니다.
+    if (element.centerAlign) {
+      style.transform = 'translateX(-50%)'
+    }
+  }
 
-**구현 방법:**
-
-```typescript
-export function WeddingCard003({
-  data,
-  className,
-  style
-}: WeddingCard003Props) {
-  const baseWidth = 335
-  const baseHeight = 515
-  const bgOffsetY = 148
-  const bgOffsetX = 20
-
-  // 백분율 변환 헬퍼 함수
-  const pxToPercent = (canvasPx: number, canvasOffset: number, base: number) =>
-    `${((canvasPx - canvasOffset) / base) * 100}%`
-
-  // ✨ "auto" 또는 픽셀 값을 처리하는 헬퍼 함수
-  const toStyleValue = (value: number | "auto", offset: number, base: number): string | number =>
-    value === "auto" ? "auto" : pxToPercent(value, offset, base)
-
-  return (
-    <div>
-      {/* Figma에서 "groom auto"로 표시된 경우 */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(82, bgOffsetX, baseWidth),
-        top: pxToPercent(555, bgOffsetY, baseHeight),
-        width: toStyleValue("auto", 0, baseWidth), // ✨ "auto" 사용
-        fontFamily: "'NanumMyeongjo', serif",
-        fontWeight: 700,
-        fontSize: '20px',
-        textAlign: 'right'
-      }}>
-        {data.groom}
-      </p>
-
-      {/* Figma에서 "date auto"로 표시된 경우 */}
-      <p style={{
-        position: 'absolute',
-        left: pxToPercent(32, bgOffsetX, baseWidth),
-        top: pxToPercent(592, bgOffsetY, baseHeight),
-        width: toStyleValue("auto", 0, baseWidth), // ✨ "auto" 사용
-        fontFamily: "'NanumMyeongjo', serif",
-        fontSize: '12px',
-        textAlign: 'center'
-      }}>
-        {data.date}
-      </p>
-
-      {/* 고정 너비가 필요한 경우 */}
-      <p style={{
-        width: pxToPercent(311, 0, baseWidth) // 일반 백분율 사용
-      }}>
-        고정 너비 텍스트
-      </p>
-    </div>
-  )
+  return style
 }
 ```
-
-**장점:**
-- 텍스트 길이에 따라 자동으로 너비 조정
-- 반응형 레이아웃에 유용
-- Figma 디자인 의도를 그대로 반영
-
-**사용 시점:**
-- 이름, 날짜 등 길이가 가변적인 텍스트
-- 중앙 정렬이 필요 없는 텍스트 (left/right align)
-- "그리고" 같은 짧은 단어
-
-**⚠️ 권장 규칙: 텍스트는 기본적으로 auto width 사용**
-
-Figma에서 `auto` 태그가 없더라도, **모든 텍스트 요소는 기본적으로 `width: auto`를 사용하는 것을 권장**합니다:
-
-```typescript
-// ✅ 권장: 텍스트는 기본 auto
-<p style={{
-  width: toStyleValue("auto", 0, baseWidth),  // 항상 auto 사용
-  textAlign: 'center'
-}}>
-  {data.groom}
-</p>
-
-// ❌ 비권장: 고정 너비는 특별한 경우만
-<p style={{
-  width: pxToPercent(311, 0, baseWidth),  // 레이아웃 제약이 있을 때만
-}}>
-  {data.groom}
-</p>
-```
-
-**이유:**
-- 텍스트 길이는 가변적 (이름, 날짜, 장소 등)
-- 반응형 레이아웃에 유리
-- 다국어 지원 시 자동 대응
-- 고정 너비로 인한 텍스트 잘림 방지
-
-**주의사항:**
-- `textAlign: 'center'`와 함께 사용 시 `left: '50%', transform: 'translateX(-50%)'` 필요
-- 이미지나 컨테이너는 고정 너비 사용 (레이아웃 유지)
-
----
-
-## 어떤 방법을 선택할까?
-
-### ⚠️ 2025년 10월 27일부터: SDUI 필수 사용
-
-**모든 새 템플릿은 방법 1 (SDUI 패턴)을 사용해야 합니다.**
-
-### ✅ 방법 1 (wedding-card-001 SDUI) - **필수 사용**
-- ✅ **모든 새 템플릿에 필수** (2025-10-27부터)
-- ✅ 템플릿이 복잡할 때 (10개 이상의 요소)
-- ✅ 여러 변형이 필요할 때 (레이아웃 재사용)
-- ✅ 타입 안정성이 중요할 때
-- ✅ 장기적으로 유지보수할 템플릿
-- ✅ Server-Driven UI 아키텍처 준수
-
-### ❌ 방법 2 (wedding-card-002 Hardcoded) - **사용 금지**
-- ❌ **더 이상 사용하지 마세요** (Deprecated)
-- ⚠️ 기존 템플릿 (001-004) 참고용으로만 남김
-- ⚠️ 새 템플릿 개발 시 사용 금지
-- ⚠️ PR 리뷰 시 Hardcoded 방식은 승인 거부됨
-
-**이유:**
-- SDUI 아키텍처로 프로젝트 전체 통일
-- JSON 기반 동적 렌더링으로 유지보수성 향상
-- 서버에서 레이아웃 제어 가능
-- 타입 안정성 및 확장성 확보
 
 ---
 
@@ -829,6 +482,17 @@ type LayoutElementType =
       "height": 144,
       "zIndex": 1,
       "editable": true
+    },
+    "groom": {
+      "type": "text",
+      "x": 24,
+      "y": 395,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "color": "#333333",
+      "zIndex": 2,
+      "editable": true
     }
     // ... 나머지 레이아웃
   },
@@ -897,7 +561,18 @@ function renderWeddingCardTemplate003(
       : '/assets/wedding-card-003/card-bg.png'
   }
 
-  return <WeddingCard003 key={key} data={weddingData} style={style} className={className} />
+  // ⚠️ 중요: layout prop 전달 필수
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard003
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
 }
 ```
 
@@ -996,7 +671,7 @@ open http://localhost:8080/template-validator.html
 ```
 
 **Template Validator 페이지 기능:**
-- ✅ **모든 템플릿 자동 로드**: wedding-card-001 ~ 004 자동 로딩
+- ✅ **모든 템플릿 자동 로드**: wedding-card-001 ~ 005 자동 로딩
 - ✅ **Side-by-Side 비교**: Hardcoded vs SDUI 렌더링 동시 표시
 - ✅ **실제 Assets 렌더링**: /assets/ 경로의 실제 이미지 사용
 - ✅ **통계 대시보드**: 통과/실패 템플릿 개수 집계
@@ -1101,24 +776,23 @@ const bgOffsetY = 148
 3. 모든 요소가 template 바로 아래로 이동됨
 4. 메타데이터 다시 확인
 
-### 문제: 백분율 계산이 복잡함
+### 문제: Layout prop이 컴포넌트에 전달되지 않음
 
-**해결:** 방법 1 사용 (layout-utils.ts)
+**해결:**
 ```typescript
-// 수동 계산 대신 유틸리티 함수 사용
-import { elementLayoutToStyle } from '@/lib/layout-utils'
+// renderer.tsx에서 layout prop 전달 확인
+function renderWeddingCardTemplate003(...) {
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
 
-// Before
-<div style={{
-  position: 'absolute',
-  left: `${(96 / 335) * 100}%`,
-  top: `${(78 / 515) * 100}%`,
-  width: `${(144 / 335) * 100}%`,
-  height: `${(144 / 515) * 100}%`
-}}>
-
-// After
-<div style={elementLayoutToStyle(layout.photo, baseSize)}>
+  return (
+    <WeddingCard003
+      data={weddingData}
+      layout={layout}  // ← 필수!
+      style={style}
+      className={className}
+    />
+  )
+}
 ```
 
 ---
@@ -1127,9 +801,10 @@ import { elementLayoutToStyle } from '@/lib/layout-utils'
 
 - [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) - Figma 디자인 가이드
 - [API_SPEC.md](./API_SPEC.md) - API 명세서
-- [types/card-layout.ts](./types/card-layout.ts) - 레이아웃 타입 정의
-- [lib/layout-utils.ts](./lib/layout-utils.ts) - 유틸리티 함수
+- [lib/layout-utils.ts](./lib/layout-utils.ts) - renderLayoutElement 함수
+- [components/cards/WeddingCard005.tsx](./components/cards/WeddingCard005.tsx) - 최신 SDUI 예시
+- [public/templates/wedding-card-005.json](./public/templates/wedding-card-005.json) - JSON 스키마 예시
 
 ---
 
-**💡 팁:** 처음 템플릿을 만들 때는 wedding-card-001을 복사해서 시작하는 것을 권장합니다. 타입 시스템과 유틸리티 함수가 이미 구현되어 있어 개발 속도가 빠릅니다.
+**💡 팁:** 처음 템플릿을 만들 때는 wedding-card-005를 복사해서 시작하는 것을 권장합니다. 최신 SDUI 패턴과 renderLayoutElement 사용법이 모두 구현되어 있어 개발 속도가 빠릅니다.
