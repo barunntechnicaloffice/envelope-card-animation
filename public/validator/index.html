@@ -238,16 +238,22 @@
 
   <script>
     const TEMPLATES = [
-      { id: 'wedding-card-001', name: 'Wedding Card 001' },
-      { id: 'wedding-card-002', name: 'Wedding Card 002' },
-      { id: 'wedding-card-003', name: 'Wedding Card 003' },
-      { id: 'wedding-card-004', name: 'Wedding Card 004' },
-      { id: 'wedding-card-005', name: 'Wedding Card 005 (Floral Frame)' }
+      { id: 'wedding-card-001', name: 'Wedding Card 001 - Classic Elegance' },
+      { id: 'wedding-card-002', name: 'Wedding Card 002 - Modern Minimalist' },
+      { id: 'wedding-card-003', name: 'Wedding Card 003 - Floral Romance' },
+      { id: 'wedding-card-004', name: 'Wedding Card 004 - Vintage Charm' },
+      { id: 'wedding-card-005', name: 'Wedding Card 005 - Floral Frame' },
+      { id: 'wedding-card-006', name: 'Wedding Card 006 - Golden Luxury' },
+      { id: 'wedding-card-007', name: 'Wedding Card 007 - Sakura Blossom' },
+      { id: 'wedding-card-008', name: 'Wedding Card 008 - Royal Blue' },
+      { id: 'wedding-card-009', name: 'Wedding Card 009 - Pastel Dream' },
+      { id: 'wedding-card-010', name: 'Wedding Card 010 - Autumn Leaves' },
+      { id: 'wedding-card-011', name: 'Wedding Card 011 - Floral Elegance' }
     ];
 
     async function loadTemplateMetadata(templateId) {
       try {
-        const response = await fetch(`/public/templates/${templateId}.json`);
+        const response = await fetch(`/templates/${templateId}.json`);
         if (!response.ok) throw new Error(`Failed to load ${templateId}.json`);
 
         const data = await response.json();

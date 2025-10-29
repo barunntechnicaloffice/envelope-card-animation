@@ -336,19 +336,9 @@
       const baseWidth = layout.baseSize.width;
       const baseHeight = layout.baseSize.height;
 
-      // Template-specific bgOffset (from Figma metadata)
-      const bgOffsets = {
-        'wedding-card-001': { x: 0, y: 0 },
-        'wedding-card-002': { x: 20, y: 148 },
-        'wedding-card-003': { x: 20, y: 148 },
-        'wedding-card-004': { x: 20, y: 148 }
-      };
-      const offset = bgOffsets[data.id] || { x: 0, y: 0 };
-      const bgOffsetX = offset.x;
-      const bgOffsetY = offset.y;
-
-      const pxToPercent = (canvasPx, canvasOffset, base) =>
-        `${((canvasPx - canvasOffset) / base) * 100}%`;
+      // ⚠️ IMPORTANT: JSON layout coordinates are already BG-relative (bgOffset already subtracted)
+      // No need to subtract bgOffset again!
+      const pxToPercent = (px, base) => `${(px / base) * 100}%`;
 
       container.innerHTML = `
         <div style="
@@ -411,10 +401,10 @@
               return `
                 <div style="
                   position: absolute;
-                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
-                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
-                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
-                  height: ${pxToPercent(element.height, 0, baseHeight)};
+                  left: ${pxToPercent(element.x, baseWidth)};
+                  top: ${pxToPercent(element.y, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, baseWidth)};
+                  height: ${pxToPercent(element.height, baseHeight)};
                   overflow: hidden;
                   z-index: ${element.zIndex};
                 ">
@@ -425,15 +415,14 @@
 
             if (element.type === 'text') {
               const textAlign = element.align || 'center';
-              const useCenterAlign = element.centerAlign === true;
-              const transform = useCenterAlign ? 'translateX(-50%)' : 'none';
+              const transform = element.transform || 'none';
 
               return `
                 <p style="
                   position: absolute;
-                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
-                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
-                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
+                  left: ${pxToPercent(element.x, baseWidth)};
+                  top: ${pxToPercent(element.y, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, baseWidth)};
                   transform: ${transform};
                   font-family: ${element.fontFamily || "'NanumMyeongjo', serif"};
                   font-weight: ${element.fontWeight || 400};
@@ -444,7 +433,7 @@
                   text-transform: ${element.textTransform || 'none'};
                   line-height: ${element.lineHeight || 1.5};
                   margin: 0;
-                  white-space: nowrap;
+                  white-space: ${element.whiteSpace || 'nowrap'};
                   z-index: ${element.zIndex};
                 ">${weddingData[key] || key}</p>
               `;
@@ -463,19 +452,9 @@
       const baseWidth = layout.baseSize.width;
       const baseHeight = layout.baseSize.height;
 
-      // Template-specific bgOffset (from Figma metadata)
-      const bgOffsets = {
-        'wedding-card-001': { x: 0, y: 0 },
-        'wedding-card-002': { x: 20, y: 148 },
-        'wedding-card-003': { x: 20, y: 148 },
-        'wedding-card-004': { x: 20, y: 148 }
-      };
-      const offset = bgOffsets[data.id] || { x: 0, y: 0 };
-      const bgOffsetX = offset.x;
-      const bgOffsetY = offset.y;
-
-      const pxToPercent = (canvasPx, canvasOffset, base) =>
-        `${((canvasPx - canvasOffset) / base) * 100}%`;
+      // ⚠️ IMPORTANT: JSON layout coordinates are already BG-relative (bgOffset already subtracted)
+      // No need to subtract bgOffset again!
+      const pxToPercent = (px, base) => `${(px / base) * 100}%`;
 
       container.innerHTML = `
         <div style="
@@ -530,10 +509,10 @@
               return `
                 <div style="
                   position: absolute;
-                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
-                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
-                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
-                  height: ${pxToPercent(element.height, 0, baseHeight)};
+                  left: ${pxToPercent(element.x, baseWidth)};
+                  top: ${pxToPercent(element.y, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, baseWidth)};
+                  height: ${pxToPercent(element.height, baseHeight)};
                   overflow: hidden;
                   z-index: ${element.zIndex};
                 ">
@@ -544,15 +523,14 @@
 
             if (element.type === 'text') {
               const textAlign = element.align || 'center';
-              const useCenterAlign = element.centerAlign === true;
-              const transform = useCenterAlign ? 'translateX(-50%)' : 'none';
+              const transform = element.transform || 'none';
 
               return `
                 <p style="
                   position: absolute;
-                  left: ${pxToPercent(element.x, bgOffsetX, baseWidth)};
-                  top: ${pxToPercent(element.y, bgOffsetY, baseHeight)};
-                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, 0, baseWidth)};
+                  left: ${pxToPercent(element.x, baseWidth)};
+                  top: ${pxToPercent(element.y, baseHeight)};
+                  width: ${element.width === 'auto' ? 'auto' : pxToPercent(element.width, baseWidth)};
                   transform: ${transform};
                   font-family: ${element.fontFamily || "'NanumMyeongjo', serif"};
                   font-weight: ${element.fontWeight || 400};
@@ -563,7 +541,7 @@
                   text-transform: ${element.textTransform || 'none'};
                   line-height: ${element.lineHeight || 1.5};
                   margin: 0;
-                  white-space: nowrap;
+                  white-space: ${element.whiteSpace || 'nowrap'};
                   z-index: ${element.zIndex};
                 ">${weddingData[key] || key}</p>
               `;
