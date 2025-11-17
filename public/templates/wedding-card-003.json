@@ -127,7 +127,6 @@
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/common/photo.png",
-      "backgroundImage": "/assets/wedding-card-003/card-bg.png",
       "decoration": "/assets/wedding-card-003/decoration.png",
       "title": "WEDDING INVITATION"
     }
@@ -142,7 +141,7 @@
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
-        "cardBackground": "$.data.wedding.backgroundImage",
+        "cardBackground": "$.set.cards.main",
         "decoration": "$.data.wedding.decoration",
         "title": "$.data.wedding.title"
       }

@@ -123,7 +123,6 @@
       "bride": "김 은 재",
       "date": "October 23, 2038",
       "venue": "메종 드 프리미어 그랜드홀",
-      "backgroundImage": "/assets/wedding-card-005/card-bg.png",
       "decorationFrame": "/assets/wedding-card-005/decoration-frame.svg",
       "decoration": "/assets/wedding-card-005/decoration.png"
     }
@@ -137,7 +136,7 @@
         "bride": "$.data.wedding.bride",
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
-        "backgroundImage": "$.data.wedding.backgroundImage",
+        "backgroundImage": "$.set.cards.main",
         "decorationFrame": "$.data.wedding.decorationFrame",
         "decoration": "$.data.wedding.decoration"
       }

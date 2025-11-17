@@ -412,7 +412,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                   left: 0,
                   zIndex: -1, // 내지(0) 뒤
                   opacity: phase === 'card-rotate' ? 0 : 1,
-                  transition: 'opacity 0.3s ease-out',
+                  transition: 'opacity 0.15s ease-out',
                   pointerEvents: 'none',
                   backgroundImage: `url(${envelopePattern})`,
                   backgroundSize: 'cover',
@@ -429,7 +429,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                   left: '2%', // 뚜껑 내지와 동일한 left (97% width 기준)
                   zIndex: 0, // 카드(1)와 플랩들(3,4) 아래
                   opacity: phase === 'card-rotate' ? 0 : 0.95,
-                  transition: 'opacity 0.3s ease-out',
+                  transition: 'opacity 0.15s ease-out',
                   pointerEvents: 'none',
                   backgroundImage: `url(${envelopeLining})`,
                   backgroundSize: 'cover',
@@ -439,7 +439,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
 
 
                 {/* 아래쪽 플랩 - pattern.png 직접 적용 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 4, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 4, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.15s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
                   <defs>
                     <pattern id="bottomPattern" patternUnits="objectBoundingBox" width="1" height="1">
                       <image href={envelopePattern} width="335" height="173" preserveAspectRatio="xMidYMid slice" />
@@ -449,7 +449,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                 </svg>
 
                 {/* 왼쪽 플랩 - pattern.png 직접 적용 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.15s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
                   <defs>
                     <pattern id="leftPattern" patternUnits="objectBoundingBox" width="1" height="1">
                       <image href={envelopePattern} width="335" height="173" preserveAspectRatio="xMidYMid slice" />
@@ -459,7 +459,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                 </svg>
 
                 {/* 오른쪽 플랩 - pattern.png 직접 적용 */}
-                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.3s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
+                <svg width="335" height="173" viewBox="0 0 335 173" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 3, opacity: phase === 'card-rotate' ? 0 : 1, transition: 'opacity 0.15s ease-out', filter: 'drop-shadow(0px 1px 3px rgba(0,0,0,0.1))' }}>
                   <defs>
                     <pattern id="rightPattern" patternUnits="objectBoundingBox" width="1" height="1">
                       <image href={envelopePattern} width="335" height="173" preserveAspectRatio="xMidYMid slice" />
@@ -482,7 +482,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                   aspectRatio: '56.727 / 52.494', // 정확한 비율 유지 (1.08)
                   zIndex: 10, // 가장 위에 표시
                   opacity: phase === 'initial' ? 1 : 0, // 뚜껑 열릴 때 사라짐
-                  transition: 'opacity 0.3s ease-out',
+                  transition: 'opacity 0.15s ease-out',
                   filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.25))',
                   pointerEvents: 'none' // 클릭 방해하지 않도록
                 }}>
@@ -510,7 +510,7 @@ export default function EnvelopeCard({ isAnimating, onAnimationStart, templateId
                     transform: phase === 'initial'
                       ? 'rotateX(0deg)'
                       : 'rotateX(180deg)',
-                    transition: 'transform 0.75s cubic-bezier(0.445, 0.05, 0.55, 0.95), z-index 0s, opacity 0.3s ease-out',
+                    transition: 'transform 0.75s cubic-bezier(0.445, 0.05, 0.55, 0.95), z-index 0s, opacity 0.15s ease-out',
                     zIndex: phase === 'initial' || phase === 'start' ? 6 : -10,
                     opacity: phase === 'card-rotate' ? 0 : 1,
                     pointerEvents: 'none',
