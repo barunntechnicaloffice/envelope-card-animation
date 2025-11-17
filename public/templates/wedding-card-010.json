@@ -1,17 +1,24 @@
 {
   "id": "wedding-card-010",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "name": "웨딩 청첩장 템플릿 010 (Classic Elegance)",
   "description": "정사각형 사진과 클래식한 레이아웃의 우아한 웨딩 카드",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-010/photo.png",
   "figmaNodeId": "37:805",
-  "common": {
+  "set": {
     "envelope": {
-      "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "pattern": "/assets/wedding-card-010/envelope-pattern.png",
+      "seal": "/assets/wedding-card-010/envelope-seal.png",
+      "lining": "/assets/wedding-card-010/envelope-lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/wedding-card-010/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-010/card-default-bg.png",
+      "default": "/assets/wedding-card-010/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {

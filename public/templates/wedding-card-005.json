@@ -1,16 +1,23 @@
 {
   "id": "wedding-card-005",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "name": "웨딩 청첩장 템플릿 005 (Floral Frame)",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-005/card-bg.png",
   "figmaNodeId": "70:1582",
-  "common": {
+  "set": {
     "envelope": {
-      "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "pattern": "/assets/wedding-card-005/envelope-pattern.png",
+      "seal": "/assets/wedding-card-005/envelope-seal.png",
+      "lining": "/assets/wedding-card-005/envelope-lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/wedding-card-005/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-005/card-default-bg.png",
+      "default": "/assets/wedding-card-005/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {

@@ -1,16 +1,23 @@
 {
   "id": "wedding-card-006",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "name": "웨딩 청첩장 템플릿 006 (Botanical)",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-006/card-bg.png",
   "figmaNodeId": "70:1920",
-  "common": {
+  "set": {
     "envelope": {
-      "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "pattern": "/assets/wedding-card-006/envelope-pattern.png",
+      "seal": "/assets/wedding-card-006/envelope-seal.png",
+      "lining": "/assets/wedding-card-006/envelope-lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/wedding-card-006/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-006/card-default-bg.png",
+      "default": "/assets/wedding-card-006/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {

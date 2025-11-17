@@ -1,17 +1,24 @@
 {
   "id": "wedding-card-009",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "name": "웨딩 청첩장 템플릿 009 (Minimal Photo)",
   "description": "사진이 돋보이는 미니멀한 웨딩 카드",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-009/photo.png",
   "figmaNodeId": "41:753",
-  "common": {
+  "set": {
     "envelope": {
-      "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "pattern": "/assets/wedding-card-009/envelope-pattern.png",
+      "seal": "/assets/wedding-card-009/envelope-seal.png",
+      "lining": "/assets/wedding-card-009/envelope-lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/wedding-card-009/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-009/card-default-bg.png",
+      "default": "/assets/wedding-card-009/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {
