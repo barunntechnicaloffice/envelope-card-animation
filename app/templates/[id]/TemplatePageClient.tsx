@@ -51,7 +51,7 @@ export default function TemplatePageClient({ templateId }: TemplatePageClientPro
   return (
     <main style={{
       minHeight: '100vh',
-      backgroundImage: template.common?.background ? `url(${template.common.background})` : 'none',
+      backgroundImage: template.set?.page?.background ? `url(${template.set.page.background})` : 'none',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

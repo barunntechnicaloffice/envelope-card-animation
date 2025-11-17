@@ -1,16 +1,23 @@
 {
   "id": "wedding-card-003",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "name": "웨딩 청첩장 템플릿 003",
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-003/card-bg.png",
   "figmaNodeId": "37:456",
-  "common": {
+  "set": {
     "envelope": {
-      "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "pattern": "/assets/wedding-card-003/envelope-pattern.png",
+      "seal": "/assets/wedding-card-003/envelope-seal.png",
+      "lining": "/assets/wedding-card-003/envelope-lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/wedding-card-003/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-003/card-bg.png",
+      "default": "/assets/wedding-card-003/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {
