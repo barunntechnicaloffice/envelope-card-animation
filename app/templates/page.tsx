@@ -76,6 +76,12 @@ const TEMPLATES: Template[] = [
     name: '웨딩 청첩장 템플릿 011 (Floral Elegance)',
     thumbnail: '/assets/wedding-card-011/card-bg.png',
     category: 'wedding'
+  },
+  {
+    id: 'wedding-card-012',
+    name: '노란 봄 스케치',
+    thumbnail: '/assets/wedding-card-012/card-bg.png',
+    category: 'wedding'
   }
 ]
 
