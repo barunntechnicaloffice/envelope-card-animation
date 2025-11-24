@@ -1,9 +1,8 @@
 {
   "id": "wedding-card-006",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 006 (Botanical)",
+  "name": "파스텔 꽃자수",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-006/card-bg.png",
   "figmaNodeId": "70:1920",
   "set": {
     "envelope": {

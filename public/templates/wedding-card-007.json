@@ -1,9 +1,8 @@
 {
   "id": "wedding-card-007",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 007 (Navy Lunaria)",
+  "name": "네이비 골드라인",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-007/card-bg.png",
   "figmaNodeId": "70:2133",
   "set": {
     "envelope": {

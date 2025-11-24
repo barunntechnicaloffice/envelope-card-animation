@@ -283,6 +283,10 @@ export function renderComponent(
     case 'wedding-card-template-011':
       return renderWeddingCardTemplate011(component as WeddingCardTemplate011Component, data, style, className, key)
 
+    case 'template':
+      // "template" 타입일 때 JSON의 id로 구분
+      return renderTemplateById(component, data, style, className, key)
+
     default:
       console.warn(`Unknown component type: ${(component as any).type}`)
       return null
@@ -967,6 +971,48 @@ function renderWeddingCardTemplate011(
       className={className}
     />
   )
+}
+
+/**
+ * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
+ */
+function renderTemplateById(
+  component: Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  // JSON 최상위의 id 값 가져오기
+  const templateId = resolveJSONPath(data, '$.id') || data.id
+
+  switch (templateId) {
+    case 'wedding-card-001':
+      return renderWeddingCardTemplate001(component as WeddingCardTemplate001Component, data, style, className, key)
+    case 'wedding-card-002':
+      return renderWeddingCardTemplate002(component as WeddingCardTemplate002Component, data, style, className, key)
+    case 'wedding-card-003':
+      return renderWeddingCardTemplate003(component as WeddingCardTemplate003Component, data, style, className, key)
+    case 'wedding-card-004':
+      return renderWeddingCardTemplate004(component as WeddingCardTemplate004Component, data, style, className, key)
+    case 'wedding-card-005':
+      return renderWeddingCardTemplate005(component as WeddingCardTemplate005Component, data, style, className, key)
+    case 'wedding-card-006':
+      return renderWeddingCardTemplate006(component as WeddingCardTemplate006Component, data, style, className, key)
+    case 'wedding-card-007':
+      return renderWeddingCardTemplate007(component as WeddingCardTemplate007Component, data, style, className, key)
+    case 'wedding-card-008':
+      return renderWeddingCardTemplate008(component as WeddingCardTemplate008Component, data, style, className, key)
+    case 'wedding-card-009':
+      return renderWeddingCardTemplate009(component as WeddingCardTemplate009Component, data, style, className, key)
+    case 'wedding-card-010':
+      return renderWeddingCardTemplate010(component as WeddingCardTemplate010Component, data, style, className, key)
+    case 'wedding-card-011':
+      return renderWeddingCardTemplate011(component as WeddingCardTemplate011Component, data, style, className, key)
+    default:
+      console.warn(`Unknown template id: ${templateId}`)
+      return null
+  }
 }
 
 /**

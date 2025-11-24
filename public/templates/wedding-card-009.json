@@ -1,10 +1,8 @@
 {
   "id": "wedding-card-009",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 009 (Minimal Photo)",
-  "description": "사진이 돋보이는 미니멀한 웨딩 카드",
+  "name": "순백 진주의 서약",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-009/photo.png",
   "figmaNodeId": "41:753",
   "set": {
     "envelope": {

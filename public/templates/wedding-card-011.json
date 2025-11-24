@@ -1,10 +1,8 @@
 {
   "id": "wedding-card-011",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 011 (Floral Elegance)",
-  "description": "화이트 플로럴 엠보싱과 우아한 골드 타이포그래피의 고급스러운 웨딩 카드",
+  "name": "순백의 로즈가든",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-011/card-bg.png",
   "figmaNodeId": "29:267",
   "set": {
     "envelope": {

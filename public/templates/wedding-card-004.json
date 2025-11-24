@@ -1,9 +1,8 @@
 {
   "id": "wedding-card-004",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 004",
+  "name": "영화같은 순간",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-004/photo.png",
   "figmaNodeId": "41-1037",
   "set": {
     "envelope": {

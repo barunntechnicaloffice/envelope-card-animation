@@ -1,9 +1,8 @@
 {
   "id": "wedding-card-005",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 005 (Floral Frame)",
+  "name": "클래식 블룸 웨딩",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-005/card-bg.png",
   "figmaNodeId": "70:1582",
   "set": {
     "envelope": {

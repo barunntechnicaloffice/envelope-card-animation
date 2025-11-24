@@ -1,10 +1,8 @@
 {
   "id": "wedding-card-010",
   "version": "4.0.0",
-  "name": "웨딩 청첩장 템플릿 010 (Classic Elegance)",
-  "description": "정사각형 사진과 클래식한 레이아웃의 우아한 웨딩 카드",
+  "name": "웨딩 청첩장 템플릿 010",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-010/photo.png",
   "figmaNodeId": "37:805",
   "set": {
     "envelope": {
