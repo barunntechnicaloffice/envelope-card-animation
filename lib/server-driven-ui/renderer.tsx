@@ -31,6 +31,7 @@ import type {
   WeddingCardTemplate019Component,
   WeddingCardTemplate020Component,
   WeddingCardTemplate021Component,
+  WeddingCardTemplate022Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -1312,6 +1313,44 @@ function renderWeddingCardTemplate021(
   )
 }
 
+function renderWeddingCardTemplate022(
+  component: WeddingCardTemplate022Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const { WeddingCard022 } = require('@/components/cards/WeddingCard022')
+
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    separator: component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : '그리고',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/wedding-card-022/photo.png',
+    decoration: (component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : null) || '/assets/wedding-card-022/decoration.png'
+  }
+
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard022
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
 /**
  * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
  */
@@ -1367,6 +1406,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate020(component as any, data, style, className, key)
     case 'wedding-card-021':
       return renderWeddingCardTemplate021(component as any, data, style, className, key)
+    case 'wedding-card-022':
+      return renderWeddingCardTemplate022(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null
