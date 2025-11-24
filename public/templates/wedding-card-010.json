@@ -148,7 +148,7 @@
   "components": [
     {
       "id": "wedding-card-main",
-      "type": "wedding-card-template-010",
+      "type": "template",
       "data": {
         "title": "$.data.wedding.title",
         "groom": "$.data.wedding.groom",

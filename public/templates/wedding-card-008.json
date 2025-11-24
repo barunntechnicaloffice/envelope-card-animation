@@ -150,7 +150,7 @@
   "components": [
     {
       "id": "wedding-card-main",
-      "type": "wedding-card-template-008",
+      "type": "template",
       "data": {
         "dday": "$.data.wedding.dday",
         "mainText": "$.data.wedding.mainText",
