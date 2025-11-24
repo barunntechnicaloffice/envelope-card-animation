@@ -1,0 +1,148 @@
+{
+  "id": "wedding-card-023",
+  "version": "4.0.0",
+  "name": "햇살 가득 정원",
+  "category": "wedding",
+  "figmaNodeId": "171:3582",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-023/envelope-pattern.png",
+      "seal": "/assets/wedding-card-023/envelope-seal.png",
+      "lining": "/assets/wedding-card-023/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/wedding-card-023/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-023/photo.png",
+      "default": "/assets/wedding-card-023/photo.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "decoration": {
+      "type": "image",
+      "x": 49,
+      "y": 23.015625,
+      "width": 247,
+      "height": 91.439,
+      "zIndex": 1,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 23.027618,
+      "y": 76.9296875,
+      "width": 288.141,
+      "height": 288.141,
+      "zIndex": 2,
+      "editable": true
+    },
+    "groom": {
+      "type": "text",
+      "x": 62,
+      "y": 404.27,
+      "width": 68,
+      "fontSize": 20,
+      "fontFamily": "'NanumSquare Neo', sans-serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "align": "right",
+      "zIndex": 3,
+      "editable": true
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 409.42,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'NanumSquare Neo', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 3,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 205,
+      "y": 404.27,
+      "width": 68,
+      "fontSize": 20,
+      "fontFamily": "'NanumSquare Neo', sans-serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "align": "left",
+      "zIndex": 3,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 447.9,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 470.9,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "separator": "그리고",
+      "bride": "김 은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-023/photo.png",
+      "decoration": "/assets/wedding-card-023/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "decoration": "$.data.wedding.decoration"
+      }
+    }
+  ]
+}
