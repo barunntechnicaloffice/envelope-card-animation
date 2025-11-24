@@ -1,0 +1,160 @@
+{
+  "id": "wedding-card-021",
+  "version": "4.0.0",
+  "name": "노을빛 로맨스",
+  "category": "wedding",
+  "figmaNodeId": "221:7234",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-021/envelope-pattern.png",
+      "seal": "/assets/wedding-card-021/envelope-seal.png",
+      "lining": "/assets/wedding-card-021/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/wedding-card-021/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-021/card-bg.png",
+      "default": "/assets/wedding-card-021/card-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false,
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "photo": {
+      "type": "image",
+      "x": 40,
+      "y": 88.67,
+      "width": 251,
+      "height": 251,
+      "zIndex": 1,
+      "editable": false
+    },
+    "title": {
+      "type": "text",
+      "x": 167.5,
+      "y": 53.5,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 3,
+      "align": "center",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "groom": {
+      "type": "text",
+      "x": 127.25,
+      "y": 412.82,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 2.24,
+      "align": "right",
+      "zIndex": 2,
+      "editable": true
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 405.82,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 1,
+      "align": "center",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 207.75,
+      "y": 412.82,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 2.24,
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 443.5,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 463.5,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "title": "The marriage of",
+      "groom": "준 서",
+      "separator": "그리고",
+      "bride": "은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-021/photo.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "title": "$.data.wedding.title",
+        "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "backgroundImage": "$.set.cards.main"
+      }
+    }
+  ]
+}
