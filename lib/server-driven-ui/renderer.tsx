@@ -34,6 +34,7 @@ import type {
   WeddingCardTemplate022Component,
   WeddingCardTemplate023Component,
   WeddingCardTemplate024Component,
+  WeddingCardTemplate025Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -1429,6 +1430,44 @@ function renderWeddingCardTemplate024(
   )
 }
 
+function renderWeddingCardTemplate025(
+  component: WeddingCardTemplate025Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const { WeddingCard025 } = require('@/components/cards/WeddingCard025')
+
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/wedding-card-025/photo.png',
+    decoration: (component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : null) || '/assets/wedding-card-025/decoration.png',
+    cardBackground: (component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : null) || '/assets/wedding-card-025/card-bg.png'
+  }
+
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard025
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
 /**
  * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
  */
@@ -1490,6 +1529,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate023(component as any, data, style, className, key)
     case 'wedding-card-024':
       return renderWeddingCardTemplate024(component as any, data, style, className, key)
+    case 'wedding-card-025':
+      return renderWeddingCardTemplate025(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null
