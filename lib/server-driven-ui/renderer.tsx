@@ -1088,6 +1088,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate012(component as any, data, style, className, key)
     case 'wedding-card-013':
       return renderWeddingCardTemplate013(component as any, data, style, className, key)
+    case 'wedding-card-014':
+      return renderWeddingCardTemplate013(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null
