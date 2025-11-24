@@ -1,0 +1,128 @@
+{
+  "id": "wedding-card-017",
+  "version": "4.0.0",
+  "name": "베이지빛 온기",
+  "category": "wedding",
+  "figmaNodeId": "168:3140",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-017/envelope-pattern.png",
+      "seal": "/assets/wedding-card-017/envelope-seal.png",
+      "lining": "/assets/wedding-card-017/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/wedding-card-017/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-017/card-bg.png",
+      "default": "/assets/wedding-card-017/card-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false,
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "groom": {
+      "type": "text",
+      "x": 167.38,
+      "y": 158.75,
+      "width": "auto",
+      "fontSize": 24,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": 1.2,
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    },
+    "decoration": {
+      "type": "image",
+      "x": 136.774658203125,
+      "y": 210.0478515625,
+      "width": 61.21484375,
+      "height": 24.216861724853516,
+      "zIndex": 1,
+      "editable": false
+    },
+    "bride": {
+      "type": "text",
+      "x": 167.38,
+      "y": 267.5625,
+      "width": "auto",
+      "fontSize": 24,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": 1.2,
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 448.225,
+      "width": 311,
+      "fontSize": 13,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c88d67",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 470.225,
+      "width": 311,
+      "fontSize": 13,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c88d67",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "decoration": "/assets/wedding-card-017/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "decoration": "$.data.wedding.decoration",
+        "backgroundImage": "$.set.cards.main"
+      }
+    }
+  ]
+}
