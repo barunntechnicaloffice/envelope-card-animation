@@ -1,0 +1,148 @@
+{
+  "id": "wedding-card-013",
+  "version": "4.0.0",
+  "name": "밤하늘의 황금가지",
+  "category": "wedding",
+  "figmaNodeId": "166:2610",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-013/envelope-pattern.png",
+      "seal": "/assets/wedding-card-013/envelope-seal.png",
+      "lining": "/assets/wedding-card-013/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/wedding-card-013/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-013/card-bg.png",
+      "default": "/assets/wedding-card-013/card-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false,
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "subtitle": {
+      "type": "text",
+      "x": 167.5,
+      "y": 50.25,
+      "width": 311,
+      "fontSize": 10,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#c88d67",
+      "letterSpacing": 2,
+      "align": "center",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "groom": {
+      "type": "text",
+      "x": 167,
+      "y": 139.75,
+      "width": "auto",
+      "fontSize": 23,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c88d67",
+      "letterSpacing": 4.6,
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 193.11,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c88d67",
+      "letterSpacing": 6,
+      "align": "center",
+      "zIndex": 2,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 167.5,
+      "y": 240.56,
+      "width": "auto",
+      "fontSize": 23,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 700,
+      "color": "#c88d67",
+      "letterSpacing": 4.6,
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 375.88,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c88d67",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 395.88,
+      "width": 311,
+      "fontSize": 12,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c88d67",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "backgroundImage": "$.set.cards.main"
+      }
+    }
+  ]
+}
