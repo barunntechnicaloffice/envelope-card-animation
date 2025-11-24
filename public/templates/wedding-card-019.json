@@ -1,0 +1,127 @@
+{
+  "id": "wedding-card-019",
+  "version": "4.0.0",
+  "name": "핑크빛 작은 동화",
+  "category": "wedding",
+  "figmaNodeId": "221:7540",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/wedding-card-019/envelope-pattern.png",
+      "seal": "/assets/wedding-card-019/envelope-seal.png",
+      "lining": "/assets/wedding-card-019/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/wedding-card-019/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-019/card-bg.png",
+      "default": "/assets/wedding-card-019/card-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false,
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "decoration": {
+      "type": "image",
+      "x": 63.65,
+      "y": 34.7,
+      "width": 209.735,
+      "height": 349.735,
+      "zIndex": 1,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 70,
+      "y": 411.5,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": -0.4424,
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 419.5,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#000000",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "zIndex": 2,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 204.9,
+      "y": 411.5,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": -0.4424,
+      "align": "left",
+      "zIndex": 2,
+      "editable": true
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 448.875,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "준 서",
+      "separator": "그리고",
+      "bride": "은 재",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "decoration": "/assets/wedding-card-019/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
+        "bride": "$.data.wedding.bride",
+        "venue": "$.data.wedding.venue",
+        "decoration": "$.data.wedding.decoration",
+        "backgroundImage": "$.set.cards.main"
+      }
+    }
+  ]
+}
