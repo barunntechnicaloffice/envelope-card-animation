@@ -37,7 +37,7 @@
     "groom": {
       "type": "text",
       "x": 167,
-      "y": 128.44,
+      "y": 115.44,
       "width": "auto",
       "fontSize": 23,
       "fontFamily": "'Nanum Myeongjo', serif",
@@ -52,7 +52,7 @@
     "separator": {
       "type": "text",
       "x": 166.5,
-      "y": 162.09,
+      "y": 154.59,
       "width": "auto",
       "fontSize": 13,
       "fontFamily": "'Nanum Myeongjo', serif",
@@ -67,7 +67,7 @@
     "bride": {
       "type": "text",
       "x": 167.5,
-      "y": 195.75,
+      "y": 182.75,
       "width": "auto",
       "fontSize": 23,
       "fontFamily": "'Nanum Myeongjo', serif",
