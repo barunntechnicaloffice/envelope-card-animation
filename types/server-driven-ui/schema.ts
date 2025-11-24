@@ -26,7 +26,8 @@ export type ComponentType =
   | 'wedding-card-template-010'
   | 'wedding-card-template-011'
   | 'wedding-card-template-012'
-  | 'wedding-card-template-013';
+  | 'wedding-card-template-013'
+  | 'wedding-card-template-015';
 
 export type LayoutType = 'flex' | 'grid' | 'absolute' | 'relative';
 
@@ -463,6 +464,17 @@ export interface WeddingCardTemplate013Component extends BaseComponent {
   };
 }
 
+export interface WeddingCardTemplate015Component extends BaseComponent {
+  type: 'wedding-card-template-015';
+  data: {
+    groom: JSONPathExpression;
+    bride: JSONPathExpression;
+    date: JSONPathExpression;
+    venue: JSONPathExpression;
+    backgroundImage?: JSONPathExpression;
+  };
+}
+
 export type Component =
   | TextComponent
   | ImageComponent
@@ -482,7 +494,8 @@ export type Component =
   | WeddingCardTemplate010Component
   | WeddingCardTemplate011Component
   | WeddingCardTemplate012Component
-  | WeddingCardTemplate013Component;
+  | WeddingCardTemplate013Component
+  | WeddingCardTemplate015Component;
 
 // ============================================================================
 // 6. Page Schema
