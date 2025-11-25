@@ -184,6 +184,12 @@ const TEMPLATES: Template[] = [
     name: '밤하늘의 불꽃놀이',
     thumbnail: '/assets/wedding-card-029/photo.png',
     category: 'wedding'
+  },
+  {
+    id: 'wedding-card-030',
+    name: '여름 속 소풍',
+    thumbnail: '/assets/wedding-card-030/photo.png',
+    category: 'wedding'
   }
 ]
 
