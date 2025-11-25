@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ===================================
-   Font Faces - Local (for testing)
+   Font Faces - CDN
    =================================== */
 
 /* Pretendard */
@@ -163,10 +163,10 @@
 }
 
 /* Nanum Slow (나눔손글씨 느릿느릿체) */
-/* Figma에서 "Nanum_NeuRisNeuRisCe" 또는 "Nanum NeuRis NeuRisCe"로 표시됨 */
 @font-face {
-  font-family: 'Nanum Slow';
+  font-family: 'NanumSlow';
   font-weight: 400;
+  font-style: normal;
   font-display: swap;
   src: url('/fonts/NanumSlow.woff2') format('woff2'),
        url('/fonts/NanumSlow.woff') format('woff');
