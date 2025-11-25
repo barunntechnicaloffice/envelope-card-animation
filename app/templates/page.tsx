@@ -160,6 +160,12 @@ const TEMPLATES: Template[] = [
     name: '경건한 약속의 빛',
     thumbnail: '/assets/wedding-card-025/card-bg.png',
     category: 'wedding'
+  },
+  {
+    id: 'wedding-card-026',
+    name: '봄날의 혼례날',
+    thumbnail: '/assets/wedding-card-026/card-bg.png',
+    category: 'wedding'
   }
 ]
 
