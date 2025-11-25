@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Font Test - NanumSlow</title>
+  <style>
+    @font-face {
+      font-family: 'NanumSlow';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://bdc-backoffice-frontend.barunsoncard.com/_static/bdc/server/fonts/NanumSlow.woff') format('woff');
+    }
+
+    @font-face {
+      font-family: 'NanumNeuRisNeuRisCe';
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      src: url('https://bdc-backoffice-frontend.barunsoncard.com/_static/bdc/server/fonts/NanumSlow.woff') format('woff');
+    }
+
+    body {
+      padding: 40px;
+      background: #f5f5f5;
+    }
+
+    .test-box {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .font1 {
+      font-family: 'NanumSlow', cursive;
+      font-size: 35px;
+      color: #333;
+    }
+
+    .font2 {
+      font-family: 'NanumNeuRisNeuRisCe', cursive;
+      font-size: 35px;
+      color: #333;
+    }
+
+    .font3 {
+      font-family: 'NanumSlow', 'NanumNeuRisNeuRisCe', cursive;
+      font-size: 35px;
+      color: #333;
+    }
+
+    .info {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>NanumSlow Font Loading Test</h1>
+
+  <div class="test-box">
+    <div class="info">font-family: 'NanumSlow', cursive;</div>
+    <div class="font1">이 준 서 ♥ 김 은 재</div>
+  </div>
+
+  <div class="test-box">
+    <div class="info">font-family: 'NanumNeuRisNeuRisCe', cursive;</div>
+    <div class="font2">이 준 서 ♥ 김 은 재</div>
+  </div>
+
+  <div class="test-box">
+    <div class="info">font-family: 'NanumSlow', 'NanumNeuRisNeuRisCe', cursive;</div>
+    <div class="font3">이 준 서 ♥ 김 은 재</div>
+  </div>
+
+  <h2>Debug Info</h2>
+  <div id="debug"></div>
+
+  <script>
+    // 폰트 로딩 체크
+    document.fonts.ready.then(() => {
+      const debug = document.getElementById('debug');
+      let html = '<ul>';
+
+      document.fonts.forEach(font => {
+        if (font.family.includes('Nanum')) {
+          html += `<li>✅ Loaded: ${font.family} (${font.weight}, ${font.style}) - ${font.status}</li>`;
+        }
+      });
+
+      html += '</ul>';
+
+      // 각 요소의 실제 적용된 폰트 확인
+      html += '<h3>Computed Font Families:</h3><ul>';
+      html += `<li>Box 1: ${window.getComputedStyle(document.querySelector('.font1')).fontFamily}</li>`;
+      html += `<li>Box 2: ${window.getComputedStyle(document.querySelector('.font2')).fontFamily}</li>`;
+      html += `<li>Box 3: ${window.getComputedStyle(document.querySelector('.font3')).fontFamily}</li>`;
+      html += '</ul>';
+
+      debug.innerHTML = html;
+    });
+  </script>
+</body>
+</html>
