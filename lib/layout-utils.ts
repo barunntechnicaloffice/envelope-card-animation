@@ -180,11 +180,18 @@ export function renderLayoutElement(
 
   const style: React.CSSProperties = {
     position: 'absolute',
-    left: pxToPercent(element.x, baseSize.width),
-    top: pxToPercent(element.y, baseSize.height),
     zIndex: element.zIndex || 0,
     margin: 0
   }
+
+  // right 속성이 있으면 right 사용, 없으면 left 사용
+  if (element.right !== undefined) {
+    style.right = pxToPercent(element.right, baseSize.width)
+  } else {
+    style.left = pxToPercent(element.x, baseSize.width)
+  }
+
+  style.top = pxToPercent(element.y, baseSize.height)
 
   // width 처리 (auto 지원)
   if (element.width !== undefined) {
@@ -227,6 +234,11 @@ export function renderLayoutElement(
   // transform 속성 처리 (JSON에서 명시적으로 제공된 경우)
   if (element.transform) {
     style.transform = element.transform
+  }
+
+  // transformOrigin 속성 처리
+  if (element.transformOrigin) {
+    style.transformOrigin = element.transformOrigin
   }
 
   return style

@@ -1,0 +1,146 @@
+{
+  "id": "wedding-card-027",
+  "version": "4.0.0",
+  "name": "마주보는 우리",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-027/card-bg.png",
+  "figmaNodeId": "495-8448",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 57.28,
+      "y": 107,
+      "width": 220.44,
+      "height": 281,
+      "zIndex": 1,
+      "editable": true
+    },
+    "decorationTop": {
+      "type": "image",
+      "x": 51.896,
+      "y": 29.484,
+      "width": 249.104,
+      "height": 133.249,
+      "zIndex": 2,
+      "editable": false
+    },
+    "decorationLeft": {
+      "type": "image",
+      "x": 51.896,
+      "y": 395.54,
+      "width": 77.851,
+      "height": 24.109,
+      "zIndex": 2,
+      "editable": false
+    },
+    "decorationRight": {
+      "type": "image",
+      "x": 163.027,
+      "y": 352.576,
+      "width": 139.313,
+      "height": 109.94,
+      "zIndex": 2,
+      "editable": false,
+      "transform": "rotate(2.383deg)"
+    },
+    "groom": {
+      "type": "text",
+      "x": 10.05,
+      "y": 257.5,
+      "width": "auto",
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": "1.12px",
+      "textTransform": "uppercase",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "rotate(270deg)",
+      "transformOrigin": "center center"
+    },
+    "bride": {
+      "type": "text",
+      "x": 324.95,
+      "y": 257.5,
+      "width": "auto",
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": "1.12px",
+      "textTransform": "uppercase",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "rotate(90deg)",
+      "transformOrigin": "center center",
+      "right": 10.05
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 462.516,
+      "width": 311,
+      "fontSize": 16,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "junseo",
+      "bride": "eunjae",
+      "date": "2038.10.23",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-027/photo.png",
+      "cardBackground": "/assets/wedding-card-027/card-bg.png",
+      "decorationTop": "/assets/wedding-card-027/decoration-top.png",
+      "decorationLeft": "/assets/wedding-card-027/decoration-left.png",
+      "decorationRight": "/assets/wedding-card-027/decoration-right.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decorationTop": "$.data.wedding.decorationTop",
+        "decorationLeft": "$.data.wedding.decorationLeft",
+        "decorationRight": "$.data.wedding.decorationRight"
+      }
+    }
+  ]
+}
