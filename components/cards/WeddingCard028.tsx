@@ -35,19 +35,18 @@ export function WeddingCard028({
         backgroundColor: '#FFFFFF'
       }}
     >
-      {/* Photo - z-index 1 */}
-      {data.photo && layout.photo && (
-        <div style={renderLayoutElement('photo', layout.photo, baseSize, data)}>
-          <img
-            src={data.photo}
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
-        </div>
+      {/* Groom Name - z-index 1 */}
+      {layout.groom && (
+        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
+          {data.groom}
+        </p>
+      )}
+
+      {/* Bride Name - z-index 1 */}
+      {layout.bride && (
+        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
+          {data.bride}
+        </p>
       )}
 
       {/* Decoration - z-index 2 */}
@@ -72,28 +71,29 @@ export function WeddingCard028({
         </div>
       )}
 
-      {/* Groom Name - z-index 3 */}
-      {layout.groom && (
-        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
-          {data.groom}
-        </p>
+      {/* Photo - z-index 3 */}
+      {data.photo && layout.photo && (
+        <div style={renderLayoutElement('photo', layout.photo, baseSize, data)}>
+          <img
+            src={data.photo}
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
+        </div>
       )}
 
-      {/* Bride Name - z-index 3 */}
-      {layout.bride && (
-        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
-          {data.bride}
-        </p>
-      )}
-
-      {/* Date - z-index 3 */}
+      {/* Date - z-index 4 */}
       {layout.date && (
         <p style={renderLayoutElement('date', layout.date, baseSize, data)}>
           {data.date}
         </p>
       )}
 
-      {/* Venue - z-index 3 */}
+      {/* Venue - z-index 4 */}
       {layout.venue && (
         <p style={renderLayoutElement('venue', layout.venue, baseSize, data)}>
           {data.venue}
