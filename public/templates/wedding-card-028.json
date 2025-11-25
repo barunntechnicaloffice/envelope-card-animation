@@ -1,0 +1,124 @@
+{
+  "id": "wedding-card-028",
+  "version": "4.0.0",
+  "name": "흑백 무드",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-028/photo.png",
+  "figmaNodeId": "187-4773",
+  "common": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "background": "/assets/common/bg.png"
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "photo": {
+      "type": "image",
+      "x": 0,
+      "y": 187.93,
+      "width": 335,
+      "height": 211.07,
+      "zIndex": 1,
+      "editable": true
+    },
+    "decoration": {
+      "type": "image",
+      "x": 178.98,
+      "y": 67,
+      "width": 130.913,
+      "height": 40.085,
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 299.5,
+      "y": 46.93,
+      "width": "auto",
+      "fontSize": 22,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": "2.2px",
+      "align": "right",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-100%) translateY(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 299.5,
+      "y": 128.93,
+      "width": "auto",
+      "fontSize": 22,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": "2.2px",
+      "align": "right",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateY(-50%)",
+      "right": 15.5
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 440.06,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "lineHeight": "20px",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%) translateY(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 463.06,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "lineHeight": "20px",
+      "align": "center",
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%) translateY(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-028/photo.png",
+      "decoration": "/assets/wedding-card-028/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "decoration": "$.data.wedding.decoration"
+      }
+    }
+  ]
+}
