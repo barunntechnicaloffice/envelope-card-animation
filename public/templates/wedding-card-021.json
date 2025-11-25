@@ -39,9 +39,10 @@
       "x": 40,
       "y": 88.67,
       "width": 251,
-      "height": 251,
+      "height": 301.325,
       "zIndex": 1,
-      "editable": false
+      "editable": false,
+      "borderRadius": "50%"
     },
     "title": {
       "type": "text",
@@ -49,7 +50,7 @@
       "y": 53.5,
       "width": 311,
       "fontSize": 20,
-      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontFamily": "'NanumSlow', cursive",
       "fontWeight": 400,
       "color": "#333333",
       "letterSpacing": 3,
@@ -60,25 +61,25 @@
     },
     "groom": {
       "type": "text",
-      "x": 127.25,
-      "y": 412.82,
+      "x": 62.25,
+      "y": 396.816,
       "width": "auto",
       "fontSize": 28,
-      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontFamily": "'NanumSlow', cursive",
       "fontWeight": 400,
       "color": "#333333",
       "letterSpacing": 2.24,
-      "align": "right",
+      "align": "left",
       "zIndex": 2,
       "editable": true
     },
     "separator": {
       "type": "text",
       "x": 167.5,
-      "y": 405.82,
+      "y": 405.816,
       "width": 311,
       "fontSize": 20,
-      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontFamily": "'NanumSlow', cursive",
       "fontWeight": 400,
       "color": "#333333",
       "letterSpacing": 1,
@@ -90,10 +91,10 @@
     "bride": {
       "type": "text",
       "x": 207.75,
-      "y": 412.82,
+      "y": 396.816,
       "width": "auto",
       "fontSize": 28,
-      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontFamily": "'NanumSlow', cursive",
       "fontWeight": 400,
       "color": "#333333",
       "letterSpacing": 2.24,
@@ -104,7 +105,7 @@
     "date": {
       "type": "text",
       "x": 167.5,
-      "y": 443.5,
+      "y": 448.65,
       "width": 311,
       "fontSize": 12,
       "fontFamily": "'Pretendard', sans-serif",
@@ -118,7 +119,7 @@
     "venue": {
       "type": "text",
       "x": 167.5,
-      "y": 463.5,
+      "y": 468.65,
       "width": 311,
       "fontSize": 12,
       "fontFamily": "'Pretendard', sans-serif",
@@ -133,9 +134,9 @@
   "data": {
     "wedding": {
       "title": "The marriage of",
-      "groom": "준 서",
+      "groom": "이 준 서",
       "separator": "그리고",
-      "bride": "은 재",
+      "bride": "김 은 재",
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-021/photo.png"

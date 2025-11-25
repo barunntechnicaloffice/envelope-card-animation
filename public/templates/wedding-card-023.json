@@ -38,7 +38,7 @@
       "y": 23.015625,
       "width": 247,
       "height": 91.439,
-      "zIndex": 1,
+      "zIndex": 3,
       "editable": false
     },
     "photo": {
@@ -52,9 +52,9 @@
     },
     "groom": {
       "type": "text",
-      "x": 62,
+      "x": 58.65,
       "y": 404.27,
-      "width": 68,
+      "width": "auto",
       "fontSize": 20,
       "fontFamily": "'NanumSquareNeo', sans-serif",
       "fontWeight": 700,
@@ -79,9 +79,9 @@
     },
     "bride": {
       "type": "text",
-      "x": 205,
+      "x": 208.35,
       "y": 404.27,
-      "width": 68,
+      "width": "auto",
       "fontSize": 20,
       "fontFamily": "'NanumSquareNeo', sans-serif",
       "fontWeight": 700,

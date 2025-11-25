@@ -147,7 +147,7 @@
 
 /* Gowun Batang (고운바탕) */
 @font-face {
-  font-family: 'Gowun Batang';
+  font-family: 'GowunBatang';
   font-weight: 400;
   font-display: swap;
   src: url('/fonts/GowunBatang-Regular.woff2') format('woff2'),
@@ -155,7 +155,7 @@
 }
 
 @font-face {
-  font-family: 'Gowun Batang';
+  font-family: 'GowunBatang';
   font-weight: 700;
   font-display: swap;
   src: url('/fonts/GowunBatang-Bold.woff2') format('woff2'),

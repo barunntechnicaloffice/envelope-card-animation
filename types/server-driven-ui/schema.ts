@@ -344,11 +344,12 @@ export interface WeddingCardTemplate003Component extends BaseComponent {
   type: 'wedding-card-template-003';
   data: {
     groom: JSONPathExpression;
+    separator?: JSONPathExpression;
     bride: JSONPathExpression;
     date: JSONPathExpression;
     venue: JSONPathExpression;
     photo: JSONPathExpression;
-    cardBackground?: JSONPathExpression;
+    backgroundImage?: JSONPathExpression;
     decoration?: JSONPathExpression;
     title?: JSONPathExpression;
   };

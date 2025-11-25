@@ -604,12 +604,15 @@ function renderWeddingCardTemplate003(
   // JSONPath로 데이터 추출
   const weddingData = {
     groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    separator: component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : undefined,
     bride: resolveJSONPath(data, component.data.bride) || '신부',
     date: resolveJSONPath(data, component.data.date) || '날짜 미정',
     venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
     photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
-    cardBackground: component.data.cardBackground
-      ? resolveJSONPath(data, component.data.cardBackground)
+    backgroundImage: component.data.backgroundImage
+      ? resolveJSONPath(data, component.data.backgroundImage)
       : undefined,
     decoration: component.data.decoration
       ? resolveJSONPath(data, component.data.decoration)

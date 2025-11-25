@@ -32,12 +32,12 @@ export function WeddingCard003({
       }}
     >
       {/* 배경 이미지 */}
-      {data.cardBackground && layout.background && (
+      {((data as any).backgroundImage || data.cardBackground) && layout.background && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url(${data.cardBackground})`,
+            backgroundImage: `url(${(data as any).backgroundImage || data.cardBackground})`,
             backgroundSize: layout.background.backgroundSize || 'cover',
             backgroundPosition: layout.background.backgroundPosition || 'center',
             zIndex: layout.background.zIndex || 0
@@ -92,6 +92,13 @@ export function WeddingCard003({
       {layout.groom && (
         <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
           {data.groom}
+        </p>
+      )}
+
+      {/* 구분자 */}
+      {(data as any).separator && layout.separator && (
+        <p style={renderLayoutElement('separator', layout.separator, baseSize, data)}>
+          {(data as any).separator}
         </p>
       )}
 

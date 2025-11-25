@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "name": "로맨틱리본",
   "category": "wedding",
-  "figmaNodeId": "37:456",
+  "figmaNodeId": "37-461",
   "set": {
     "envelope": {
       "pattern": "/assets/wedding-card-003/envelope-pattern.png",
@@ -14,7 +14,7 @@
       "background": "/assets/wedding-card-003/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-003/card-bg.png",
+      "main": "/assets/wedding-card-003/card-main-bg.png",
       "default": "/assets/wedding-card-003/card-default-bg.png"
     }
   },
@@ -31,22 +31,24 @@
       "height": 515,
       "zIndex": 0,
       "editable": false,
-      "backgroundSize": "cover",
+      "backgroundSize": "100% 100%",
       "backgroundPosition": "center"
     },
     "title": {
       "type": "text",
-      "x": 12,
+      "x": 167.5,
       "y": 27.5,
-      "width": 311,
-      "height": 12,
+      "width": "auto",
       "fontSize": 10,
       "fontFamily": "'Nanum Myeongjo', serif",
-      "color": "#C0B7A8",
+      "fontWeight": 400,
+      "color": "#c2b4a3",
       "letterSpacing": 2,
       "align": "center",
       "textTransform": "uppercase",
-      "zIndex": 2
+      "zIndex": 3,
+      "editable": false,
+      "transform": "translateX(-50%)"
     },
     "photo": {
       "type": "image",
@@ -54,80 +56,103 @@
       "y": 55,
       "width": 272.5,
       "height": 314.5,
-      "zIndex": 1
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
     },
     "decoration": {
       "type": "image",
       "x": 0,
-      "y": 357.333,
+      "y": 357.33,
       "width": 335,
-      "height": 34.833,
-      "zIndex": 1
+      "height": 34.83,
+      "zIndex": 2,
+      "editable": false,
+      "objectFit": "contain"
     },
     "groom": {
       "type": "text",
-      "x": 62,
+      "x": 63,
       "y": 407,
-      "width": 68,
+      "width": "auto",
       "fontSize": 20,
       "fontFamily": "'Nanum Myeongjo', serif",
       "fontWeight": 700,
-      "color": "#C0B7A8",
+      "color": "#c2b4a3",
       "letterSpacing": -0.316,
       "align": "right",
-      "zIndex": 2,
+      "zIndex": 3,
       "editable": true
+    },
+    "separator": {
+      "type": "text",
+      "x": 141,
+      "y": 414,
+      "width": 53,
+      "fontSize": 10,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 400,
+      "color": "#c2b4a3",
+      "letterSpacing": 2,
+      "align": "center",
+      "zIndex": 3,
+      "editable": false
     },
     "bride": {
       "type": "text",
       "x": 205,
       "y": 407,
-      "width": 68,
+      "width": "auto",
       "fontSize": 20,
       "fontFamily": "'Nanum Myeongjo', serif",
       "fontWeight": 700,
-      "color": "#C0B7A8",
+      "color": "#c2b4a3",
       "letterSpacing": -0.316,
       "align": "left",
-      "zIndex": 2,
+      "zIndex": 3,
       "editable": true
     },
     "date": {
       "type": "text",
-      "x": 12,
+      "x": 167.5,
       "y": 444,
       "width": 311,
       "fontSize": 12,
       "fontFamily": "'Nanum Myeongjo', serif",
-      "color": "#C0B7A8",
-      "lineHeight": 1.67,
+      "fontWeight": 400,
+      "color": "#c2b4a3",
+      "lineHeight": "20px",
       "align": "center",
-      "zIndex": 2,
-      "editable": true
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%)"
     },
     "venue": {
       "type": "text",
-      "x": 12,
+      "x": 167.5,
       "y": 464,
       "width": 311,
       "fontSize": 12,
       "fontFamily": "'Nanum Myeongjo', serif",
-      "color": "#C0B7A8",
-      "lineHeight": 1.67,
+      "fontWeight": 400,
+      "color": "#c2b4a3",
+      "lineHeight": "20px",
       "align": "center",
-      "zIndex": 2,
-      "editable": true
+      "zIndex": 3,
+      "editable": true,
+      "transform": "translateX(-50%)"
     }
   },
   "data": {
     "wedding": {
       "groom": "이 준 서",
+      "separator": "그리고",
       "bride": "김 은 재",
-      "date": "2038년 10월 12일 토요일 오후 2시",
+      "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/common/photo.png",
+      "photo": "/assets/wedding-card-003/photo.png",
       "decoration": "/assets/wedding-card-003/decoration.png",
-      "title": "WEDDING INVITATION"
+      "title": "THE WEDDING OF"
     }
   },
   "components": [
@@ -136,11 +161,12 @@
       "type": "template",
       "data": {
         "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
         "bride": "$.data.wedding.bride",
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
-        "cardBackground": "$.set.cards.main",
+        "backgroundImage": "$.set.cards.main",
         "decoration": "$.data.wedding.decoration",
         "title": "$.data.wedding.title"
       }
