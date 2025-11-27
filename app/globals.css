@@ -81,7 +81,7 @@
 
 /* Nanum Myeongjo (나눔명조) */
 @font-face {
-  font-family: 'Nanum Myeongjo';
+  font-family: 'NanumMyeongjo';
   font-weight: 400;
   font-display: swap;
   src: url('/fonts/NanumMyeongjo-Regular.woff2') format('woff2'),
@@ -89,7 +89,7 @@
 }
 
 @font-face {
-  font-family: 'Nanum Myeongjo';
+  font-family: 'NanumMyeongjo';
   font-weight: 700;
   font-display: swap;
   src: url('/fonts/NanumMyeongjo-Bold.woff2') format('woff2'),
@@ -97,7 +97,7 @@
 }
 
 @font-face {
-  font-family: 'Nanum Myeongjo';
+  font-family: 'NanumMyeongjo';
   font-weight: 800;
   font-display: swap;
   src: url('/fonts/NanumMyeongjo-ExtraBold.woff2') format('woff2'),
