@@ -4,7 +4,7 @@ import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCard008Data extends WeddingData {
   dday?: string
-  mainText?: string
+  title?: string
   decoration?: string
 }
 
@@ -27,8 +27,8 @@ export function WeddingCard008({
 
   const { baseSize } = layout
 
-  // mainText를 줄바꿈 처리
-  const renderMainText = (text: string) => {
+  // title을 줄바꿈 처리
+  const renderTitle = (text: string) => {
     return text.split('\n').map((line, index) => (
       <React.Fragment key={index}>
         {line}
@@ -70,9 +70,9 @@ export function WeddingCard008({
       )}
 
       {/* "we are getting married" 메인 텍스트 */}
-      {data.mainText && layout.mainText && (
-        <div style={renderLayoutElement('mainText', layout.mainText, baseSize, data)}>
-          {renderMainText(data.mainText)}
+      {data.title && layout.title && (
+        <div style={renderLayoutElement('title', layout.title, baseSize, data)}>
+          {renderTitle(data.title)}
         </div>
       )}
 

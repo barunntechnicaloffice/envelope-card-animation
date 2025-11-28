@@ -6,9 +6,12 @@ export interface WeddingData {
   photo: string
   backgroundImage?: string  // wedding-card-001, 005용 card-bg.png
   decorationImage?: string  // wedding-card-001용
-  decoration?: string       // wedding-card-002, 003, 004, 005용 decoration.svg/png
+  decoration?: string       // wedding-card-002, 003, 004, 005, 028, 029용 decoration.svg/png
   dateDivider?: string      // wedding-card-002용 date-divider.svg
   decorationFrame?: string  // wedding-card-005용 decoration-frame.svg
+  decorationTop?: string    // wedding-card-027용 decoration-top.png
+  decorationLeft?: string   // wedding-card-027용 decoration-left.png
+  decorationRight?: string  // wedding-card-027용 decoration-right.png
 
   // wedding-card-002 전용 필드
   cardBackground?: string   // 카드 배경 이미지

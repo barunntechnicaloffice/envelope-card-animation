@@ -4,7 +4,6 @@ import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCard022Data extends WeddingData {
   separator?: string
-  photo?: string
   decoration?: string
 }
 
