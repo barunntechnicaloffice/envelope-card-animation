@@ -415,7 +415,8 @@ export interface WeddingCardTemplate008Component extends BaseComponent {
     date: JSONPathExpression;
     venue: JSONPathExpression;
     dday?: JSONPathExpression;
-    mainText?: JSONPathExpression;
+    mainText?: JSONPathExpression;  // deprecated, use title instead
+    title?: JSONPathExpression;
     cardBackground?: JSONPathExpression;
     decoration?: JSONPathExpression;
   };

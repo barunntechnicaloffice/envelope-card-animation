@@ -835,9 +835,12 @@ function renderWeddingCardTemplate008(
       ? resolveJSONPath(data, component.data.dday)
       : 'D-DAY',
 
-    mainText: component.data.mainText
-      ? resolveJSONPath(data, component.data.mainText)
-      : 'we are\ngetting married',
+    // title 우선 사용, 없으면 mainText fallback (하위 호환성)
+    title: (component.data.title
+      ? resolveJSONPath(data, component.data.title)
+      : component.data.mainText
+        ? resolveJSONPath(data, component.data.mainText)
+        : 'we are\ngetting married'),
 
     cardBackground: component.data.cardBackground
       ? resolveJSONPath(data, component.data.cardBackground)
