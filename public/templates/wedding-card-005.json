@@ -14,8 +14,8 @@
       "background": "/assets/wedding-card-005/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-005/card-bg.png",
-      "default": "/assets/wedding-card-005/card-bg.png"
+      "main": "/assets/wedding-card-005/card-main-bg.png",
+      "default": "/assets/wedding-card-005/card-default-bg.png"
     }
   },
   "layout": {

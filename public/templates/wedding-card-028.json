@@ -5,12 +5,19 @@
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-028/photo.png",
   "figmaNodeId": "187-4773",
-  "common": {
+  "set": {
     "envelope": {
       "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-028/card-main-bg.png",
+      "default": "/assets/wedding-card-028/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {

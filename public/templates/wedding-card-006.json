@@ -14,8 +14,8 @@
       "background": "/assets/wedding-card-006/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-006/card-bg.png",
-      "default": "/assets/wedding-card-006/card-bg.png"
+      "main": "/assets/wedding-card-006/card-main-bg.png",
+      "default": "/assets/wedding-card-006/card-default-bg.png"
     }
   },
   "layout": {
@@ -150,7 +150,7 @@
       "venue": "메종 드 프리미어 그랜드홀",
       "title": "A CELEBRATION OF OUR LOVE",
       "separator": "&",
-      "cardBackground": "/assets/wedding-card-006/card-bg.png",
+      "cardBackground": "/assets/wedding-card-006/card-main-bg.png",
       "decoration": "/assets/wedding-card-006/decoration.png"
     }
   },

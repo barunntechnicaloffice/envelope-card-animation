@@ -5,12 +5,19 @@
   "category": "wedding",
   "thumbnail": "/assets/wedding-card-027/card-bg.png",
   "figmaNodeId": "495-8448",
-  "common": {
+  "set": {
     "envelope": {
       "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
     },
-    "background": "/assets/common/bg.png"
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-027/card-main-bg.png",
+      "default": "/assets/wedding-card-027/card-default-bg.png"
+    }
   },
   "layout": {
     "baseSize": {
@@ -120,7 +127,7 @@
       "date": "2038.10.23",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-027/photo.png",
-      "cardBackground": "/assets/wedding-card-027/card-bg.png",
+      "cardBackground": "/assets/wedding-card-027/card-main-bg.png",
       "decorationTop": "/assets/wedding-card-027/decoration-top.png",
       "decorationLeft": "/assets/wedding-card-027/decoration-left.png",
       "decorationRight": "/assets/wedding-card-027/decoration-right.png"

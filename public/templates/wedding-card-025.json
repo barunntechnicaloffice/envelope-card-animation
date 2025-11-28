@@ -14,8 +14,8 @@
       "background": "/assets/wedding-card-025/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-025/card-bg.png",
-      "default": "/assets/wedding-card-025/card-bg.png"
+      "main": "/assets/wedding-card-025/card-main-bg.png",
+      "default": "/assets/wedding-card-025/card-default-bg.png"
     }
   },
   "layout": {
@@ -121,7 +121,7 @@
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-025/photo.png",
       "decoration": "/assets/wedding-card-025/decoration.png",
-      "cardBackground": "/assets/wedding-card-025/card-bg.png"
+      "cardBackground": "/assets/wedding-card-025/card-main-bg.png"
     }
   },
   "components": [

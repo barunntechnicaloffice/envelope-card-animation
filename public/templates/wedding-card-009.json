@@ -14,8 +14,8 @@
       "background": "/assets/wedding-card-009/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-009/card-bg.png",
-      "default": "/assets/wedding-card-009/card-bg.png"
+      "main": "/assets/wedding-card-009/card-main-bg.png",
+      "default": "/assets/wedding-card-009/card-default-bg.png"
     }
   },
   "layout": {
@@ -135,7 +135,7 @@
       "bride": "김 은 재",
       "date": "October 23, 2038",
       "photo": "/assets/wedding-card-009/photo.png",
-      "cardBackground": "/assets/wedding-card-009/card-bg.png",
+      "cardBackground": "/assets/wedding-card-009/card-main-bg.png",
       "decoration": "/assets/wedding-card-009/decoration.png"
     }
   },

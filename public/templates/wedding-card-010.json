@@ -14,8 +14,8 @@
       "background": "/assets/wedding-card-010/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-010/card-bg.png",
-      "default": "/assets/wedding-card-010/card-bg.png"
+      "main": "/assets/wedding-card-010/card-main-bg.png",
+      "default": "/assets/wedding-card-010/card-default-bg.png"
     }
   },
   "layout": {
@@ -140,7 +140,7 @@
       "date": "2038년 10월 12일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-010/photo.png",
-      "cardBackground": "/assets/wedding-card-010/card-bg.png"
+      "cardBackground": "/assets/wedding-card-010/card-main-bg.png"
     }
   },
   "components": [

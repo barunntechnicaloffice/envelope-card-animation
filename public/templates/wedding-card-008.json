@@ -14,8 +14,8 @@
       "background": "/assets/wedding-card-008/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-008/card-bg.png",
-      "default": "/assets/wedding-card-008/card-bg.png"
+      "main": "/assets/wedding-card-008/card-main-bg.png",
+      "default": "/assets/wedding-card-008/card-default-bg.png"
     }
   },
   "layout": {
@@ -28,7 +28,7 @@
       "zIndex": 0,
       "editable": false
     },
-"mainText": {
+    "mainText": {
       "type": "text",
       "x": 167.5,
       "y": 93.4,
@@ -125,7 +125,7 @@
       "date": "October 23, 2038",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/common/photo.png",
-      "cardBackground": "/assets/wedding-card-008/card-bg.png",
+      "cardBackground": "/assets/wedding-card-008/card-main-bg.png",
       "decoration": "/assets/wedding-card-008/decoration.png"
     }
   },
