@@ -14,7 +14,6 @@
       "background": "/assets/wedding-card-004/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-004/card-main-bg.png",
       "default": "/assets/wedding-card-004/card-default-bg.png"
     }
   },
@@ -35,8 +34,8 @@
       "style": {
         "width": "103.06%",
         "height": "103.89%",
-        "left": "-1.36%",
-        "top": "-3.25%"
+        "left": "0",
+        "top": "0"
       }
     },
     "decoration": {
