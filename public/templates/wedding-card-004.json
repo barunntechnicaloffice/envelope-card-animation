@@ -29,14 +29,7 @@
       "width": 335,
       "height": 515,
       "zIndex": 0,
-      "editable": true,
-      "objectFit": "cover",
-      "style": {
-        "width": "103.06%",
-        "height": "103.89%",
-        "left": "0",
-        "top": "0"
-      }
+      "editable": true
     },
     "decoration": {
       "type": "image",
@@ -45,14 +38,7 @@
       "width": 335,
       "height": 515,
       "zIndex": 1,
-      "editable": false,
-      "objectFit": "cover",
-      "style": {
-        "width": "100%",
-        "height": "115.71%",
-        "left": "0",
-        "top": "-0.18%"
-      }
+      "editable": false
     },
     "groom": {
       "type": "text",

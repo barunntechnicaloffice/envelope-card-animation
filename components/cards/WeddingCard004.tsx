@@ -61,12 +61,8 @@ export function WeddingCard004({
             src={data.decoration}
             alt="Decoration"
             style={{
-              width: layout.decoration.style?.width || '100%',
-              height: layout.decoration.style?.height || '100%',
-              left: layout.decoration.style?.left || '0',
-              top: layout.decoration.style?.top || '0',
-              position: layout.decoration.style ? 'absolute' : 'relative',
-              objectFit: layout.decoration.objectFit || 'cover'
+              width: '100%',
+              height: '100%'
             }}
           />
         </div>

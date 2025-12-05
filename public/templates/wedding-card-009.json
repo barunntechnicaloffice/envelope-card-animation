@@ -56,7 +56,7 @@
     },
     "groom": {
       "type": "text",
-      "x": 62.5,
+      "x": 61.3,
       "y": 406,
       "width": "auto",
       "fontSize": 18,
@@ -97,7 +97,7 @@
     },
     "bride": {
       "type": "text",
-      "x": 211.5,
+      "x": 209.375,
       "y": 406,
       "width": "auto",
       "fontSize": 18,
