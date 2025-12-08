@@ -1,0 +1,140 @@
+{
+  "id": "wedding-card-038",
+  "version": "4.0.0",
+  "name": "새들의 속삭임",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-038/photo.png",
+  "figmaNodeId": "495-8660",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-038/card-main-bg.png",
+      "default": "/assets/wedding-card-038/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "decoration": {
+      "type": "image",
+      "x": 34,
+      "y": 5.75,
+      "width": 267,
+      "height": 166.75,
+      "zIndex": 2,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 34,
+      "y": 124.96,
+      "width": 267,
+      "height": 288,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover",
+      "borderRadius": "1000px 1000px 0 0"
+    },
+    "groom": {
+      "type": "text",
+      "x": 57.75,
+      "y": 426,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "right",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true
+    },
+    "and": {
+      "type": "text",
+      "x": 167.5,
+      "y": 433.5,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#000000",
+      "letterSpacing": 1,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 195.25,
+      "y": 426,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "left",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 465.38,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "Lee Junseo",
+      "bride": "Kim Eunjae",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "photo": "/assets/wedding-card-038/photo.png",
+      "cardBackground": "/assets/wedding-card-038/card-main-bg.png",
+      "decoration": "/assets/wedding-card-038/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}

@@ -47,6 +47,7 @@ import type {
   WeddingCardTemplate035Component,
   WeddingCardTemplate036Component,
   WeddingCardTemplate037Component,
+  WeddingCardTemplate038Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -1950,6 +1951,43 @@ function renderWeddingCardTemplate037(
   )
 }
 
+function renderWeddingCardTemplate038(
+  component: WeddingCardTemplate038Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const { WeddingCard038 } = require('@/components/cards/WeddingCard038')
+
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || 'Lee Junseo',
+    bride: resolveJSONPath(data, component.data.bride) || 'Kim Eunjae',
+    date: resolveJSONPath(data, component.data.date) || '2038년 10월 23일 토요일 오후 2시',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/common/photo.png',
+    cardBackground: (component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : null) || '/assets/wedding-card-038/card-main-bg.png',
+    decoration: (component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : null) || '/assets/wedding-card-038/decoration.png'
+  }
+
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard038
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
 /**
  * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
  */
@@ -2037,6 +2075,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate036(component as any, data, style, className, key)
     case 'wedding-card-037':
       return renderWeddingCardTemplate037(component as any, data, style, className, key)
+    case 'wedding-card-038':
+      return renderWeddingCardTemplate038(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null
