@@ -1,0 +1,162 @@
+{
+  "id": "wedding-card-033",
+  "version": "4.0.0",
+  "name": "핑크베이지 로맨틱",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-033/photo.png",
+  "figmaNodeId": "166-2522",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-033/card-main-bg.png",
+      "default": "/assets/wedding-card-033/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "title": {
+      "type": "text",
+      "x": 167.5,
+      "y": 20,
+      "width": 311,
+      "fontSize": 10,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#ac8b75",
+      "letterSpacing": 1.5,
+      "align": "center",
+      "lineHeight": "20px",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "photo": {
+      "type": "image",
+      "x": 49.25,
+      "y": 55.5,
+      "width": 236.5,
+      "height": 274.5,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "decoration": {
+      "type": "image",
+      "x": 151.5,
+      "y": 345.35,
+      "width": 32,
+      "height": 31.467,
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 54.25,
+      "y": 361.58,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ac8b75",
+      "letterSpacing": 1.6,
+      "align": "right",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateY(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 207.75,
+      "y": 361.58,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ac8b75",
+      "letterSpacing": 1.6,
+      "align": "left",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateY(-50%)"
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 436.5,
+      "width": 311,
+      "fontSize": 13,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 400,
+      "color": "#ffffff",
+      "letterSpacing": 0.65,
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 456.5,
+      "width": 311,
+      "fontSize": 13,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 400,
+      "color": "#ffffff",
+      "letterSpacing": 0.65,
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "title": "A NEW BEGINNING",
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-033/photo.png",
+      "cardBackground": "/assets/wedding-card-033/card-main-bg.png",
+      "decoration": "/assets/wedding-card-033/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "title": "$.data.wedding.title",
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}

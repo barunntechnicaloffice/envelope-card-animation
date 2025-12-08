@@ -42,6 +42,7 @@ import type {
   WeddingCardTemplate030Component,
   WeddingCardTemplate031Component,
   WeddingCardTemplate032Component,
+  WeddingCardTemplate033Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -1745,6 +1746,47 @@ function renderWeddingCardTemplate032(
   )
 }
 
+function renderWeddingCardTemplate033(
+  component: WeddingCardTemplate033Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const { WeddingCard033 } = require('@/components/cards/WeddingCard033')
+
+  const weddingData = {
+    title: (component.data.title
+      ? resolveJSONPath(data, component.data.title)
+      : null) || 'A NEW BEGINNING',
+    groom: resolveJSONPath(data, component.data.groom) || '신랑',
+    bride: resolveJSONPath(data, component.data.bride) || '신부',
+    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
+    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/common/photo.png',
+    cardBackground: (component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : null) || '/assets/wedding-card-033/card-main-bg.png',
+    decoration: (component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : null) || '/assets/wedding-card-033/decoration.png'
+  }
+
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard033
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
 /**
  * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
  */
@@ -1822,6 +1864,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate031(component as any, data, style, className, key)
     case 'wedding-card-032':
       return renderWeddingCardTemplate032(component as any, data, style, className, key)
+    case 'wedding-card-033':
+      return renderWeddingCardTemplate033(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null

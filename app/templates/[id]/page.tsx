@@ -34,7 +34,8 @@ export function generateStaticParams() {
     { id: 'wedding-card-029' },
     { id: 'wedding-card-030' },
     { id: 'wedding-card-031' },
-    { id: 'wedding-card-032' }
+    { id: 'wedding-card-032' },
+    { id: 'wedding-card-033' }
   ]
 }
 
