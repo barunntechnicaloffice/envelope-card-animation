@@ -1,0 +1,131 @@
+{
+  "id": "wedding-card-042",
+  "version": "4.0.0",
+  "name": "심플 라인",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-042/photo.png",
+  "figmaNodeId": "223-9253",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-042/card-main-bg.png",
+      "default": "/assets/wedding-card-042/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 19.157,
+      "y": 60.5,
+      "width": 296.685,
+      "height": 265.5,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "groom": {
+      "type": "text",
+      "x": 51.91,
+      "y": 352.97,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 1.6,
+      "align": "right",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "and": {
+      "type": "text",
+      "x": 167.5,
+      "y": 352.97,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 1.6,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 199.16,
+      "y": 352.97,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 1.6,
+      "align": "left",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 428.2,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "Junseo",
+      "bride": "Eunjae",
+      "date": "October 23, 2038",
+      "photo": "/assets/wedding-card-042/photo.png",
+      "cardBackground": "/assets/wedding-card-042/card-main-bg.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
