@@ -1,0 +1,193 @@
+{
+  "id": "wedding-card-045",
+  "version": "4.0.0",
+  "name": "사랑스러운 커플",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-045/photo.png",
+  "figmaNodeId": "220-5826",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-045/card-main-bg.png",
+      "default": "/assets/wedding-card-045/card-main-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 353,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "decoration2": {
+      "type": "image",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 353,
+      "zIndex": 2,
+      "editable": false
+    },
+    "groomLabel": {
+      "type": "text",
+      "x": 92.5,
+      "y": 379,
+      "width": "auto",
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#efb2a0",
+      "letterSpacing": -0.158,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": false,
+      "centerAlign": true
+    },
+    "groom": {
+      "type": "text",
+      "x": 92.5,
+      "y": 398,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    },
+    "decoration1": {
+      "type": "image",
+      "x": 151.006,
+      "y": 389.1,
+      "width": 37,
+      "height": 34,
+      "zIndex": 4,
+      "editable": false,
+      "centerAlign": true
+    },
+    "brideLabel": {
+      "type": "text",
+      "x": 240.55,
+      "y": 379,
+      "width": "auto",
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#efb2a0",
+      "letterSpacing": -0.158,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 240.55,
+      "y": 398,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 445,
+      "width": 311,
+      "fontSize": 13,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 465,
+      "width": 311,
+      "fontSize": 13,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-045/photo.png",
+      "cardBackground": "/assets/wedding-card-045/card-main-bg.png",
+      "decoration1": "/assets/wedding-card-045/decoration1.png",
+      "decoration2": "/assets/wedding-card-045/decoration2.png",
+      "groomLabel": "GROOM",
+      "brideLabel": "BRIDE"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration1": "$.data.wedding.decoration1",
+        "decoration2": "$.data.wedding.decoration2",
+        "groomLabel": "$.data.wedding.groomLabel",
+        "brideLabel": "$.data.wedding.brideLabel"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}

@@ -54,6 +54,7 @@ import type {
   WeddingCardTemplate042Component,
   WeddingCardTemplate043Component,
   WeddingCardTemplate044Component,
+  WeddingCardTemplate045Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -321,6 +322,9 @@ export function renderComponent(
 
     case 'wedding-card-template-013':
       return renderWeddingCardTemplate013(component as WeddingCardTemplate013Component, data, style, className, key)
+
+    case 'wedding-card-template-045':
+      return renderWeddingCardTemplate045(component as WeddingCardTemplate045Component, data, style, className, key)
 
     case 'template':
       return renderTemplateById(component as TemplateComponent, data, style, className, key)
@@ -2212,6 +2216,53 @@ function renderWeddingCardTemplate044(
   )
 }
 
+function renderWeddingCardTemplate045(
+  component: WeddingCardTemplate045Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const { WeddingCard045 } = require('@/components/cards/WeddingCard045')
+
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '이 준 서',
+    bride: resolveJSONPath(data, component.data.bride) || '김 은 재',
+    date: resolveJSONPath(data, component.data.date) || '2038년 10월 23일 토요일 오후 2시',
+    venue: resolveJSONPath(data, component.data.venue) || '메종 드 프리미어 그랜드홀',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/common/photo.png',
+    cardBackground: (component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : null) || '/assets/wedding-card-045/card-main-bg.png',
+    decoration1: (component.data.decoration1
+      ? resolveJSONPath(data, component.data.decoration1)
+      : null) || '/assets/wedding-card-045/decoration1.png',
+    decoration2: (component.data.decoration2
+      ? resolveJSONPath(data, component.data.decoration2)
+      : null) || '/assets/wedding-card-045/decoration2.png',
+    groomLabel: (component.data.groomLabel
+      ? resolveJSONPath(data, component.data.groomLabel)
+      : null) || 'GROOM',
+    brideLabel: (component.data.brideLabel
+      ? resolveJSONPath(data, component.data.brideLabel)
+      : null) || 'BRIDE'
+  }
+
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard045
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
 /**
  * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
  */
@@ -2313,6 +2364,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate043(component as any, data, style, className, key)
     case 'wedding-card-044':
       return renderWeddingCardTemplate044(component as any, data, style, className, key)
+    case 'wedding-card-045':
+      return renderWeddingCardTemplate045(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null
