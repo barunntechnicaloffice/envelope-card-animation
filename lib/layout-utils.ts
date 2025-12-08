@@ -231,6 +231,11 @@ export function renderLayoutElement(
     style.overflow = 'hidden'
   }
 
+  // borderRadius 처리
+  if (element.borderRadius !== undefined) {
+    style.borderRadius = element.borderRadius
+  }
+
   // transform 속성 처리 (JSON에서 명시적으로 제공된 경우)
   if (element.transform) {
     style.transform = element.transform

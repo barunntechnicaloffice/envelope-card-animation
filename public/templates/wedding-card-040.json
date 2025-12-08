@@ -1,0 +1,125 @@
+{
+  "id": "wedding-card-040",
+  "version": "4.0.0",
+  "name": "행복의 거울",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-040/photo.png",
+  "figmaNodeId": "183-4412",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-040/card-main-bg.png",
+      "default": "/assets/wedding-card-040/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 59.125,
+      "y": 76.34,
+      "width": 216.75,
+      "height": 267.25,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover",
+      "borderRadius": "100%"
+    },
+    "groom": {
+      "type": "text",
+      "x": 55.88,
+      "y": 408.25,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ac8b75",
+      "letterSpacing": 1.6,
+      "align": "right",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": true
+    },
+    "decoration": {
+      "type": "image",
+      "x": 152,
+      "y": 407.02,
+      "width": 32,
+      "height": 31.47,
+      "zIndex": 2,
+      "editable": false
+    },
+    "bride": {
+      "type": "text",
+      "x": 198.12,
+      "y": 408.25,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ac8b75",
+      "letterSpacing": 1.6,
+      "align": "left",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 12,
+      "y": 452.49,
+      "width": 311,
+      "fontSize": 15,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#ac8b75",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "Junseo",
+      "bride": "Eunjae",
+      "date": "October 23, 2038",
+      "photo": "/assets/wedding-card-040/photo.png",
+      "cardBackground": "/assets/wedding-card-040/card-main-bg.png",
+      "decoration": "/assets/wedding-card-040/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
