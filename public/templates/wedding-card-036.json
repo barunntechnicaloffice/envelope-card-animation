@@ -1,0 +1,168 @@
+{
+  "id": "wedding-card-036",
+  "version": "4.0.0",
+  "name": "찬란한 우리의 순간",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-036/photo.png",
+  "figmaNodeId": "223-9050",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-036/card-main-bg.png",
+      "default": "/assets/wedding-card-036/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "title": {
+      "type": "text",
+      "x": 167.5,
+      "y": 47.08,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": 1,
+      "align": "center",
+      "lineHeight": "20px",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false,
+      "centerAlign": true
+    },
+    "photo": {
+      "type": "image",
+      "x": 52.5,
+      "y": 102,
+      "width": 230.002,
+      "height": 235.5,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 348.63,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 500,
+      "color": "#333333",
+      "letterSpacing": 0.7,
+      "align": "center",
+      "lineHeight": "20px",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    },
+    "groom": {
+      "type": "text",
+      "x": 67.5,
+      "y": 423.26,
+      "width": "auto",
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "right",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "and": {
+      "type": "text",
+      "x": 167.5,
+      "y": 423.26,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 186.5,
+      "y": 423.26,
+      "width": "auto",
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "left",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 448.76,
+      "width": 311,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "title": "OUR WEDDING DAY",
+      "date": "2038.10.23 SAT PM 2:00",
+      "groom": "LEE JUNSEO",
+      "bride": "KIM EUNJAE",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-036/photo.png",
+      "cardBackground": "/assets/wedding-card-036/card-main-bg.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "title": "$.data.wedding.title",
+        "date": "$.data.wedding.date",
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
