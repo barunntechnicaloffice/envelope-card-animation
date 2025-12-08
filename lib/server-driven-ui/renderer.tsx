@@ -48,6 +48,7 @@ import type {
   WeddingCardTemplate036Component,
   WeddingCardTemplate037Component,
   WeddingCardTemplate038Component,
+  WeddingCardTemplate039Component,
 } from '@/types/server-driven-ui/schema'
 
 /**
@@ -1988,6 +1989,41 @@ function renderWeddingCardTemplate038(
   )
 }
 
+function renderWeddingCardTemplate039(
+  component: WeddingCardTemplate039Component,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const { WeddingCard039 } = require('@/components/cards/WeddingCard039')
+
+  const weddingData = {
+    groom: resolveJSONPath(data, component.data.groom) || '이 준 서',
+    bride: resolveJSONPath(data, component.data.bride) || '김 은 재',
+    date: resolveJSONPath(data, component.data.date) || '2038.10.23 SAT PM 2:00',
+    venue: resolveJSONPath(data, component.data.venue) || '메종 드 프리미어 그랜드홀',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/common/photo.png',
+    cardBackground: (component.data.cardBackground
+      ? resolveJSONPath(data, component.data.cardBackground)
+      : null) || '/assets/wedding-card-039/card-main-bg.png'
+  }
+
+  const layout = resolveJSONPath(data, '$.layout') || data.layout
+
+  return (
+    <WeddingCard039
+      key={key}
+      data={weddingData}
+      layout={layout}
+      style={style}
+      className={className}
+    />
+  )
+}
+
 /**
  * "template" 타입일 때 JSON의 최상위 id로 렌더러 결정
  */
@@ -2077,6 +2113,8 @@ function renderTemplateById(
       return renderWeddingCardTemplate037(component as any, data, style, className, key)
     case 'wedding-card-038':
       return renderWeddingCardTemplate038(component as any, data, style, className, key)
+    case 'wedding-card-039':
+      return renderWeddingCardTemplate039(component as any, data, style, className, key)
     default:
       console.warn(`Unknown template id: ${templateId}`)
       return null

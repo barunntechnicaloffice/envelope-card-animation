@@ -1,0 +1,128 @@
+{
+  "id": "wedding-card-039",
+  "version": "4.0.0",
+  "name": "핑크빛 로맨스",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-039/photo.png",
+  "figmaNodeId": "221-6122",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-039/card-main-bg.png",
+      "default": "/assets/wedding-card-039/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 27.87,
+      "y": 127,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 5,
+      "align": "left",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 27.87,
+      "y": 164,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 5,
+      "align": "left",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "photo": {
+      "type": "image",
+      "x": 0,
+      "y": 211.25,
+      "width": 335,
+      "height": 210.5,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "date": {
+      "type": "text",
+      "x": 27.87,
+      "y": 440,
+      "width": 277.13,
+      "fontSize": 14,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 1.4,
+      "align": "left",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true
+    },
+    "venue": {
+      "type": "text",
+      "x": 27.87,
+      "y": 465,
+      "width": 277.13,
+      "fontSize": 14,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0.7,
+      "align": "left",
+      "lineHeight": "20px",
+      "zIndex": 2,
+      "editable": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "date": "2038.10.23 SAT PM 2:00",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "photo": "/assets/wedding-card-039/photo.png",
+      "cardBackground": "/assets/wedding-card-039/card-main-bg.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
