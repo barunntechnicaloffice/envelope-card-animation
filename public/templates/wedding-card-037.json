@@ -1,0 +1,141 @@
+{
+  "id": "wedding-card-037",
+  "version": "4.0.0",
+  "name": "모던 프레임",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-037/photo.png",
+  "figmaNodeId": "183-4503",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-037/card-main-bg.png",
+      "default": "/assets/wedding-card-037/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "decoration": {
+      "type": "image",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 153.32,
+      "zIndex": 1,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 0,
+      "y": 133.34,
+      "width": 335,
+      "height": 250,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "groom": {
+      "type": "text",
+      "x": 55.55,
+      "y": 418.25,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 500,
+      "color": "#333333",
+      "letterSpacing": 1.6,
+      "align": "right",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "and": {
+      "type": "text",
+      "x": 167.5,
+      "y": 416.25,
+      "width": "auto",
+      "fontSize": 23,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 194.8,
+      "y": 418.25,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 500,
+      "color": "#333333",
+      "letterSpacing": 1.6,
+      "align": "left",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 455.49,
+      "width": 311,
+      "fontSize": 16,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": -0.2528,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "Junseo",
+      "bride": "Eunjae",
+      "date": "October 23, 2038",
+      "photo": "/assets/wedding-card-037/photo.png",
+      "cardBackground": "/assets/wedding-card-037/card-main-bg.png",
+      "decoration": "/assets/wedding-card-037/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
