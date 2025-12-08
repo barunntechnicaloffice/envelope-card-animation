@@ -1,0 +1,143 @@
+{
+  "id": "wedding-card-044",
+  "version": "4.0.0",
+  "name": "싱그러운 계절",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-044/photo.png",
+  "figmaNodeId": "187-4863",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-044/photo.png",
+      "default": "/assets/wedding-card-044/photo.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "photo": {
+      "type": "image",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "dimmed": {
+      "type": "container",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 1
+    },
+    "decoration": {
+      "type": "image",
+      "x": 17.654,
+      "y": 21.33,
+      "width": 299.692,
+      "height": 107.339,
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 55.875,
+      "y": 407.92,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ffffff",
+      "letterSpacing": 1.6,
+      "align": "right",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": true
+    },
+    "and": {
+      "type": "text",
+      "x": 167.5,
+      "y": 407.92,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ffffff",
+      "letterSpacing": 1.6,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 198.125,
+      "y": 407.92,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'GowunBatang', serif",
+      "fontWeight": 700,
+      "color": "#ffffff",
+      "letterSpacing": 1.6,
+      "align": "left",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 3,
+      "editable": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 443.15,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#ffffff",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "Junseo",
+      "bride": "Eunjae",
+      "date": "October 23, 2038",
+      "photo": "/assets/wedding-card-044/photo.png",
+      "decoration": "/assets/wedding-card-044/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
