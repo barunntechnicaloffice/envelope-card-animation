@@ -1,0 +1,125 @@
+{
+  "id": "wedding-card-032",
+  "version": "4.0.0",
+  "name": "빛나는 티아라",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-032/photo.png",
+  "figmaNodeId": "221-6306",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-032/card-main-bg.png",
+      "default": "/assets/wedding-card-032/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "decoration": {
+      "type": "image",
+      "x": 45.5,
+      "y": 10,
+      "width": 244,
+      "height": 127,
+      "zIndex": 3,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 29,
+      "y": 104.3,
+      "width": 277,
+      "height": 318.85,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "groom": {
+      "type": "text",
+      "x": 98.75,
+      "y": 448,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 450.5,
+      "width": 311,
+      "fontSize": 15,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 1.5,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": false,
+      "transform": "translateX(-50%)"
+    },
+    "bride": {
+      "type": "text",
+      "x": 236.25,
+      "y": 448,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true,
+      "transform": "translateX(-50%)"
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "separator": "and",
+      "bride": "김 은 재",
+      "photo": "/assets/wedding-card-032/photo.png",
+      "cardBackground": "/assets/wedding-card-032/card-main-bg.png",
+      "decoration": "/assets/wedding-card-032/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
+        "bride": "$.data.wedding.bride",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
