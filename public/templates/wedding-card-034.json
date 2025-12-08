@@ -1,0 +1,177 @@
+{
+  "id": "wedding-card-034",
+  "version": "4.0.0",
+  "name": "설레는 우리의 비행",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-034/photo.png",
+  "figmaNodeId": "221-6518",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-034/card-main-bg.png",
+      "default": "/assets/wedding-card-034/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "weddingDayLabel": {
+      "type": "text",
+      "x": 60.5,
+      "y": 38,
+      "width": "auto",
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#000000",
+      "letterSpacing": 0.7,
+      "align": "left",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "date": {
+      "type": "text",
+      "x": 198,
+      "y": 38,
+      "width": "auto",
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#000000",
+      "letterSpacing": 0.7,
+      "align": "right",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": true
+    },
+    "photo": {
+      "type": "image",
+      "x": 19.7977,
+      "y": 82,
+      "width": 295.405,
+      "height": 270.5,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "decoration": {
+      "type": "image",
+      "x": 115,
+      "y": 378.01,
+      "width": 105,
+      "height": 70.972,
+      "zIndex": 2,
+      "editable": false
+    },
+    "groomLabel": {
+      "type": "text",
+      "x": 70.35,
+      "y": 384,
+      "width": 42,
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#b6ccf4",
+      "letterSpacing": -0.158,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 57,
+      "y": 403,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    },
+    "brideLabel": {
+      "type": "text",
+      "x": 231.15,
+      "y": 384,
+      "width": 30,
+      "fontSize": 10,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#b6ccf4",
+      "letterSpacing": -0.158,
+      "align": "center",
+      "lineHeight": "normal",
+      "textTransform": "uppercase",
+      "zIndex": 2,
+      "editable": false
+    },
+    "bride": {
+      "type": "text",
+      "x": 210,
+      "y": 403,
+      "width": "auto",
+      "fontSize": 20,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#333333",
+      "letterSpacing": -0.316,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 2,
+      "editable": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "weddingDayLabel": "WEDDING DAY",
+      "date": "2038.10.23",
+      "groomLabel": "GROOM",
+      "groom": "이 준 서",
+      "brideLabel": "BRIDE",
+      "bride": "김 은 재",
+      "photo": "/assets/wedding-card-034/photo.png",
+      "cardBackground": "/assets/wedding-card-034/card-main-bg.png",
+      "decoration": "/assets/wedding-card-034/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "weddingDayLabel": "$.data.wedding.weddingDayLabel",
+        "date": "$.data.wedding.date",
+        "groomLabel": "$.data.wedding.groomLabel",
+        "groom": "$.data.wedding.groom",
+        "brideLabel": "$.data.wedding.brideLabel",
+        "bride": "$.data.wedding.bride",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
