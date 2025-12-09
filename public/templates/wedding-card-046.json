@@ -1,0 +1,125 @@
+{
+  "id": "wedding-card-046",
+  "version": "4.0.0",
+  "name": "러브 카드",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-046/photo.png",
+  "figmaNodeId": "221-8067",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-046/card-main-bg.png",
+      "default": "/assets/wedding-card-046/card-main-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 35.62,
+      "y": 32.22,
+      "width": 262.75,
+      "height": 458.55,
+      "zIndex": 1,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "decoration": {
+      "type": "image",
+      "x": 24.95,
+      "y": 19.89,
+      "width": 284.1,
+      "height": 483.22,
+      "zIndex": 2,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 167.5,
+      "y": 73.5,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'NanumSlow', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 167.5,
+      "y": 105.5,
+      "width": "auto",
+      "fontSize": 28,
+      "fontFamily": "'NanumSlow', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 143.5,
+      "width": 311,
+      "fontSize": 20,
+      "fontFamily": "'NanumSlow', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": 0,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "Lee Junseo",
+      "bride": "Kim Eunjae",
+      "date": "October 23, 2038",
+      "photo": "/assets/wedding-card-046/photo.png",
+      "cardBackground": "/assets/wedding-card-046/card-main-bg.png",
+      "decoration": "/assets/wedding-card-046/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
