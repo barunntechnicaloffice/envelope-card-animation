@@ -1,0 +1,126 @@
+{
+  "id": "wedding-card-050",
+  "version": "4.0.0",
+  "name": "여름 안에서",
+  "category": "wedding",
+  "thumbnail": "/assets/wedding-card-050/photo.png",
+  "figmaNodeId": "221-8390",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png",
+      "lining": "/assets/common/lining.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "main": "/assets/wedding-card-050/card-main-bg.png",
+      "default": "/assets/wedding-card-050/card-main-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "image",
+      "zIndex": 0,
+      "editable": false
+    },
+    "decoration": {
+      "type": "image",
+      "x": 30.25,
+      "y": 43.502,
+      "width": 101,
+      "height": 53.995,
+      "zIndex": 1,
+      "editable": false,
+      "centerAlign": false
+    },
+    "photo": {
+      "type": "image",
+      "x": 67.75,
+      "y": 104,
+      "width": 199.5,
+      "height": 267,
+      "zIndex": 2,
+      "editable": true,
+      "objectFit": "cover"
+    },
+    "groom": {
+      "type": "text",
+      "x": 67.75,
+      "y": 387.664,
+      "width": "auto",
+      "fontSize": 18,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": -0.2844,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": false
+    },
+    "separator": {
+      "type": "text",
+      "x": 167.5,
+      "y": 387.664,
+      "width": 311,
+      "fontSize": 18,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 300,
+      "color": "#333333",
+      "letterSpacing": -0.2844,
+      "align": "center",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": false,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 212.25,
+      "y": 387.664,
+      "width": "auto",
+      "fontSize": 18,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "letterSpacing": -0.2844,
+      "align": "right",
+      "lineHeight": "normal",
+      "zIndex": 3,
+      "editable": true,
+      "centerAlign": false
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "separator": "&",
+      "photo": "/assets/wedding-card-050/photo.png",
+      "cardBackground": "/assets/wedding-card-050/card-main-bg.png",
+      "decoration": "/assets/wedding-card-050/decoration.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "separator": "$.data.wedding.separator",
+        "photo": "$.data.wedding.photo",
+        "cardBackground": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration"
+      },
+      "layout": "$.layout"
+    }
+  ]
+}
