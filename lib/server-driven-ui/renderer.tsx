@@ -573,49 +573,26 @@ function renderWeddingCardTemplate002(
   className: string,
   key?: string | number
 ): React.ReactNode {
-  // WeddingCard002 컴포넌트 import
   const { WeddingCard002 } = require('@/components/cards/WeddingCard002')
 
-  // JSONPath로 데이터 추출
   const weddingData = {
-    groom: resolveJSONPath(data, component.data.groom) || '신랑',
-    bride: resolveJSONPath(data, component.data.bride) || '신부',
-    date: resolveJSONPath(data, component.data.date) || '날짜 미정',
-    venue: resolveJSONPath(data, component.data.venue) || '장소 미정',
-    photo: resolveJSONPath(data, component.data.photo) || '/assets/common/photo.png',
-    cardBackground: component.data.cardBackground
+    groom: resolveJSONPath(data, component.data.groom) || 'junseo',
+    bride: resolveJSONPath(data, component.data.bride) || 'eunjae',
+    date: resolveJSONPath(data, component.data.date) || '2038.10.23',
+    text: (component.data.text
+      ? resolveJSONPath(data, component.data.text)
+      : null) || 'you are invited to join in\nour celebration',
+    photo: (component.data.photo
+      ? resolveJSONPath(data, component.data.photo)
+      : null) || '/assets/common/photo.png',
+    cardBackground: (component.data.cardBackground
       ? resolveJSONPath(data, component.data.cardBackground)
-      : undefined,
-    decoration: component.data.decoration
+      : null) || '/assets/wedding-card-002/card-main-bg.png',
+    decoration: (component.data.decoration
       ? resolveJSONPath(data, component.data.decoration)
-      : undefined,
-    dateDivider: component.data.dateDivider
-      ? resolveJSONPath(data, component.data.dateDivider)
-      : undefined,
-    dday: component.data.dday
-      ? resolveJSONPath(data, component.data.dday)
-      : undefined,
-    dateMonth: component.data.dateMonth
-      ? resolveJSONPath(data, component.data.dateMonth)
-      : undefined,
-    dateDay: component.data.dateDay
-      ? resolveJSONPath(data, component.data.dateDay)
-      : undefined,
-    dateEnglish: component.data.dateEnglish
-      ? resolveJSONPath(data, component.data.dateEnglish)
-      : undefined,
-    dateKorean: component.data.dateKorean
-      ? resolveJSONPath(data, component.data.dateKorean)
-      : undefined,
-    groomLabel: component.data.groomLabel
-      ? resolveJSONPath(data, component.data.groomLabel)
-      : undefined,
-    brideLabel: component.data.brideLabel
-      ? resolveJSONPath(data, component.data.brideLabel)
-      : undefined
+      : null) || '/assets/wedding-card-002/decoration.png'
   }
 
-  // Layout 정보 - JSON의 layout 사용
   const layout = resolveJSONPath(data, '$.layout') || data.layout
 
   return (

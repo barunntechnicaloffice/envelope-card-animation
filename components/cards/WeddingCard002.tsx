@@ -1,9 +1,15 @@
 import type { WeddingData } from '@/types/wedding'
 import { renderLayoutElement } from '@/lib/layout-utils'
 
+interface WeddingCard002Data extends WeddingData {
+  text?: string
+  decoration?: string
+  cardBackground?: string
+}
+
 interface WeddingCard002Props {
-  data: WeddingData
-  layout?: any  // JSON layout 객체
+  data: WeddingCard002Data
+  layout?: any
   className?: string
   style?: React.CSSProperties
 }
@@ -33,86 +39,54 @@ export function WeddingCard002({
     >
       {/* 배경 이미지 */}
       {data.cardBackground && layout.background && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${data.cardBackground})`,
-            backgroundSize: layout.background.backgroundSize || 'cover',
-            backgroundPosition: layout.background.backgroundPosition || 'center',
-            zIndex: layout.background.zIndex || 0
-          }}
-        />
-      )}
-
-      {/* D-Day */}
-      {(data as any).dday && layout.dday && (
-        <p style={renderLayoutElement('dday', layout.dday, baseSize, data)}>
-          {(data as any).dday}
-        </p>
-      )}
-
-      {/* 사진 */}
-      {layout.photo && (
         <div style={{
-          ...renderLayoutElement('photo', layout.photo, baseSize, data),
-          overflow: 'hidden'
+          position: 'absolute',
+          left: `${(layout.background.x / baseSize.width) * 100}%`,
+          top: `${(layout.background.y / baseSize.height) * 100}%`,
+          width: `${(layout.background.width / baseSize.width) * 100}%`,
+          height: `${(layout.background.height / baseSize.height) * 100}%`,
+          zIndex: layout.background.zIndex || 0
         }}>
           <img
-            src={data.photo}
-            alt="Wedding Photo"
-            style={{
-              width: layout.photo.style?.width || '100%',
-              height: layout.photo.style?.height || '100%',
-              left: layout.photo.style?.left || '0',
-              top: layout.photo.style?.top || '0',
-              position: layout.photo.style ? 'absolute' : 'relative',
-              objectFit: layout.photo.objectFit || 'cover'
-            }}
-          />
-        </div>
-      )}
-
-      {/* 날짜 월 */}
-      {(data as any).dateMonth && layout.dateMonth && (
-        <p style={renderLayoutElement('dateMonth', layout.dateMonth, baseSize, data)}>
-          {(data as any).dateMonth}
-        </p>
-      )}
-
-      {/* 날짜 구분선 */}
-      {(data as any).dateDivider && layout.dateDivider && (
-        <div style={{
-          ...renderLayoutElement('dateDivider', layout.dateDivider, baseSize, data),
-          overflow: 'hidden'
-        }}>
-          <img
-            src={(data as any).dateDivider}
+            src={data.cardBackground}
             alt=""
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'contain'
+              objectFit: layout.background.objectFit || 'cover'
             }}
           />
         </div>
       )}
 
-      {/* 날짜 일 */}
-      {(data as any).dateDay && layout.dateDay && (
-        <p style={renderLayoutElement('dateDay', layout.dateDay, baseSize, data)}>
-          {(data as any).dateDay}
+      {/* 신랑 이름 - 상단 왼쪽 */}
+      {layout.groom && (
+        <p style={{
+          ...renderLayoutElement('groom', layout.groom, baseSize, data),
+          textTransform: layout.groom.textTransform || 'none'
+        }}>
+          {data.groom}
         </p>
       )}
 
-      {/* 장식 이미지 */}
-      {(data as any).decoration && layout.decoration && (
+      {/* 신부 이름 - 상단 오른쪽 */}
+      {layout.bride && (
+        <p style={{
+          ...renderLayoutElement('bride', layout.bride, baseSize, data),
+          textTransform: layout.bride.textTransform || 'none'
+        }}>
+          {data.bride}
+        </p>
+      )}
+
+      {/* 장식 이미지 - OUR LOVE STORY */}
+      {data.decoration && layout.decoration && (
         <div style={{
           ...renderLayoutElement('decoration', layout.decoration, baseSize, data),
           overflow: 'hidden'
         }}>
           <img
-            src={(data as any).decoration}
+            src={data.decoration}
             alt="Decoration"
             style={{
               width: '100%',
@@ -123,52 +97,38 @@ export function WeddingCard002({
         </div>
       )}
 
-      {/* 날짜 영문 */}
-      {(data as any).dateEnglish && layout.dateEnglish && (
-        <p style={renderLayoutElement('dateEnglish', layout.dateEnglish, baseSize, data)}>
-          {(data as any).dateEnglish}
+      {/* 사진 - 타원형 */}
+      {layout.photo && (
+        <div style={{
+          ...renderLayoutElement('photo', layout.photo, baseSize, data),
+          overflow: 'hidden'
+        }}>
+          <img
+            src={data.photo}
+            alt="Wedding Photo"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: layout.photo.objectFit || 'cover'
+            }}
+          />
+        </div>
+      )}
+
+      {/* 텍스트 - you are invited to join in our celebration */}
+      {data.text && layout.text && (
+        <p style={{
+          ...renderLayoutElement('text', layout.text, baseSize, data),
+          whiteSpace: 'pre-line'
+        }}>
+          {data.text}
         </p>
       )}
 
-      {/* 신랑 라벨 */}
-      {(data as any).groomLabel && layout.groomLabel && (
-        <p style={renderLayoutElement('groomLabel', layout.groomLabel, baseSize, data)}>
-          {(data as any).groomLabel}
-        </p>
-      )}
-
-      {/* 신랑 이름 */}
-      {layout.groom && (
-        <p style={renderLayoutElement('groom', layout.groom, baseSize, data)}>
-          {data.groom}
-        </p>
-      )}
-
-      {/* 신부 라벨 */}
-      {(data as any).brideLabel && layout.brideLabel && (
-        <p style={renderLayoutElement('brideLabel', layout.brideLabel, baseSize, data)}>
-          {(data as any).brideLabel}
-        </p>
-      )}
-
-      {/* 신부 이름 */}
-      {layout.bride && (
-        <p style={renderLayoutElement('bride', layout.bride, baseSize, data)}>
-          {data.bride}
-        </p>
-      )}
-
-      {/* 날짜 한글 */}
-      {(data as any).dateKorean && layout.dateKorean && (
-        <p style={renderLayoutElement('dateKorean', layout.dateKorean, baseSize, data)}>
-          {(data as any).dateKorean}
-        </p>
-      )}
-
-      {/* 장소 */}
-      {layout.venue && (
-        <p style={renderLayoutElement('venue', layout.venue, baseSize, data)}>
-          {data.venue}
+      {/* 날짜 */}
+      {layout.date && (
+        <p style={renderLayoutElement('date', layout.date, baseSize, data)}>
+          {data.date}
         </p>
       )}
     </div>

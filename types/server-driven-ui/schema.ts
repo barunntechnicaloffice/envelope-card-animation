@@ -345,18 +345,10 @@ export interface WeddingCardTemplate002Component extends BaseComponent {
     groom: JSONPathExpression;
     bride: JSONPathExpression;
     date: JSONPathExpression;
-    venue: JSONPathExpression;
-    photo: JSONPathExpression;
+    text?: JSONPathExpression;
+    photo?: JSONPathExpression;
     cardBackground?: JSONPathExpression;
     decoration?: JSONPathExpression;
-    dateDivider?: JSONPathExpression;
-    dday?: JSONPathExpression;
-    dateMonth?: JSONPathExpression;
-    dateDay?: JSONPathExpression;
-    dateEnglish?: JSONPathExpression;
-    dateKorean?: JSONPathExpression;
-    groomLabel?: JSONPathExpression;
-    brideLabel?: JSONPathExpression;
   };
 }
 
