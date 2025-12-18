@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "싱그러운 계절",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-044/photo.png",
   "figmaNodeId": "187-4863",
   "set": {
     "envelope": {
@@ -13,10 +12,6 @@
     },
     "page": {
       "background": "/assets/wedding-card-044/page-bg.png"
-    },
-    "cards": {
-      "main": "/assets/wedding-card-044/photo.png",
-      "default": "/assets/wedding-card-044/photo.png"
     }
   },
   "layout": {

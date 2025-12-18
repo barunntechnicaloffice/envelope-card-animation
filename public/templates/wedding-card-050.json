@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "여름 안에서",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-050/photo.png",
   "figmaNodeId": "221-8390",
   "set": {
     "envelope": {
@@ -16,7 +15,7 @@
     },
     "cards": {
       "main": "/assets/wedding-card-050/card-main-bg.png",
-      "default": "/assets/wedding-card-050/card-main-bg.png"
+      "default": "/assets/wedding-card-050/card-default-bg.png"
     }
   },
   "layout": {
@@ -104,7 +103,6 @@
       "bride": "김 은 재",
       "separator": "&",
       "photo": "/assets/wedding-card-050/photo.png",
-      "cardBackground": "/assets/wedding-card-050/card-main-bg.png",
       "decoration": "/assets/wedding-card-050/decoration.png"
     }
   },

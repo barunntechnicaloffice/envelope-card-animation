@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "핑크베이지 로맨틱",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-033/photo.png",
   "figmaNodeId": "166-2522",
   "set": {
     "envelope": {
@@ -138,7 +137,6 @@
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-033/photo.png",
-      "cardBackground": "/assets/wedding-card-033/card-main-bg.png",
       "decoration": "/assets/wedding-card-033/decoration.png"
     }
   },

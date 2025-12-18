@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "설레는 우리의 비행",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-034/photo.png",
   "figmaNodeId": "221-6518",
   "set": {
     "envelope": {
@@ -152,7 +151,6 @@
       "brideLabel": "BRIDE",
       "bride": "김 은 재",
       "photo": "/assets/wedding-card-034/photo.png",
-      "cardBackground": "/assets/wedding-card-034/card-main-bg.png",
       "decoration": "/assets/wedding-card-034/decoration.png"
     }
   },

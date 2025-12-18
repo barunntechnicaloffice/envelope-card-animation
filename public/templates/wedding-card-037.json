@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "모던 프레임",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-037/photo.png",
   "figmaNodeId": "183-4503",
   "set": {
     "envelope": {
@@ -118,9 +117,7 @@
       "groom": "Junseo",
       "bride": "Eunjae",
       "date": "October 23, 2038",
-      "photo": "/assets/wedding-card-037/photo.png",
-      "cardBackground": "/assets/wedding-card-037/card-main-bg.png",
-      "decoration": "/assets/wedding-card-037/decoration.png"
+      "photo": "/assets/wedding-card-037/photo.png"
     }
   },
   "components": [

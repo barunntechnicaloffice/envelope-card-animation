@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "러브 스토리",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-049/photo.png",
   "figmaNodeId": "223-9456",
   "set": {
     "envelope": {
@@ -13,10 +12,6 @@
     },
     "page": {
       "background": "/assets/wedding-card-049/page-bg.png"
-    },
-    "cards": {
-      "main": "/assets/wedding-card-049/photo.png",
-      "default": "/assets/wedding-card-049/photo.png"
     }
   },
   "layout": {

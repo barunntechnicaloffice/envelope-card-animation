@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "러브 카드",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-046/photo.png",
   "figmaNodeId": "221-8067",
   "set": {
     "envelope": {
@@ -16,7 +15,7 @@
     },
     "cards": {
       "main": "/assets/wedding-card-046/card-main-bg.png",
-      "default": "/assets/wedding-card-046/card-main-bg.png"
+      "default": "/assets/wedding-card-046/card-default-bg.png"
     }
   },
   "layout": {
@@ -103,7 +102,6 @@
       "bride": "Kim Eunjae",
       "date": "October 23, 2038",
       "photo": "/assets/wedding-card-046/photo.png",
-      "cardBackground": "/assets/wedding-card-046/card-main-bg.png",
       "decoration": "/assets/wedding-card-046/decoration.png"
     }
   },

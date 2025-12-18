@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "앤틱 프레임",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-047/photo.png",
   "figmaNodeId": "221-6736",
   "set": {
     "envelope": {
@@ -16,7 +15,7 @@
     },
     "cards": {
       "main": "/assets/wedding-card-047/card-main-bg.png",
-      "default": "/assets/wedding-card-047/card-main-bg.png"
+      "default": "/assets/wedding-card-047/card-default-bg.png"
     }
   },
   "layout": {
@@ -127,8 +126,7 @@
       "separator": "and",
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/wedding-card-047/photo.png",
-      "cardBackground": "/assets/wedding-card-047/card-main-bg.png"
+      "photo": "/assets/wedding-card-047/photo.png"
     }
   },
   "components": [

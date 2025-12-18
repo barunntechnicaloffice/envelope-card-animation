@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "새들의 속삭임",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-038/photo.png",
   "figmaNodeId": "495-8660",
   "set": {
     "envelope": {
@@ -118,7 +117,6 @@
       "bride": "Kim Eunjae",
       "date": "2038년 10월 23일 토요일 오후 2시",
       "photo": "/assets/wedding-card-038/photo.png",
-      "cardBackground": "/assets/wedding-card-038/card-main-bg.png",
       "decoration": "/assets/wedding-card-038/decoration.png"
     }
   },

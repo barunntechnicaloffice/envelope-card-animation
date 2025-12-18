@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "찬란한 우리의 순간",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-036/photo.png",
   "figmaNodeId": "223-9050",
   "set": {
     "envelope": {
@@ -145,8 +144,7 @@
       "groom": "LEE JUNSEO",
       "bride": "KIM EUNJAE",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/wedding-card-036/photo.png",
-      "cardBackground": "/assets/wedding-card-036/card-main-bg.png"
+      "photo": "/assets/wedding-card-036/photo.png"
     }
   },
   "components": [

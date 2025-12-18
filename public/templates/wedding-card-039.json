@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "핑크빛 로맨스",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-039/photo.png",
   "figmaNodeId": "221-6122",
   "set": {
     "envelope": {
@@ -106,8 +105,7 @@
       "bride": "김 은 재",
       "date": "2038.10.23 SAT PM 2:00",
       "venue": "메종 드 프리미어 그랜드홀",
-      "photo": "/assets/wedding-card-039/photo.png",
-      "cardBackground": "/assets/wedding-card-039/card-main-bg.png"
+      "photo": "/assets/wedding-card-039/photo.png"
     }
   },
   "components": [

@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "행복의 거울",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-040/photo.png",
   "figmaNodeId": "183-4412",
   "set": {
     "envelope": {
@@ -103,7 +102,6 @@
       "bride": "Eunjae",
       "date": "October 23, 2038",
       "photo": "/assets/wedding-card-040/photo.png",
-      "cardBackground": "/assets/wedding-card-040/card-main-bg.png",
       "decoration": "/assets/wedding-card-040/decoration.png"
     }
   },

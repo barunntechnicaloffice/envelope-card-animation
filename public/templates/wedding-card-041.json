@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "사랑으로 물든 가을",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-041/photo.png",
   "figmaNodeId": "191-3751",
   "set": {
     "envelope": {
@@ -15,7 +14,6 @@
       "background": "/assets/wedding-card-041/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-041/card-main-bg.png",
       "default": "/assets/wedding-card-041/card-default-bg.png"
     }
   },
@@ -128,7 +126,6 @@
       "bride": "Eunjae",
       "date": "October 23, 2038",
       "photo": "/assets/wedding-card-041/photo.png",
-      "cardBackground": "/assets/wedding-card-041/card-main-bg.png",
       "decoration": "/assets/wedding-card-041/decoration.png"
     }
   },

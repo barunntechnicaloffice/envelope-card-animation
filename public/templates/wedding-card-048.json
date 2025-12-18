@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "블루밍 플라워",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-048/photo.png",
   "figmaNodeId": "221-6936",
   "set": {
     "envelope": {
@@ -16,7 +15,7 @@
     },
     "cards": {
       "main": "/assets/wedding-card-048/card-main-bg.png",
-      "default": "/assets/wedding-card-048/card-main-bg.png"
+      "default": "/assets/wedding-card-048/card-default-bg.png"
     }
   },
   "layout": {
@@ -127,7 +126,6 @@
       "bride": "김 은 재",
       "date": "2038년 10월 23일\n토요일 오후 2시",
       "photo": "/assets/wedding-card-048/photo.png",
-      "cardBackground": "/assets/wedding-card-048/card-main-bg.png",
       "decoration": "/assets/wedding-card-048/decoration.png"
     }
   },

@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "사랑스러운 커플",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-045/photo.png",
   "figmaNodeId": "220-5826",
   "set": {
     "envelope": {
@@ -16,7 +15,7 @@
     },
     "cards": {
       "main": "/assets/wedding-card-045/card-main-bg.png",
-      "default": "/assets/wedding-card-045/card-main-bg.png"
+      "default": "/assets/wedding-card-045/card-default-bg.png"
     }
   },
   "layout": {
@@ -164,7 +163,6 @@
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-045/photo.png",
-      "cardBackground": "/assets/wedding-card-045/card-main-bg.png",
       "decoration1": "/assets/wedding-card-045/decoration1.png",
       "decoration2": "/assets/wedding-card-045/decoration2.png",
       "groomLabel": "GROOM",

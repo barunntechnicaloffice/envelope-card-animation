@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "빛나는 티아라",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-032/photo.png",
   "figmaNodeId": "221-6306",
   "set": {
     "envelope": {
@@ -103,7 +102,6 @@
       "separator": "and",
       "bride": "김 은 재",
       "photo": "/assets/wedding-card-032/photo.png",
-      "cardBackground": "/assets/wedding-card-032/card-main-bg.png",
       "decoration": "/assets/wedding-card-032/decoration.png"
     }
   },

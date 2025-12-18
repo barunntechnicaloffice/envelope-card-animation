@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "name": "밤하늘의 불꽃놀이",
   "category": "wedding",
-  "thumbnail": "/assets/wedding-card-029/photo.png",
   "figmaNodeId": "191-3932",
   "set": {
     "envelope": {
@@ -15,7 +14,6 @@
       "background": "/assets/wedding-card-029/page-bg.png"
     },
     "cards": {
-      "main": "/assets/wedding-card-029/card-main-bg.png",
       "default": "/assets/wedding-card-029/card-default-bg.png"
     }
   },
