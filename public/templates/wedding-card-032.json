@@ -28,15 +28,6 @@
       "zIndex": 0,
       "editable": false
     },
-    "decoration": {
-      "type": "image",
-      "x": 45.5,
-      "y": 10,
-      "width": 244,
-      "height": 127,
-      "zIndex": 3,
-      "editable": false
-    },
     "photo": {
       "type": "image",
       "x": 29,
@@ -101,8 +92,7 @@
       "groom": "이 준 서",
       "separator": "and",
       "bride": "김 은 재",
-      "photo": "/assets/wedding-card-032/photo.png",
-      "decoration": "/assets/wedding-card-032/decoration.png"
+      "photo": "/assets/wedding-card-032/photo.png"
     }
   },
   "components": [
@@ -114,8 +104,7 @@
         "separator": "$.data.wedding.separator",
         "bride": "$.data.wedding.bride",
         "photo": "$.data.wedding.photo",
-        "cardBackground": "$.data.wedding.cardBackground",
-        "decoration": "$.data.wedding.decoration"
+        "cardBackground": "$.data.wedding.cardBackground"
       },
       "layout": "$.layout"
     }

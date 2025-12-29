@@ -86,7 +86,8 @@
       "height": 299.66,
       "zIndex": 2,
       "editable": true,
-      "objectFit": "cover"
+      "objectFit": "cover",
+      "borderRadius": "50%"
     },
     "text": {
       "type": "text",

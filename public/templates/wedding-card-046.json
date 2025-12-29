@@ -25,7 +25,7 @@
     },
     "background": {
       "type": "image",
-      "zIndex": 0,
+      "zIndex": 1,
       "editable": false
     },
     "photo": {
@@ -34,7 +34,7 @@
       "y": 32.22,
       "width": 262.75,
       "height": 458.55,
-      "zIndex": 1,
+      "zIndex": 0,
       "editable": true,
       "objectFit": "cover"
     },
