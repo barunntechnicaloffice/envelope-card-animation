@@ -128,7 +128,7 @@ export function WeddingCard002({ data, layout }) {
   "id": "wedding-card-XXX",
   "version": "3.0.0",
   "name": "웨딩 청첩장 템플릿 XXX",
-  "category": "wedding",
+  "category": "웨딩",
   "thumbnail": "/assets/wedding-card-XXX/card-bg.png",
   "figmaNodeId": "YOUR_NODE_ID",
   "common": {

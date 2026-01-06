@@ -51,7 +51,7 @@
   "id": "wedding-card-012",
   "version": "4.0.0",
   "name": "따뜻한 시선",  // ⭐ 사용자가 지정한 이름
-  "category": "wedding",
+  "category": "웨딩",     // ⚠️ 반드시 한글 "웨딩" 사용 (영문 "wedding" 금지)
   ...
 }
 ```
@@ -60,6 +60,32 @@
 - `id`: 시스템용 고유 식별자 (예: `wedding-card-001`)
 - `name`: 사용자에게 표시되는 템플릿 이름 (예: `따뜻한 시선`, `봄날의 약속`)
 - 사용자가 name을 지정하지 않으면 기본값 `웨딩 청첩장 템플릿 XXX` 사용
+
+---
+
+### 🏷️ Category 값 규칙 (필수)
+
+**템플릿의 `category` 필드는 반드시 한글로 작성합니다.**
+
+```json
+// ✅ 올바른 예시
+"category": "웨딩"
+
+// ❌ 잘못된 예시 (영문 사용 금지)
+"category": "wedding"
+```
+
+**카테고리 목록:**
+| 한글 (필수) | 설명 |
+|------------|------|
+| 웨딩 | 결혼 청첩장 |
+| 생일파티 | 생일 초대장 |
+| 신년카드 | 새해 인사 카드 |
+
+**⚠️ 주의사항:**
+- 새 템플릿 생성 시 `category`를 영문으로 하드코딩하지 마세요
+- bdc-web과의 호환성을 위해 반드시 한글 카테고리 사용
+- 새로운 카테고리 추가 시 이 목록에 한글 명칭 추가 필요
 
 ---
 
@@ -507,7 +533,7 @@ type LayoutElementType =
   "id": "wedding-card-003",
   "version": "1.0.0",
   "name": "웨딩 청첩장 템플릿 003",
-  "category": "wedding",
+  "category": "웨딩",
   "thumbnail": "/assets/wedding-card-003/card-bg.png",
   "figmaNodeId": "YOUR_NODE_ID",
   "common": {

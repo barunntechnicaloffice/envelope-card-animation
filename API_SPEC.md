@@ -88,7 +88,7 @@ Content-Type: application/json
   "metadata": {
     "title": "결혼식 초대장",
     "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다",
-    "category": "wedding",
+    "category": "웨딩",
     "figmaNodeId": "2072:68405"
   },
   "layout": {
@@ -171,7 +171,7 @@ GET /api/templates
       "name": "웨딩 청첩장 템플릿 001",
       "version": "2.0.0",
       "description": "Figma 2072:68405 기반, 절대 픽셀 레이아웃 시스템",
-      "category": "wedding",
+      "category": "웨딩",
       "thumbnail": "https://cdn.example.com/thumbnails/wedding-001.png",
       "createdAt": "2025-10-17T08:00:00Z",
       "updatedAt": "2025-10-17T08:00:00Z"
@@ -198,7 +198,7 @@ GET /api/templates/{templateId}
   "metadata": {
     "title": "결혼식 초대장",
     "description": "이준서 ❤️ 김은재의 결혼식에 초대합니다",
-    "category": "wedding",
+    "category": "웨딩",
     "thumbnail": "https://cdn.example.com/thumbnails/wedding-001.png",
     "figmaNodeId": "2072:68405"
   },

@@ -239,7 +239,7 @@ touch public/templates/wedding-card-005.json
   "id": "wedding-card-005",
   "version": "3.0.0",
   "name": "웨딩 청첩장 템플릿 005",
-  "category": "wedding",
+  "category": "웨딩",
   "thumbnail": "/assets/wedding-card-005/card-bg.png",
   "figmaNodeId": "37:456",
 
