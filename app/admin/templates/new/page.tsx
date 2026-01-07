@@ -180,6 +180,39 @@ export default function NewTemplatePage() {
       layout[normalizedName] = converted
     })
 
+    // separator가 layout에 있는지 확인
+    const hasSeparator = 'separator' in layout
+
+    // wedding data 기본값
+    const weddingData: Record<string, string> = {
+      groom: '신랑 이름',
+      bride: '신부 이름',
+      date: '2025년 1월 1일 토요일 오후 2시',
+      venue: '예식장 이름',
+      photo: '/assets/common/photo.png',
+      cardBackground: `/assets/${templateId}/card-bg.png`
+    }
+
+    // separator가 있으면 data에도 추가
+    if (hasSeparator) {
+      weddingData.separator = '&'
+    }
+
+    // component data 기본값
+    const componentData: Record<string, string> = {
+      groom: '$.data.wedding.groom',
+      bride: '$.data.wedding.bride',
+      date: '$.data.wedding.date',
+      venue: '$.data.wedding.venue',
+      photo: '$.data.wedding.photo',
+      backgroundImage: '$.data.wedding.cardBackground'
+    }
+
+    // separator가 있으면 component data에도 추가
+    if (hasSeparator) {
+      componentData.separator = '$.data.wedding.separator'
+    }
+
     const templateJson = {
       id: templateId || 'wedding-card-new',
       version: '1.0.0',
@@ -213,27 +246,13 @@ export default function NewTemplatePage() {
         ...layout
       },
       data: {
-        wedding: {
-          groom: '신랑 이름',
-          bride: '신부 이름',
-          date: '2025년 1월 1일 토요일 오후 2시',
-          venue: '예식장 이름',
-          photo: '/assets/common/photo.png',
-          cardBackground: `/assets/${templateId}/card-bg.png`
-        }
+        wedding: weddingData
       },
       components: [
         {
           id: 'wedding-card-main',
           type: 'template',
-          data: {
-            groom: '$.data.wedding.groom',
-            bride: '$.data.wedding.bride',
-            date: '$.data.wedding.date',
-            venue: '$.data.wedding.venue',
-            photo: '$.data.wedding.photo',
-            backgroundImage: '$.data.wedding.cardBackground'
-          }
+          data: componentData
         }
       ]
     }
