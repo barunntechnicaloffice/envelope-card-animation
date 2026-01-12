@@ -4,6 +4,7 @@ import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCard036Data extends WeddingData {
   title?: string
+  separator?: string
 }
 
 interface WeddingCard036Props {
@@ -92,10 +93,10 @@ export function WeddingCard036({
         </p>
       )}
 
-      {/* and 텍스트 */}
-      {layout.and && (
-        <p style={renderLayoutElement('and', layout.and, baseSize, data)}>
-          &
+      {/* separator */}
+      {layout.separator && (
+        <p style={renderLayoutElement('separator', layout.separator, baseSize, data)}>
+          {data.separator || '&'}
         </p>
       )}
 

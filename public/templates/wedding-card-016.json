@@ -111,6 +111,7 @@
   "data": {
     "wedding": {
       "groom": "이 준 서",
+      "separator": "그리고",
       "bride": "김 은 재",
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀"
@@ -122,11 +123,13 @@
       "type": "template",
       "data": {
         "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
         "bride": "$.data.wedding.bride",
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",
         "backgroundImage": "$.set.cards.main"
-      }
+      },
+      "layout": "$.layout"
     }
   ]
 }

@@ -2,8 +2,12 @@ import React from 'react'
 import type { WeddingData } from '@/types/wedding'
 import { renderLayoutElement } from '@/lib/layout-utils'
 
+interface WeddingCard042Data extends WeddingData {
+  separator?: string
+}
+
 interface WeddingCard042Props {
-  data: WeddingData
+  data: WeddingCard042Data
   layout?: any
   className?: string
   style?: React.CSSProperties
@@ -75,10 +79,10 @@ export function WeddingCard042({
         </p>
       )}
 
-      {/* & 기호 */}
-      {layout.and && (
-        <p style={renderLayoutElement('and', layout.and, baseSize, data)}>
-          &
+      {/* separator */}
+      {layout.separator && (
+        <p style={renderLayoutElement('separator', layout.separator, baseSize, data)}>
+          {data.separator || '&'}
         </p>
       )}
 

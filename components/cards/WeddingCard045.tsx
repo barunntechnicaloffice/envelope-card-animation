@@ -3,8 +3,8 @@ import type { WeddingData } from '@/types/wedding'
 import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCard045Data extends WeddingData {
-  decoration1?: string
-  decoration2?: string
+  decoration?: string
+  decorationTop?: string
   groomLabel?: string
   brideLabel?: string
 }
@@ -75,14 +75,14 @@ export function WeddingCard045({
         </div>
       )}
 
-      {/* 장식 이미지 2 (사진 오버레이) */}
-      {data.decoration2 && layout.decoration2 && (
+      {/* 장식 이미지 Top (사진 오버레이) */}
+      {data.decorationTop && layout.decorationTop && (
         <div style={{
-          ...renderLayoutElement('decoration2', layout.decoration2, baseSize, data),
+          ...renderLayoutElement('decorationTop', layout.decorationTop, baseSize, data),
           overflow: 'hidden'
         }}>
           <img
-            src={data.decoration2}
+            src={data.decorationTop}
             alt=""
             style={{
               width: '100%',
@@ -107,14 +107,14 @@ export function WeddingCard045({
         </p>
       )}
 
-      {/* 장식 이미지 1 (하트) */}
-      {data.decoration1 && layout.decoration1 && (
+      {/* 장식 이미지 (하트) */}
+      {data.decoration && layout.decoration && (
         <div style={{
-          ...renderLayoutElement('decoration1', layout.decoration1, baseSize, data),
+          ...renderLayoutElement('decoration', layout.decoration, baseSize, data),
           overflow: 'hidden'
         }}>
           <img
-            src={data.decoration1}
+            src={data.decoration}
             alt=""
             style={{
               width: '100%',
