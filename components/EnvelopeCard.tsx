@@ -9,9 +9,9 @@ import type { Swiper as SwiperType } from 'swiper'
 import { renderComponent } from '@/lib/server-driven-ui/renderer'
 import type { Component, PageSchema } from '@/types/server-driven-ui/schema'
 
-// Swiper CSS - Temporarily disabled due to CSS parsing issues
-// import 'swiper/css'
-// import 'swiper/css/effect-creative'
+// Swiper CSS
+import 'swiper/css'
+import 'swiper/css/effect-creative'
 
 // 반응형 카드 크기 계산 (새 시안: 335x515 기준)
 function calculateCardSize() {

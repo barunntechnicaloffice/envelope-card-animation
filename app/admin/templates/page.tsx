@@ -25,45 +25,21 @@ export default function TemplatesListPage() {
 
   async function loadTemplates() {
     setLoading(true)
-    const templateList: TemplateInfo[] = []
 
-    for (let i = 1; i <= 50; i++) {
-      const id = `wedding-card-${String(i).padStart(3, '0')}`
-
-      try {
-        const res = await fetch(`/templates/${id}.json`)
-        if (res.ok) {
-          const data = await res.json()
-          templateList.push({
-            id,
-            name: data.name || `웨딩 카드 ${i}`,
-            version: data.version || '1.0.0',
-            thumbnail: data.thumbnail || data.set?.cards?.background || `/assets/${id}/card-bg.png`,
-            status: 'published',
-            hasLayout: !!data.layout
-          })
-        } else {
-          templateList.push({
-            id,
-            name: `웨딩 카드 ${i}`,
-            version: '-',
-            status: 'draft',
-            hasLayout: false
-          })
-        }
-      } catch {
-        templateList.push({
-          id,
-          name: `웨딩 카드 ${i}`,
-          version: '-',
-          status: 'error',
-          hasLayout: false
-        })
+    try {
+      // API로 실제 존재하는 템플릿 목록 조회
+      const res = await fetch('/api/templates?list=true')
+      if (res.ok) {
+        const data = await res.json()
+        setTemplates(data.templates || [])
+      } else {
+        setTemplates([])
       }
+    } catch {
+      setTemplates([])
+    } finally {
+      setLoading(false)
     }
-
-    setTemplates(templateList)
-    setLoading(false)
   }
 
   const filteredTemplates = templates.filter(t => {

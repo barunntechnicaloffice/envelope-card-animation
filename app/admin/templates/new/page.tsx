@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
@@ -51,80 +51,117 @@ const CATEGORY_OPTIONS = [
   { value: '신년카드', label: '신년카드' },
 ] as const
 
+// localStorage 키
+const FIGMA_API_KEY_STORAGE = 'figma_api_key'
+const FIGMA_FILE_KEY_STORAGE = 'figma_file_key'
+
 export default function NewTemplatePage() {
   const [step, setStep] = useState(1)
   const [templateId, setTemplateId] = useState('')
   const [templateName, setTemplateName] = useState('')
   const [category, setCategory] = useState('웨딩')
   const [figmaNodeId, setFigmaNodeId] = useState('')
-  const [figmaMetadata, setFigmaMetadata] = useState('')
+  const [figmaFileKey, setFigmaFileKey] = useState('')
+  const [figmaApiKey, setFigmaApiKey] = useState('')
   const [bgOffset, setBgOffset] = useState({ x: 0, y: 0 })
-  const [baseSize] = useState({ width: 335, height: 515 })
+  const [baseSize, setBaseSize] = useState({ width: 335, height: 515 })
   const [parsedElements, setParsedElements] = useState<FigmaElement[]>([])
   const [generatedJson, setGeneratedJson] = useState('')
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fetchSuccess, setFetchSuccess] = useState(false)
 
-  // Figma 메타데이터 파싱
-  const parseFigmaMetadata = useCallback(() => {
+  // localStorage에서 API 키 및 File Key 불러오기
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem(FIGMA_API_KEY_STORAGE)
+    const savedFileKey = localStorage.getItem(FIGMA_FILE_KEY_STORAGE)
+    if (savedApiKey) setFigmaApiKey(savedApiKey)
+    if (savedFileKey) setFigmaFileKey(savedFileKey)
+  }, [])
+
+  // API 키 저장
+  const saveApiKey = useCallback((key: string) => {
+    setFigmaApiKey(key)
+    localStorage.setItem(FIGMA_API_KEY_STORAGE, key)
+  }, [])
+
+  // File Key 저장
+  const saveFileKey = useCallback((key: string) => {
+    setFigmaFileKey(key)
+    localStorage.setItem(FIGMA_FILE_KEY_STORAGE, key)
+  }, [])
+
+  // Figma API로 메타데이터 가져오기
+  const fetchFigmaMetadata = useCallback(async () => {
+    if (!figmaFileKey || !figmaNodeId || !figmaApiKey) {
+      setError('Figma File Key, Node ID, API Key를 모두 입력해주세요.')
+      return
+    }
+
     setError(null)
     setProcessing(true)
+    setFetchSuccess(false)
 
     try {
-      // XML 형식의 Figma 메타데이터 파싱
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(figmaMetadata, 'text/xml')
-
-      // BG 요소 찾기
-      const bgElement = doc.querySelector('[name="BG"], [name="bg"], [name="background"]')
-      if (bgElement) {
-        const bgX = parseFloat(bgElement.getAttribute('x') || '0')
-        const bgY = parseFloat(bgElement.getAttribute('y') || '0')
-        setBgOffset({ x: bgX, y: bgY })
-      }
-
-      // 모든 요소 추출
-      const elements: FigmaElement[] = []
-      const allElements = doc.querySelectorAll('text, rectangle, rounded-rectangle, ellipse, frame, image, vector')
-
-      allElements.forEach((el, index) => {
-        const name = el.getAttribute('name') || `element-${index}`
-        const type = el.tagName.toLowerCase()
-
-        elements.push({
-          id: el.getAttribute('id') || `${index}`,
-          name,
-          type,
-          x: parseFloat(el.getAttribute('x') || '0'),
-          y: parseFloat(el.getAttribute('y') || '0'),
-          width: parseFloat(el.getAttribute('width') || '0'),
-          height: parseFloat(el.getAttribute('height') || '0'),
-          fontSize: el.getAttribute('font-size') ? parseFloat(el.getAttribute('font-size')!) : undefined,
-          fontFamily: el.getAttribute('font-family') || undefined,
-          fontWeight: el.getAttribute('font-weight') ? parseFloat(el.getAttribute('font-weight')!) : undefined,
-          color: el.getAttribute('fill') || el.getAttribute('color') || undefined,
-          textAlign: el.getAttribute('text-align') || undefined,
-          letterSpacing: el.getAttribute('letter-spacing') ? parseFloat(el.getAttribute('letter-spacing')!) : undefined,
-          characters: el.textContent || undefined,
-        })
+      const response = await fetch('/api/figma', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileKey: figmaFileKey,
+          nodeId: figmaNodeId,
+          apiKey: figmaApiKey,
+        }),
       })
 
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || 'Figma API 호출에 실패했습니다.')
+        return
+      }
+
+      // 성공: 요소들 설정
+      const elements: FigmaElement[] = result.data.elements.map((el: FigmaElement) => ({
+        ...el,
+        type: el.type.toLowerCase(),
+      }))
+
       setParsedElements(elements)
+      setBgOffset(result.data.bgOffset)
+      setBaseSize(result.data.baseSize)
+      setFetchSuccess(true)
+
+      // 바로 Step 3으로 이동
       setStep(3)
     } catch (err) {
-      setError('메타데이터 파싱에 실패했습니다. XML 형식을 확인해주세요.')
+      setError('네트워크 오류가 발생했습니다.')
     } finally {
       setProcessing(false)
     }
-  }, [figmaMetadata])
+  }, [figmaFileKey, figmaNodeId, figmaApiKey])
+
 
   // JSON 생성
   const generateJson = useCallback(() => {
     const layout: Record<string, ConvertedElement> = {}
 
     parsedElements.forEach((el, index) => {
+      const nameLower = el.name.toLowerCase()
+
       // BG 요소는 건너뛰기
-      if (el.name.toLowerCase() === 'bg' || el.name.toLowerCase() === 'background') {
+      if (nameLower === 'bg' || nameLower === 'background') {
+        return
+      }
+
+      // 불필요한 container 요소 건너뛰기:
+      // - *auto 패턴의 프레임/컨테이너만 건너뛰기 (groom auto 프레임 등)
+      // - 텍스트 타입은 auto가 포함되어도 유지 (date auto 텍스트 등)
+      // - template, input, obj 같은 래퍼 컨테이너
+      const isAutoContainer = nameLower.includes('auto') && el.type !== 'text'
+      if (isAutoContainer ||
+          nameLower === 'template' ||
+          nameLower === 'input' ||
+          nameLower === 'obj') {
         return
       }
 
@@ -143,7 +180,19 @@ export default function NewTemplatePage() {
       }
 
       // 요소 이름 정규화 (camelCase)
-      const normalizedName = el.name
+      // 1. [locked], [editable] 등 태그 제거
+      // 2. _name 접미사 제거 (groom_name -> groom)
+      // 3. auto 접미사 제거 (date auto -> date)
+      // 4. camelCase로 변환
+      const cleanName = el.name
+        .replace(/\[locked\]/gi, '')
+        .replace(/_name$/gi, '')
+        .replace(/\[editable\]/gi, '')
+        .replace(/\s*auto\s*$/gi, '')  // "date auto" -> "date"
+        .replace(/\s+auto\s+/gi, ' ')  // 중간에 있는 auto도 제거
+        .trim()
+
+      const normalizedName = cleanName
         .toLowerCase()
         .replace(/[^a-z0-9]+(.)/g, (_, char) => char.toUpperCase())
         .replace(/^./, (char) => char.toLowerCase())
@@ -180,22 +229,35 @@ export default function NewTemplatePage() {
       layout[normalizedName] = converted
     })
 
-    // separator가 layout에 있는지 확인
+    // layout에 있는 요소들 확인
     const hasSeparator = 'separator' in layout
+    const hasDecoration = 'decoration' in layout
+    const hasText = 'text' in layout
 
     // wedding data 기본값
+    // photo는 템플릿별 이미지 경로 사용 (Figma에서 다운로드됨)
     const weddingData: Record<string, string> = {
       groom: '신랑 이름',
       bride: '신부 이름',
       date: '2025년 1월 1일 토요일 오후 2시',
       venue: '예식장 이름',
-      photo: '/assets/common/photo.png',
+      photo: `/assets/${templateId}/photo.png`,
       cardBackground: `/assets/${templateId}/card-bg.png`
     }
 
     // separator가 있으면 data에도 추가
     if (hasSeparator) {
       weddingData.separator = '&'
+    }
+
+    // decoration이 있으면 data에도 추가
+    if (hasDecoration) {
+      weddingData.decoration = `/assets/${templateId}/decoration.png`
+    }
+
+    // text가 있으면 초대 문구 추가
+    if (hasText) {
+      weddingData.text = 'you are invited to join\nin our celebration of love'
     }
 
     // component data 기본값
@@ -211,6 +273,16 @@ export default function NewTemplatePage() {
     // separator가 있으면 component data에도 추가
     if (hasSeparator) {
       componentData.separator = '$.data.wedding.separator'
+    }
+
+    // decoration이 있으면 component data에도 추가
+    if (hasDecoration) {
+      componentData.decoration = '$.data.wedding.decoration'
+    }
+
+    // text가 있으면 component data에도 추가
+    if (hasText) {
+      componentData.text = '$.data.wedding.text'
     }
 
     const templateJson = {
@@ -281,6 +353,90 @@ export default function NewTemplatePage() {
       alert('복사에 실패했습니다.')
     }
   }, [generatedJson])
+
+  // 서버에 JSON 저장
+  const [saving, setSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+
+  // 이미지 다운로드
+  const [downloadingImages, setDownloadingImages] = useState(false)
+  const [imagesDownloaded, setImagesDownloaded] = useState(false)
+  const [downloadedImages, setDownloadedImages] = useState<{ name: string; path: string }[]>([])
+
+  const downloadImages = useCallback(async () => {
+    if (!figmaFileKey || !figmaNodeId || !figmaApiKey || !templateId) {
+      setError('Figma 정보와 템플릿 ID가 필요합니다.')
+      return
+    }
+
+    setDownloadingImages(true)
+    setError(null)
+    setImagesDownloaded(false)
+
+    try {
+      const response = await fetch('/api/figma/images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileKey: figmaFileKey,
+          nodeId: figmaNodeId,
+          apiKey: figmaApiKey,
+          templateId,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || '이미지 다운로드에 실패했습니다.')
+        return
+      }
+
+      setDownloadedImages(result.images || [])
+      setImagesDownloaded(true)
+      alert(`${result.images?.length || 0}개 이미지가 /assets/${templateId}/에 저장되었습니다!`)
+    } catch (err) {
+      setError('네트워크 오류가 발생했습니다.')
+    } finally {
+      setDownloadingImages(false)
+    }
+  }, [figmaFileKey, figmaNodeId, figmaApiKey, templateId])
+
+  const saveToServer = useCallback(async () => {
+    if (!templateId || !generatedJson) {
+      setError('템플릿 ID와 JSON이 필요합니다.')
+      return
+    }
+
+    setSaving(true)
+    setError(null)
+    setSaveSuccess(false)
+
+    try {
+      const response = await fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId,
+          content: generatedJson,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || '저장에 실패했습니다.')
+        return
+      }
+
+      setSaveSuccess(true)
+      alert('템플릿이 서버에 저장되었습니다!')
+    } catch (err) {
+      setError('네트워크 오류가 발생했습니다.')
+    } finally {
+      setSaving(false)
+    }
+  }, [templateId, generatedJson])
 
   return (
     <div className="space-y-6">
@@ -406,34 +562,76 @@ export default function NewTemplatePage() {
         </div>
       )}
 
-      {/* Step 2: Figma 메타데이터 입력 */}
+      {/* Step 2: Figma API 연동 */}
       {step === 2 && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
-          <h2 className="text-lg font-semibold">2. Figma 메타데이터 입력</h2>
+          <h2 className="text-lg font-semibold">2. Figma에서 메타데이터 가져오기</h2>
 
           <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-800">
-            <p className="font-medium mb-2">Figma MCP로 메타데이터 추출하기:</p>
-            <code className="block bg-blue-100 p-2 rounded text-xs">
-              mcp__figma-dev-mode-mcp-server__get_metadata({'{'}nodeId: "{figmaNodeId || 'YOUR_NODE_ID'}"{'}'})
-            </code>
+            <p className="font-medium mb-2">Figma API를 통해 자동으로 메타데이터를 가져옵니다.</p>
+            <p>File Key와 Node ID를 입력하고 &quot;가져오기&quot; 버튼을 클릭하세요.</p>
           </div>
 
+          {/* Figma API Key */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              메타데이터 (XML 형식)
+              Figma API Key *
             </label>
-            <textarea
-              value={figmaMetadata}
-              onChange={(e) => setFigmaMetadata(e.target.value)}
-              placeholder={`<frame id="46-1150" name="template">
-  <rounded-rectangle id="2:2" name="BG" x="21" y="148.5" width="335" height="515" />
-  <text id="2:4" name="groom" x="188.5" y="336.9" font-size="20" fill="#333333">신랑</text>
-  ...
-</frame>`}
-              rows={12}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            <input
+              type="password"
+              value={figmaApiKey}
+              onChange={(e) => saveApiKey(e.target.value)}
+              placeholder="figd_xxxxx..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Figma 설정 → Account → Personal access tokens에서 생성
+              {figmaApiKey && <span className="text-green-600 ml-2">✓ 저장됨</span>}
+            </p>
           </div>
+
+          {/* Figma File Key */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Figma File Key *
+            </label>
+            <input
+              type="text"
+              value={figmaFileKey}
+              onChange={(e) => saveFileKey(e.target.value)}
+              placeholder="ABC123xyz..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Figma URL: figma.com/design/<strong>FILE_KEY</strong>/파일명
+              {figmaFileKey && <span className="text-green-600 ml-2">✓ 저장됨</span>}
+            </p>
+          </div>
+
+          {/* Figma Node ID */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Figma Node ID *
+            </label>
+            <input
+              type="text"
+              value={figmaNodeId}
+              onChange={(e) => setFigmaNodeId(e.target.value)}
+              placeholder="46-1150"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              템플릿 프레임 선택 → 우클릭 → Copy link → URL의 node-id 값
+            </p>
+          </div>
+
+          {/* 성공 메시지 */}
+          {fetchSuccess && (
+            <div className="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
+              <span>✅</span>
+              <span>메타데이터를 성공적으로 가져왔습니다! ({parsedElements.length}개 요소)</span>
+            </div>
+          )}
 
           <div className="flex gap-2">
             <button
@@ -443,11 +641,21 @@ export default function NewTemplatePage() {
               ← 이전
             </button>
             <button
-              onClick={parseFigmaMetadata}
-              disabled={!figmaMetadata || processing}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+              onClick={fetchFigmaMetadata}
+              disabled={!figmaFileKey || !figmaNodeId || !figmaApiKey || processing}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              {processing ? '파싱 중...' : '파싱하기 →'}
+              {processing ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  가져오는 중...
+                </>
+              ) : (
+                <>
+                  <span>🔄</span>
+                  Figma에서 가져오기
+                </>
+              )}
             </button>
             <button
               onClick={() => {
@@ -461,7 +669,6 @@ export default function NewTemplatePage() {
                   figmaNodeId: figmaNodeId || undefined,
                   layout: {
                     baseSize: { width: 335, height: 515 },
-                    // 여기에 수동으로 요소 추가
                   },
                   data: {
                     wedding: {
@@ -480,6 +687,16 @@ export default function NewTemplatePage() {
             >
               수동 입력으로 건너뛰기
             </button>
+          </div>
+
+          {/* 도움말 */}
+          <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
+            <p className="font-medium mb-2">💡 Figma 정보 찾는 방법:</p>
+            <ol className="list-decimal list-inside space-y-1">
+              <li><strong>API Key:</strong> Figma → 설정 → Account → Personal access tokens</li>
+              <li><strong>File Key:</strong> Figma 파일 URL에서 /design/ 다음 부분</li>
+              <li><strong>Node ID:</strong> 템플릿 프레임 우클릭 → Copy link → URL의 node-id 파라미터</li>
+            </ol>
           </div>
         </div>
       )}
@@ -575,7 +792,30 @@ export default function NewTemplatePage() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          {/* 저장 성공 메시지 */}
+          {saveSuccess && (
+            <div className="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
+              <span>✅</span>
+              <span>템플릿이 서버에 저장되었습니다! 이제 미리보기에서 확인할 수 있습니다.</span>
+            </div>
+          )}
+
+          {/* 이미지 다운로드 성공 메시지 */}
+          {imagesDownloaded && downloadedImages.length > 0 && (
+            <div className="p-4 bg-blue-50 text-blue-700 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span>🖼️</span>
+                <span className="font-medium">{downloadedImages.length}개 이미지가 저장되었습니다!</span>
+              </div>
+              <ul className="text-sm space-y-1">
+                {downloadedImages.map((img, idx) => (
+                  <li key={idx} className="font-mono text-xs">{img.path}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setStep(3)}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -590,25 +830,57 @@ export default function NewTemplatePage() {
             </button>
             <button
               onClick={downloadJson}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              💾 JSON 다운로드
+              📥 JSON 다운로드
+            </button>
+            <button
+              onClick={downloadImages}
+              disabled={downloadingImages || !figmaFileKey || !figmaNodeId}
+              className="px-6 py-2 border border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {downloadingImages ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  이미지 다운로드 중...
+                </>
+              ) : (
+                <>
+                  <span>🖼️</span>
+                  Figma 이미지 가져오기
+                </>
+              )}
+            </button>
+            <button
+              onClick={saveToServer}
+              disabled={saving}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {saving ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  저장 중...
+                </>
+              ) : (
+                <>
+                  <span>💾</span>
+                  서버에 저장
+                </>
+              )}
             </button>
             <Link
               href={`/admin/templates/${templateId}`}
               className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
-              🔗 템플릿 편집 페이지로
+              🔗 편집 페이지로
             </Link>
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-2">다음 단계:</p>
+            <p className="font-medium mb-2">💡 저장 순서:</p>
             <ol className="list-decimal list-inside space-y-1">
-              <li>다운로드한 JSON 파일을 <code className="bg-gray-200 px-1 rounded">/public/templates/</code> 폴더에 저장</li>
-              <li>에셋 이미지를 <code className="bg-gray-200 px-1 rounded">/public/assets/{templateId}/</code> 폴더에 저장</li>
-              <li>필요시 React 컴포넌트 생성 (SDUI 패턴 사용)</li>
-              <li>렌더러에 템플릿 등록</li>
+              <li><strong>Figma 이미지 가져오기:</strong> 카드 배경 이미지를 <code className="bg-gray-200 px-1 rounded">/assets/{templateId}/</code>에 자동 저장</li>
+              <li><strong>서버에 저장:</strong> JSON을 <code className="bg-gray-200 px-1 rounded">/templates/{templateId}.json</code>에 저장</li>
             </ol>
           </div>
         </div>

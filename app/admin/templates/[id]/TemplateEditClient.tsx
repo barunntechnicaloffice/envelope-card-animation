@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, use } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { renderComponent } from '@/lib/server-driven-ui/renderer'
+import type { Component } from '@/types/server-driven-ui/schema'
 
 // Monaco Editor를 동적으로 로드 (SSR 비활성화)
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false })
@@ -97,6 +99,8 @@ export default function TemplateEditClient({
     }
   }, [])
 
+  const [saveSuccess, setSaveSuccess] = useState(false)
+
   async function handleSave() {
     if (jsonError) {
       alert('JSON 오류를 먼저 수정해주세요.')
@@ -104,20 +108,67 @@ export default function TemplateEditClient({
     }
 
     setSaving(true)
+    setSaveSuccess(false)
+    setError(null)
+
     try {
-      // 실제 저장은 API 엔드포인트가 필요함
-      // 여기서는 다운로드로 대체
-      const blob = new Blob([jsonString], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${templateId}.json`
-      a.click()
-      URL.revokeObjectURL(url)
-      alert('JSON 파일이 다운로드되었습니다. /public/templates/ 폴더에 저장해주세요.')
+      // 서버에 저장 (기존 템플릿 수정이므로 PUT 사용)
+      const response = await fetch('/api/templates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId,
+          content: jsonString,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        // 404인 경우 새로 생성 (POST)
+        if (response.status === 404) {
+          const createResponse = await fetch('/api/templates', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              templateId,
+              content: jsonString,
+            }),
+          })
+
+          const createResult = await createResponse.json()
+
+          if (!createResponse.ok) {
+            setError(createResult.error || '저장에 실패했습니다.')
+            return
+          }
+
+          setSaveSuccess(true)
+          alert('템플릿이 새로 생성되었습니다!')
+          return
+        }
+
+        setError(result.error || '저장에 실패했습니다.')
+        return
+      }
+
+      setSaveSuccess(true)
+      alert('템플릿이 저장되었습니다!')
+    } catch (err) {
+      setError('네트워크 오류가 발생했습니다.')
     } finally {
       setSaving(false)
     }
+  }
+
+  async function handleDownload() {
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${templateId}.json`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   async function handleCopyToClipboard() {
@@ -163,11 +214,17 @@ export default function TemplateEditClient({
             📋 복사
           </button>
           <button
+            onClick={handleDownload}
+            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            📥 다운로드
+          </button>
+          <button
             onClick={handleSave}
             disabled={saving || !!jsonError}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
-            {saving ? '저장 중...' : '💾 저장'}
+            {saving ? '저장 중...' : '💾 서버 저장'}
           </button>
           <Link
             href={`/templates/${templateId}`}
@@ -178,6 +235,14 @@ export default function TemplateEditClient({
           </Link>
         </div>
       </div>
+
+      {/* 저장 성공 메시지 */}
+      {saveSuccess && (
+        <div className="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
+          <span>✅</span>
+          <span>템플릿이 서버에 저장되었습니다!</span>
+        </div>
+      )}
 
       {/* 에러 표시 */}
       {(error || jsonError) && (
@@ -225,16 +290,39 @@ export default function TemplateEditClient({
         )}
 
         {activeTab === 'preview' && (
-          <div className="p-8 flex justify-center">
-            <div
-              className="relative bg-gray-100 rounded-lg overflow-hidden"
-              style={{ width: 335, height: 515 }}
-            >
-              <iframe
-                src={`/templates/${templateId}`}
-                className="w-full h-full border-0"
-                title="Template Preview"
-              />
+          <div className="p-8 flex justify-center items-start gap-8">
+            {/* 카드 미리보기 */}
+            <div className="flex flex-col items-center">
+              <p className="text-sm text-gray-500 mb-4">카드 미리보기</p>
+              <div
+                className="relative bg-white rounded-lg overflow-hidden shadow-lg"
+                style={{ width: 335, height: 515 }}
+              >
+                {templateData?.components?.[0] ? (
+                  renderComponent(
+                    templateData.components[0] as unknown as Component,
+                    templateData as unknown as Record<string, unknown>,
+                    'preview-card'
+                  )
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    컴포넌트가 없습니다
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 전체 페이지 미리보기 링크 */}
+            <div className="flex flex-col items-center">
+              <p className="text-sm text-gray-500 mb-4">봉투 애니메이션</p>
+              <Link
+                href={`/templates/${templateId}`}
+                target="_blank"
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+              >
+                <span>🎬</span>
+                <span>전체 화면으로 보기</span>
+              </Link>
             </div>
           </div>
         )}

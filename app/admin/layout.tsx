@@ -46,8 +46,8 @@ export default function AdminLayout({
 
       <div className="flex">
         {/* 사이드바 */}
-        <aside className="w-64 bg-white shadow-sm min-h-[calc(100vh-64px)] border-r border-gray-200">
-          <nav className="p-4 space-y-1">
+        <aside className="w-64 bg-white shadow-sm min-h-[calc(100vh-64px)] border-r border-gray-200 flex flex-col">
+          <nav className="p-4 space-y-1 flex-1">
             {navigation.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== '/admin' && pathname.startsWith(item.href))
@@ -70,13 +70,15 @@ export default function AdminLayout({
           </nav>
 
           {/* 하단 정보 */}
-          <div className="absolute bottom-4 left-4 right-4 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-500">
-              템플릿 수: <span className="font-semibold text-gray-700">50개</span>
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              마지막 업데이트: <span className="font-semibold text-gray-700">오늘</span>
-            </p>
+          <div className="p-4">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500">
+                템플릿 수: <span className="font-semibold text-gray-700">50개</span>
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                마지막 업데이트: <span className="font-semibold text-gray-700">오늘</span>
+              </p>
+            </div>
           </div>
         </aside>
 

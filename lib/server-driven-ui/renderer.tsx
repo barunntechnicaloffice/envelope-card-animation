@@ -2580,9 +2580,198 @@ function renderTemplateById(
     case 'wedding-card-050':
       return renderWeddingCardTemplate050(component as any, data, style, className, key)
     default:
-      console.warn(`Unknown template id: ${templateId}`)
-      return null
+      // 051번 이후 새 템플릿은 범용 SDUI 렌더러로 처리
+      return renderGenericSDUITemplate(component, data, style, className, key)
   }
+}
+
+/**
+ * 범용 SDUI 템플릿 렌더러
+ * layout 정보를 기반으로 동적 렌더링
+ */
+function renderGenericSDUITemplate(
+  component: TemplateComponent,
+  data: Record<string, any>,
+  style: React.CSSProperties,
+  className: string,
+  key?: string | number
+): React.ReactNode {
+  const layout = data.layout
+  const baseSize = layout?.baseSize || { width: 335, height: 515 }
+
+  // component.data에서 실제 값 추출
+  const resolvedData: Record<string, any> = {}
+  if (component.data) {
+    Object.entries(component.data).forEach(([k, v]) => {
+      if (typeof v === 'string' && v.startsWith('$.')) {
+        resolvedData[k] = resolveJSONPath(data, v)
+      } else {
+        resolvedData[k] = v
+      }
+    })
+  }
+
+  // px를 %로 변환
+  const pxToPercent = (px: number, base: number) => `${(px / base) * 100}%`
+
+  // 레이아웃 요소 렌더링
+  const renderLayoutElement = (elementKey: string, element: any): React.ReactNode => {
+    if (!element || elementKey === 'baseSize') return null
+
+    const elementStyle: React.CSSProperties = {
+      position: 'absolute',
+      left: pxToPercent(element.x || 0, baseSize.width),
+      top: pxToPercent(element.y || 0, baseSize.height),
+      zIndex: element.zIndex || 0,
+      margin: 0,
+    }
+
+    // width 처리
+    if (element.width !== undefined && element.width !== 'auto') {
+      elementStyle.width = pxToPercent(element.width, baseSize.width)
+    }
+
+    // height 처리
+    if (element.height !== undefined && element.height !== 'auto') {
+      elementStyle.height = pxToPercent(element.height, baseSize.height)
+    }
+
+    // centerAlign 처리: left를 50%로 설정하고 translateX(-50%)로 중앙 정렬
+    if (element.centerAlign) {
+      elementStyle.left = '50%'
+      elementStyle.transform = 'translateX(-50%)'
+    }
+
+    // 타입별 렌더링
+    switch (element.type) {
+      case 'background':
+        return (
+          <div
+            key={elementKey}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: element.zIndex || 0,
+            }}
+          >
+            {resolvedData.backgroundImage && (
+              <img
+                src={resolvedData.backgroundImage}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            )}
+          </div>
+        )
+
+      case 'text':
+        // 텍스트 스타일
+        elementStyle.fontFamily = element.fontFamily || "'NanumMyeongjo', serif"
+        elementStyle.fontSize = element.fontSize ? `${element.fontSize}px` : '16px'
+        elementStyle.fontWeight = element.fontWeight || 400
+        elementStyle.color = element.color || '#333333'
+        elementStyle.textAlign = element.align || 'left'
+        if (element.letterSpacing) {
+          elementStyle.letterSpacing = `${element.letterSpacing}px`
+        }
+        elementStyle.whiteSpace = 'pre-wrap'
+
+        // 키에 해당하는 데이터 찾기
+        let textContent = ''
+        // groomName -> groom, brideName -> bride 등 매핑
+        const keyMap: Record<string, string> = {
+          groomName: 'groom',
+          brideName: 'bride',
+          dateAuto: 'date',
+          venueAuto: 'venue',
+        }
+        const dataKey = keyMap[elementKey] || elementKey
+
+        // text 키는 고정 텍스트 (초대 문구 등)
+        if (elementKey === 'text') {
+          textContent = resolvedData.text ||
+            data.data?.wedding?.text ||
+            'you are invited to join\nin our celebration of love'
+        } else {
+          textContent = resolvedData[dataKey] || data.data?.wedding?.[dataKey] || ''
+        }
+
+        return (
+          <p key={elementKey} style={elementStyle}>
+            {textContent}
+          </p>
+        )
+
+      case 'image':
+        elementStyle.overflow = 'hidden'
+        const imgSrc = resolvedData.photo || data.data?.wedding?.photo || '/assets/common/photo.png'
+
+        return (
+          <div key={elementKey} style={elementStyle}>
+            <img
+              src={imgSrc}
+              alt=""
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
+        )
+
+      case 'vector':
+        // vector 타입 - decoration 이미지 렌더링
+        if (elementKey === 'decoration') {
+          const decorationSrc = resolvedData.decoration ||
+            data.data?.wedding?.decoration ||
+            `/assets/${data.id}/decoration.png`
+
+          return (
+            <div key={elementKey} style={elementStyle}>
+              <img
+                src={decorationSrc}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </div>
+          )
+        }
+        return null
+
+      case 'container':
+      default:
+        // container는 렌더링하지 않음
+        return null
+    }
+  }
+
+  return (
+    <div
+      key={key}
+      className={className}
+      style={{
+        ...style,
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#FFFFFF',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 배경 이미지 */}
+      {resolvedData.backgroundImage && (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <img
+            src={resolvedData.backgroundImage}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
+      )}
+
+      {/* Layout 요소들 렌더링 */}
+      {layout && Object.entries(layout).map(([elementKey, element]) =>
+        renderLayoutElement(elementKey, element)
+      )}
+    </div>
+  )
 }
 
 /**
