@@ -4,6 +4,7 @@ import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface WeddingCard041Data extends WeddingData {
   decoration?: string
+  separator?: string
 }
 
 interface WeddingCard041Props {
@@ -109,10 +110,10 @@ export function WeddingCard041({
         </p>
       )}
 
-      {/* & 기호 */}
-      {layout.and && (
-        <p style={renderLayoutElement('and', layout.and, baseSize, data)}>
-          &
+      {/* separator */}
+      {layout.separator && (
+        <p style={renderLayoutElement('separator', layout.separator, baseSize, data)}>
+          {data.separator || '&'}
         </p>
       )}
 

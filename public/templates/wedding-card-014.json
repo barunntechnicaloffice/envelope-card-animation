@@ -34,7 +34,7 @@
       "backgroundSize": "cover",
       "backgroundPosition": "center"
     },
-    "subtitle": {
+    "title": {
       "type": "text",
       "x": 167.5,
       "y": 50.25,
@@ -126,7 +126,9 @@
   },
   "data": {
     "wedding": {
+      "title": "A CELEBRATION OF OUR LOVE",
       "groom": "이 준 서",
+      "separator": "&",
       "bride": "김 은 재",
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀"
@@ -137,7 +139,9 @@
       "id": "wedding-card-main",
       "type": "template",
       "data": {
+        "title": "$.data.wedding.title",
         "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
         "bride": "$.data.wedding.bride",
         "date": "$.data.wedding.date",
         "venue": "$.data.wedding.venue",

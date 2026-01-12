@@ -63,7 +63,7 @@
       "zIndex": 2,
       "editable": true
     },
-    "and": {
+    "separator": {
       "type": "text",
       "x": 167.5,
       "y": 416.25,
@@ -115,6 +115,7 @@
   "data": {
     "wedding": {
       "groom": "Junseo",
+      "separator": "&",
       "bride": "Eunjae",
       "date": "October 23, 2038",
       "photo": "/assets/wedding-card-037/photo.png"
@@ -126,6 +127,7 @@
       "type": "template",
       "data": {
         "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
         "bride": "$.data.wedding.bride",
         "date": "$.data.wedding.date",
         "photo": "$.data.wedding.photo",

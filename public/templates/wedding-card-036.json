@@ -88,7 +88,7 @@
       "zIndex": 2,
       "editable": true
     },
-    "and": {
+    "separator": {
       "type": "text",
       "x": 167.5,
       "y": 423.26,
@@ -142,6 +142,7 @@
       "title": "OUR WEDDING DAY",
       "date": "2038.10.23 SAT PM 2:00",
       "groom": "LEE JUNSEO",
+      "separator": "&",
       "bride": "KIM EUNJAE",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-036/photo.png"
@@ -155,6 +156,7 @@
         "title": "$.data.wedding.title",
         "date": "$.data.wedding.date",
         "groom": "$.data.wedding.groom",
+        "separator": "$.data.wedding.separator",
         "bride": "$.data.wedding.bride",
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",

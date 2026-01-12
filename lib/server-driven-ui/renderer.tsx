@@ -1898,6 +1898,9 @@ function renderWeddingCardTemplate036(
       : null) || 'OUR WEDDING DAY',
     groom: resolveJSONPath(data, component.data.groom) || 'LEE JUNSEO',
     bride: resolveJSONPath(data, component.data.bride) || 'KIM EUNJAE',
+    separator: (component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : null) || '&',
     date: resolveJSONPath(data, component.data.date) || '2038.10.23 SAT PM 2:00',
     venue: resolveJSONPath(data, component.data.venue) || '메종 드 프리미어 그랜드홀',
     photo: (component.data.photo
@@ -2079,6 +2082,9 @@ function renderWeddingCardTemplate041(
   const weddingData = {
     groom: resolveJSONPath(data, component.data.groom) || 'Junseo',
     bride: resolveJSONPath(data, component.data.bride) || 'Eunjae',
+    separator: (component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : null) || '&',
     date: resolveJSONPath(data, component.data.date) || 'October 23, 2038',
     photo: (component.data.photo
       ? resolveJSONPath(data, component.data.photo)
@@ -2116,6 +2122,9 @@ function renderWeddingCardTemplate042(
   const weddingData = {
     groom: resolveJSONPath(data, component.data.groom) || 'Junseo',
     bride: resolveJSONPath(data, component.data.bride) || 'Eunjae',
+    separator: (component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : null) || '&',
     date: resolveJSONPath(data, component.data.date) || 'October 23, 2038',
     photo: (component.data.photo
       ? resolveJSONPath(data, component.data.photo)
@@ -2191,6 +2200,9 @@ function renderWeddingCardTemplate044(
   const weddingData = {
     groom: resolveJSONPath(data, component.data.groom) || 'Junseo',
     bride: resolveJSONPath(data, component.data.bride) || 'Eunjae',
+    separator: (component.data.separator
+      ? resolveJSONPath(data, component.data.separator)
+      : null) || '&',
     date: resolveJSONPath(data, component.data.date) || 'October 23, 2038',
     photo: (component.data.photo
       ? resolveJSONPath(data, component.data.photo)
@@ -2233,12 +2245,12 @@ function renderWeddingCardTemplate045(
     cardBackground: (component.data.cardBackground
       ? resolveJSONPath(data, component.data.cardBackground)
       : null) || '/assets/wedding-card-045/card-main-bg.png',
-    decoration1: (component.data.decoration1
-      ? resolveJSONPath(data, component.data.decoration1)
-      : null) || '/assets/wedding-card-045/decoration1.png',
-    decoration2: (component.data.decoration2
-      ? resolveJSONPath(data, component.data.decoration2)
-      : null) || '/assets/wedding-card-045/decoration2.png',
+    decoration: (component.data.decoration
+      ? resolveJSONPath(data, component.data.decoration)
+      : null) || '/assets/wedding-card-045/decoration.png',
+    decorationTop: (component.data.decorationTop
+      ? resolveJSONPath(data, component.data.decorationTop)
+      : null) || '/assets/wedding-card-045/decorationTop.png',
     groomLabel: (component.data.groomLabel
       ? resolveJSONPath(data, component.data.groomLabel)
       : null) || 'GROOM',

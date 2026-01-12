@@ -38,7 +38,7 @@
       "editable": true,
       "objectFit": "cover"
     },
-    "decoration2": {
+    "decorationTop": {
       "type": "image",
       "x": 0,
       "y": 0,
@@ -80,7 +80,7 @@
       "editable": true,
       "centerAlign": true
     },
-    "decoration1": {
+    "decoration": {
       "type": "image",
       "x": 151.006,
       "y": 389.1,
@@ -163,8 +163,8 @@
       "date": "2038년 10월 23일 토요일 오후 2시",
       "venue": "메종 드 프리미어 그랜드홀",
       "photo": "/assets/wedding-card-045/photo.png",
-      "decoration1": "/assets/wedding-card-045/decoration1.png",
-      "decoration2": "/assets/wedding-card-045/decoration2.png",
+      "decorationTop": "/assets/wedding-card-045/decorationTop.png",
+      "decoration": "/assets/wedding-card-045/decoration.png",
       "groomLabel": "GROOM",
       "brideLabel": "BRIDE"
     }
@@ -180,8 +180,8 @@
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
         "cardBackground": "$.data.wedding.cardBackground",
-        "decoration1": "$.data.wedding.decoration1",
-        "decoration2": "$.data.wedding.decoration2",
+        "decorationTop": "$.data.wedding.decorationTop",
+        "decoration": "$.data.wedding.decoration",
         "groomLabel": "$.data.wedding.groomLabel",
         "brideLabel": "$.data.wedding.brideLabel"
       },
