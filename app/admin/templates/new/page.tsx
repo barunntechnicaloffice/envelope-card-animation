@@ -145,6 +145,9 @@ export default function NewTemplatePage() {
   const generateJson = useCallback(() => {
     const layout: Record<string, ConvertedElement> = {}
 
+    // Figma에서 추출한 텍스트 값 저장
+    const figmaTextValues: Record<string, string> = {}
+
     parsedElements.forEach((el, index) => {
       const nameLower = el.name.toLowerCase()
 
@@ -224,6 +227,11 @@ export default function NewTemplatePage() {
         if (Math.abs(centerX - baseSize.width / 2) < 10) {
           converted.centerAlign = true
         }
+
+        // Figma에서 추출한 텍스트 값 저장 (characters 필드)
+        if (el.characters && el.characters.trim()) {
+          figmaTextValues[normalizedName] = el.characters.trim()
+        }
       }
 
       layout[normalizedName] = converted
@@ -235,12 +243,13 @@ export default function NewTemplatePage() {
     const hasText = 'text' in layout
 
     // wedding data 기본값
+    // Figma에서 추출한 텍스트 값이 있으면 사용, 없으면 기본값
     // photo는 템플릿별 이미지 경로 사용 (Figma에서 다운로드됨)
     const weddingData: Record<string, string> = {
-      groom: '신랑 이름',
-      bride: '신부 이름',
-      date: '2025년 1월 1일 토요일 오후 2시',
-      venue: '예식장 이름',
+      groom: figmaTextValues.groom || '신랑 이름',
+      bride: figmaTextValues.bride || '신부 이름',
+      date: figmaTextValues.date || '2025년 1월 1일 토요일 오후 2시',
+      venue: figmaTextValues.venue || '예식장 이름',
       photo: `/assets/${templateId}/photo.png`,
       cardBackground: `/assets/${templateId}/card-bg.png`
     }
@@ -255,9 +264,9 @@ export default function NewTemplatePage() {
       weddingData.decoration = `/assets/${templateId}/decoration.png`
     }
 
-    // text가 있으면 초대 문구 추가
+    // text가 있으면 초대 문구 추가 (Figma 값 우선)
     if (hasText) {
-      weddingData.text = 'you are invited to join\nin our celebration of love'
+      weddingData.text = figmaTextValues.text || 'you are invited to join\nin our celebration of love'
     }
 
     // component data 기본값
