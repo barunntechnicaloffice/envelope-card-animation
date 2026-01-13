@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "name": "테테스트스트",
   "category": "웨딩",
-  "thumbnail": "/assets/wedding-card-051/card-bg.png",
+  "thumbnail": "/assets/wedding-card-051/card-main-bg.png",
   "figmaNodeId": "223-9643",
   "set": {
     "envelope": {
@@ -14,7 +14,7 @@
       "background": "/assets/common/bg.png"
     },
     "cards": {
-      "background": "/assets/wedding-card-051/card-bg.png"
+      "background": "/assets/wedding-card-051/card-main-bg.png"
     }
   },
   "layout": {
@@ -117,7 +117,7 @@
       "date": "2025년 1월 1일 토요일 오후 2시",
       "venue": "예식장 이름",
       "photo": "/assets/wedding-card-051/photo.png",
-      "cardBackground": "/assets/wedding-card-051/card-bg.png",
+      "cardBackground": "/assets/wedding-card-051/card-main-bg.png",
       "decoration": "/assets/wedding-card-051/decoration.png",
       "text": "you are invited to join\nin our celebration of love"
     }

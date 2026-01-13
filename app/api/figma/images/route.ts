@@ -67,12 +67,12 @@ export async function POST(request: NextRequest) {
         .replace(/\s*\[editable\]\s*/gi, '')
         .trim()
 
-      // BG 노드 → card-bg로 저장 (배경 이미지)
+      // BG 노드 → card-main-bg로 저장 (배경 이미지)
       if (cleanName === 'bg' || cleanName === 'background') {
         console.log(`  → Found BG node: ${node.id}`)
         nodesToExport.push({
           id: node.id,
-          name: 'card-bg',
+          name: 'card-main-bg',
           type: 'bg'
         })
       }

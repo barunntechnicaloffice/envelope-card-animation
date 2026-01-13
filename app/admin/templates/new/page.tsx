@@ -251,7 +251,7 @@ export default function NewTemplatePage() {
       date: figmaTextValues.date || '2025년 1월 1일 토요일 오후 2시',
       venue: figmaTextValues.venue || '예식장 이름',
       photo: `/assets/${templateId}/photo.png`,
-      cardBackground: `/assets/${templateId}/card-bg.png`
+      cardBackground: `/assets/${templateId}/card-main-bg.png`
     }
 
     // separator가 있으면 data에도 추가
@@ -299,7 +299,7 @@ export default function NewTemplatePage() {
       version: '1.0.0',
       name: templateName || '새 웨딩 카드 템플릿',
       category: category,
-      thumbnail: `/assets/${templateId}/card-bg.png`,
+      thumbnail: `/assets/${templateId}/card-main-bg.png`,
       figmaNodeId: figmaNodeId || undefined,
       set: {
         envelope: {
@@ -310,7 +310,7 @@ export default function NewTemplatePage() {
           background: '/assets/common/bg.png'
         },
         cards: {
-          background: `/assets/${templateId}/card-bg.png`
+          background: `/assets/${templateId}/card-main-bg.png`
         }
       },
       layout: {

@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
               name: data.name || file.replace('.json', ''),
               version: data.version || '1.0.0',
               category: data.category,
-              thumbnail: data.thumbnail || data.set?.cards?.background,
+              thumbnail: data.thumbnail || data.set?.cards?.background || data.set?.cards?.main || data.data?.wedding?.photo,
               hasLayout: !!data.layout,
               status: 'published' as const
             }
