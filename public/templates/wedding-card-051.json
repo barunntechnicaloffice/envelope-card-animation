@@ -7,14 +7,16 @@
   "figmaNodeId": "223-9643",
   "set": {
     "envelope": {
-      "pattern": "/assets/common/pattern.png",
-      "seal": "/assets/common/seal.png"
+      "pattern": "/assets/wedding-card-051/envelope-pattern.png",
+      "seal": "/assets/wedding-card-051/envelope-seal.png",
+      "lining": "/assets/wedding-card-051/envelope-lining.png"
     },
     "page": {
-      "background": "/assets/common/bg.png"
+      "background": "/assets/wedding-card-051/page-bg.png"
     },
     "cards": {
-      "background": "/assets/wedding-card-051/card-main-bg.png"
+      "main": "/assets/wedding-card-051/card-main-bg.png",
+      "default": "/assets/wedding-card-051/card-default-bg.png"
     }
   },
   "layout": {

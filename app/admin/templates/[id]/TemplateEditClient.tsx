@@ -3,8 +3,7 @@
 import { useEffect, useState, useCallback, use } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { renderComponent } from '@/lib/server-driven-ui/renderer'
-import type { Component } from '@/types/server-driven-ui/schema'
+import LayoutEditor from '@/components/admin/LayoutEditor'
 
 // Monaco Editor를 동적으로 로드 (SSR 비활성화)
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false })
@@ -290,31 +289,29 @@ export default function TemplateEditClient({
         )}
 
         {activeTab === 'preview' && (
-          <div className="p-8 flex justify-center items-start gap-8">
-            {/* 카드 미리보기 */}
-            <div className="flex flex-col items-center">
-              <p className="text-sm text-gray-500 mb-4">카드 미리보기</p>
-              <div
-                className="relative bg-white rounded-lg overflow-hidden shadow-lg"
-                style={{ width: 335, height: 515 }}
-              >
-                {templateData?.components?.[0] ? (
-                  renderComponent(
-                    templateData.components[0] as unknown as Component,
-                    templateData as unknown as Record<string, unknown>,
-                    'preview-card'
-                  )
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    컴포넌트가 없습니다
-                  </div>
-                )}
+          <div className="p-8">
+            {templateData?.layout ? (
+              <LayoutEditor
+                layout={templateData.layout as Parameters<typeof LayoutEditor>[0]['layout']}
+                data={(templateData.data || {}) as Record<string, unknown>}
+                onLayoutChange={(newLayout) => {
+                  const newTemplateData = {
+                    ...templateData,
+                    layout: newLayout
+                  }
+                  setTemplateData(newTemplateData)
+                  setJsonString(JSON.stringify(newTemplateData, null, 2))
+                }}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+                <p>레이아웃 데이터가 없습니다</p>
+                <p className="text-sm mt-2">JSON 편집 탭에서 layout 필드를 추가해주세요</p>
               </div>
-            </div>
+            )}
 
             {/* 전체 페이지 미리보기 링크 */}
-            <div className="flex flex-col items-center">
-              <p className="text-sm text-gray-500 mb-4">봉투 애니메이션</p>
+            <div className="flex justify-center mt-8 pt-8 border-t border-gray-200">
               <Link
                 href={`/templates/${templateId}`}
                 target="_blank"

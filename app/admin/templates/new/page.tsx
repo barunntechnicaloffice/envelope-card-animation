@@ -303,14 +303,16 @@ export default function NewTemplatePage() {
       figmaNodeId: figmaNodeId || undefined,
       set: {
         envelope: {
-          pattern: '/assets/common/pattern.png',
-          seal: '/assets/common/seal.png'
+          pattern: `/assets/${templateId}/envelope-pattern.png`,
+          seal: `/assets/${templateId}/envelope-seal.png`,
+          lining: `/assets/${templateId}/envelope-lining.png`
         },
         page: {
-          background: '/assets/common/bg.png'
+          background: `/assets/${templateId}/page-bg.png`
         },
         cards: {
-          background: `/assets/${templateId}/card-main-bg.png`
+          main: `/assets/${templateId}/card-main-bg.png`,
+          default: `/assets/${templateId}/card-default-bg.png`
         }
       },
       layout: {
