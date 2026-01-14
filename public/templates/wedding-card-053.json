@@ -1,0 +1,594 @@
+{
+  "id": "wedding-card-053",
+  "version": "1.0.0",
+  "name": "테스트53번",
+  "category": "웨딩",
+  "thumbnail": "/assets/wedding-card-053/card-main-bg.png",
+  "figmaNodeId": "1327-10985",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/common/pattern.png",
+      "seal": "/assets/common/seal.png"
+    },
+    "page": {
+      "background": "/assets/common/bg.png"
+    },
+    "cards": {
+      "background": "/assets/wedding-card-053/card-main-bg.png"
+    }
+  },
+  "layout": {
+    "1": {
+      "type": "container",
+      "x": 699,
+      "y": -72.33,
+      "width": 20,
+      "zIndex": 108,
+      "editable": false,
+      "height": 16.67
+    },
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "frame1000006335": {
+      "type": "container",
+      "x": -920.55,
+      "y": -209,
+      "width": 1669.55,
+      "zIndex": 1,
+      "editable": false,
+      "height": 873
+    },
+    "templateGroup251049": {
+      "type": "container",
+      "x": 374,
+      "y": -148,
+      "width": 375,
+      "zIndex": 100,
+      "editable": false,
+      "height": 812
+    },
+    "group1": {
+      "type": "container",
+      "x": 374,
+      "y": -148,
+      "width": 375,
+      "zIndex": 101,
+      "editable": false,
+      "height": 812
+    },
+    "frame1000006305": {
+      "type": "container",
+      "x": 392,
+      "y": -84,
+      "width": 338,
+      "zIndex": 102,
+      "editable": false,
+      "height": 692
+    },
+    "frame2": {
+      "type": "container",
+      "x": 476,
+      "y": 564,
+      "width": 167,
+      "zIndex": 103,
+      "editable": false,
+      "height": 44
+    },
+    "\udf37": {
+      "type": "text",
+      "x": 502,
+      "y": 574,
+      "width": 115,
+      "zIndex": 104,
+      "editable": false,
+      "height": 24,
+      "fontSize": 15,
+      "fontFamily": "'Pretendard', serif",
+      "fontWeight": 400,
+      "color": "#ffffff",
+      "align": "center",
+      "letterSpacing": 0.14399999678134917
+    },
+    "frame1000006301": {
+      "type": "container",
+      "x": 689,
+      "y": -84,
+      "width": 40,
+      "zIndex": 105,
+      "editable": false,
+      "height": 40
+    },
+    "iconNormalVol": {
+      "type": "container",
+      "x": 699,
+      "y": -74,
+      "width": 20,
+      "zIndex": 106,
+      "editable": false,
+      "height": 20
+    },
+    "shape": {
+      "type": "container",
+      "x": 494.5,
+      "y": 651,
+      "width": 134,
+      "zIndex": 157,
+      "editable": false,
+      "height": 5
+    },
+    "union": {
+      "type": "container",
+      "x": 494.5,
+      "y": 651,
+      "width": 134,
+      "zIndex": 158,
+      "editable": false,
+      "height": 5
+    },
+    "vector": {
+      "type": "vector",
+      "x": 407.1,
+      "y": 576.1,
+      "width": 17.8,
+      "zIndex": 148,
+      "editable": false,
+      "height": 19.8
+    },
+    "rectangle8874": {
+      "type": "container",
+      "x": 699.01,
+      "y": -67.63,
+      "width": 4.63,
+      "zIndex": 113,
+      "editable": false,
+      "height": 7.25
+    },
+    "polygon1": {
+      "type": "container",
+      "x": 699.01,
+      "y": -75.3,
+      "width": 16.67,
+      "zIndex": 114,
+      "editable": false,
+      "height": 22.59
+    },
+    "ratio": {
+      "type": "container",
+      "x": 404.96,
+      "y": 581.29,
+      "width": 22.07,
+      "zIndex": 151,
+      "editable": false,
+      "height": 9.43
+    },
+    "frame1000006302": {
+      "type": "container",
+      "x": 685,
+      "y": 563,
+      "width": 44,
+      "zIndex": 119,
+      "editable": false,
+      "height": 44
+    },
+    "iconNormalList": {
+      "type": "container",
+      "x": 695,
+      "y": 573,
+      "width": 24,
+      "zIndex": 120,
+      "editable": false,
+      "height": 24
+    },
+    "path": {
+      "type": "vector",
+      "x": 690.17,
+      "y": -130.67,
+      "width": 15,
+      "zIndex": 180,
+      "editable": false,
+      "height": 4.76
+    },
+    "frame1000005746": {
+      "type": "container",
+      "x": 394,
+      "y": 564,
+      "width": 44,
+      "zIndex": 133,
+      "editable": false,
+      "height": 44
+    },
+    "iconNormalShareIos": {
+      "type": "container",
+      "x": 404,
+      "y": 574,
+      "width": 24,
+      "zIndex": 134,
+      "editable": false,
+      "height": 24
+    },
+    "intersect": {
+      "type": "container",
+      "x": 407.1,
+      "y": 584,
+      "width": 17.8,
+      "zIndex": 137,
+      "editable": false,
+      "height": 11.9
+    },
+    "subtract": {
+      "type": "container",
+      "x": 408.9,
+      "y": 579.9,
+      "width": 14.2,
+      "zIndex": 142,
+      "editable": false,
+      "height": 14.2
+    },
+    "rectangle": {
+      "type": "container",
+      "x": 682,
+      "y": -130.33,
+      "width": 3,
+      "zIndex": 175,
+      "editable": false,
+      "height": 10.67
+    },
+    "osBarBottomNavigation": {
+      "type": "container",
+      "x": 374,
+      "y": 664,
+      "width": 375,
+      "zIndex": 152,
+      "editable": false,
+      "height": 0
+    },
+    "absolute": {
+      "type": "container",
+      "x": 374,
+      "y": -148,
+      "width": 375,
+      "zIndex": 163,
+      "editable": false,
+      "height": 44
+    },
+    "homeBar": {
+      "type": "container",
+      "x": 374,
+      "y": 630,
+      "width": 375,
+      "zIndex": 154,
+      "editable": false,
+      "height": 34
+    },
+    "content": {
+      "type": "container",
+      "x": 668,
+      "y": -134,
+      "width": 67,
+      "zIndex": 169,
+      "editable": false,
+      "height": 16
+    },
+    "homeBarHomeIndicator": {
+      "type": "container",
+      "x": 374,
+      "y": 630,
+      "width": 375,
+      "zIndex": 156,
+      "editable": false,
+      "height": 34
+    },
+    "right": {
+      "type": "vector",
+      "x": 623.5,
+      "y": 651,
+      "width": 5,
+      "zIndex": 159,
+      "editable": false,
+      "height": 5
+    },
+    "center": {
+      "type": "container",
+      "x": 499,
+      "y": 651,
+      "width": 125,
+      "zIndex": 160,
+      "editable": false,
+      "height": 5
+    },
+    "left": {
+      "type": "vector",
+      "x": 494.5,
+      "y": 651,
+      "width": 5,
+      "zIndex": 161,
+      "editable": false,
+      "height": 5
+    },
+    "osBarTopNavigation": {
+      "type": "container",
+      "x": 374,
+      "y": -148,
+      "width": 375,
+      "zIndex": 162,
+      "editable": false,
+      "height": 44
+    },
+    "statusBar": {
+      "type": "container",
+      "x": 374,
+      "y": -148,
+      "width": 375,
+      "zIndex": 164,
+      "editable": false,
+      "height": 44
+    },
+    "statusBarTimeNotch": {
+      "type": "container",
+      "x": 374,
+      "y": -148,
+      "width": 93,
+      "zIndex": 166,
+      "editable": false,
+      "height": 44
+    },
+    "value": {
+      "type": "text",
+      "x": 404.5,
+      "y": -135,
+      "width": 32,
+      "zIndex": 167,
+      "editable": false,
+      "height": 18,
+      "fontSize": 15,
+      "fontFamily": "'SF SD Text', serif",
+      "fontWeight": 600,
+      "color": "#000000",
+      "align": "center",
+      "letterSpacing": -0.23700000643730165
+    },
+    "statusBarStatusNotch": {
+      "type": "container",
+      "x": 654,
+      "y": -148,
+      "width": 95,
+      "zIndex": 168,
+      "editable": false,
+      "height": 44
+    },
+    "celluar": {
+      "type": "container",
+      "x": 668,
+      "y": -131,
+      "width": 18,
+      "zIndex": 170,
+      "editable": false,
+      "height": 12
+    },
+    "cellularConnection": {
+      "type": "container",
+      "x": 668,
+      "y": -130.33,
+      "width": 17,
+      "zIndex": 171,
+      "editable": false,
+      "height": 10.67
+    },
+    "wiFi": {
+      "type": "container",
+      "x": 690.17,
+      "y": -130.67,
+      "width": 15,
+      "zIndex": 177,
+      "editable": false,
+      "height": 11
+    },
+    "battery": {
+      "type": "container",
+      "x": 710.34,
+      "y": -130.67,
+      "width": 24.33,
+      "zIndex": 182,
+      "editable": false,
+      "height": 11.33
+    },
+    "cap": {
+      "type": "vector",
+      "x": 733.34,
+      "y": -127,
+      "width": 1.33,
+      "zIndex": 183,
+      "editable": false,
+      "height": 4
+    },
+    "border": {
+      "type": "container",
+      "x": 710.34,
+      "y": -130.67,
+      "width": 22,
+      "zIndex": 184,
+      "editable": false,
+      "height": 11.33
+    },
+    "capacity": {
+      "type": "container",
+      "x": 712.34,
+      "y": -128.67,
+      "width": 18,
+      "zIndex": 185,
+      "editable": false,
+      "height": 7.33
+    },
+    "date": {
+      "type": "text",
+      "x": 12,
+      "y": 466.97,
+      "width": 311,
+      "zIndex": 91,
+      "editable": true,
+      "height": 18,
+      "fontSize": 18,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 600,
+      "color": "#333333",
+      "align": "center",
+      "centerAlign": true
+    },
+    "groom": {
+      "type": "text",
+      "x": 20.5,
+      "y": 24.5,
+      "width": 60,
+      "zIndex": 93,
+      "editable": true,
+      "height": 17,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "left",
+      "letterSpacing": 1.12
+    },
+    "bride": {
+      "type": "text",
+      "x": 256.5,
+      "y": 24.5,
+      "width": 58,
+      "zIndex": 95,
+      "editable": true,
+      "height": 17,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "right",
+      "letterSpacing": 1.12
+    },
+    "decoration": {
+      "type": "vector",
+      "x": 30.77,
+      "y": 53.5,
+      "width": 273.45,
+      "zIndex": 97,
+      "editable": false,
+      "height": 76
+    },
+    "text": {
+      "type": "text",
+      "x": 406,
+      "y": 50,
+      "width": 311,
+      "zIndex": 188,
+      "editable": false,
+      "height": 19,
+      "fontSize": 15,
+      "fontFamily": "'NanumMyeongjo', serif",
+      "fontWeight": 700,
+      "color": "#000000",
+      "align": "center",
+      "letterSpacing": 1.5
+    },
+    "photo": {
+      "type": "image",
+      "x": 55.21,
+      "y": 87.17,
+      "width": 224.58,
+      "zIndex": 99,
+      "editable": true,
+      "height": 299.66
+    },
+    "envelope4": {
+      "type": "container",
+      "x": -920.55,
+      "y": 16.68,
+      "width": 290,
+      "zIndex": 189,
+      "editable": false,
+      "height": 195.8
+    },
+    "lining26": {
+      "type": "container",
+      "x": -912.94,
+      "y": 250.41,
+      "width": 300,
+      "zIndex": 190,
+      "editable": false,
+      "height": 370
+    },
+    "wax22": {
+      "type": "container",
+      "x": -917.72,
+      "y": -209,
+      "width": 150,
+      "zIndex": 191,
+      "editable": false,
+      "height": 150
+    },
+    "rectangle9115": {
+      "type": "container",
+      "x": -917.72,
+      "y": -209,
+      "width": 150,
+      "zIndex": 192,
+      "editable": false,
+      "height": 150
+    },
+    "bg41": {
+      "type": "container",
+      "x": -570,
+      "y": -148,
+      "width": 375,
+      "zIndex": 193,
+      "editable": false,
+      "height": 768
+    },
+    "bgbgbg": {
+      "type": "container",
+      "x": -570,
+      "y": -148,
+      "width": 375,
+      "zIndex": 194,
+      "editable": false,
+      "height": 768
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "junseo",
+      "bride": "eunjae",
+      "date": "2038.10.23",
+      "venue": "예식장 이름",
+      "photo": "/assets/wedding-card-053/photo.png",
+      "cardBackground": "/assets/wedding-card-053/card-main-bg.png",
+      "decoration": "/assets/wedding-card-053/decoration.png",
+      "text": "invitation"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "photo": "$.data.wedding.photo",
+        "backgroundImage": "$.data.wedding.cardBackground",
+        "decoration": "$.data.wedding.decoration",
+        "text": "$.data.wedding.text"
+      }
+    }
+  ]
+}
