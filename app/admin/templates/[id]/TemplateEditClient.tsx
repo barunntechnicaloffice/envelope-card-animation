@@ -34,6 +34,7 @@ export default function TemplateEditClient({
 
   const [templateData, setTemplateData] = useState<TemplateData | null>(null)
   const [jsonString, setJsonString] = useState('')
+  const [originalLayout, setOriginalLayout] = useState<Record<string, unknown> | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -54,6 +55,10 @@ export default function TemplateEditClient({
         const data = await res.json()
         setTemplateData(data)
         setJsonString(JSON.stringify(data, null, 2))
+        // 원본 레이아웃 저장 (초기화용)
+        if (data.layout) {
+          setOriginalLayout(JSON.parse(JSON.stringify(data.layout)))
+        }
       } else {
         // 새 템플릿 생성
         const newTemplate: TemplateData = {
@@ -77,6 +82,7 @@ export default function TemplateEditClient({
         }
         setTemplateData(newTemplate)
         setJsonString(JSON.stringify(newTemplate, null, 2))
+        setOriginalLayout(JSON.parse(JSON.stringify(newTemplate.layout)))
       }
     } catch (err) {
       setError('템플릿을 불러오는데 실패했습니다.')
@@ -294,6 +300,7 @@ export default function TemplateEditClient({
               <LayoutEditor
                 layout={templateData.layout as Parameters<typeof LayoutEditor>[0]['layout']}
                 data={(templateData.data || {}) as Record<string, unknown>}
+                templateSet={templateData.set}
                 onLayoutChange={(newLayout) => {
                   const newTemplateData = {
                     ...templateData,
@@ -302,6 +309,18 @@ export default function TemplateEditClient({
                   setTemplateData(newTemplateData)
                   setJsonString(JSON.stringify(newTemplateData, null, 2))
                 }}
+                onSave={handleSave}
+                onReset={() => {
+                  if (originalLayout && templateData) {
+                    const resetData = {
+                      ...templateData,
+                      layout: JSON.parse(JSON.stringify(originalLayout))
+                    }
+                    setTemplateData(resetData)
+                    setJsonString(JSON.stringify(resetData, null, 2))
+                  }
+                }}
+                isSaving={saving}
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-64 text-gray-400">

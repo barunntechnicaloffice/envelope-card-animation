@@ -24,22 +24,45 @@ interface LayoutData {
   [key: string]: LayoutElement | { width: number; height: number }
 }
 
+interface TemplateSet {
+  envelope?: {
+    pattern?: string
+    seal?: string
+    lining?: string
+  }
+  page?: {
+    background?: string
+  }
+  cards?: {
+    main?: string
+    default?: string
+    background?: string
+  }
+}
+
 interface LayoutEditorProps {
   layout: LayoutData
   data: Record<string, unknown>
+  templateSet?: TemplateSet
   onLayoutChange: (newLayout: LayoutData) => void
+  onSave?: () => void
+  onReset?: () => void
+  isSaving?: boolean
 }
 
-export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEditorProps) {
+export default function LayoutEditor({ layout, data, templateSet, onLayoutChange, onSave, onReset, isSaving }: LayoutEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [selectedElement, setSelectedElement] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [dragStartPos, setDragStartPos] = useState<{ x: number; y: number } | null>(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [guidelines, setGuidelines] = useState<{ type: 'horizontal' | 'vertical'; position: number }[]>([])
   const [showCoordinates, setShowCoordinates] = useState<{ x: number; y: number } | null>(null)
+  const [pendingElement, setPendingElement] = useState<string | null>(null)
 
   const baseSize = layout.baseSize
   const SNAP_THRESHOLD = 5 // 스냅 임계값 (px)
+  const DRAG_THRESHOLD = 5 // 드래그 시작 최소 이동 거리 (px)
 
   // 레이아웃 요소들 추출 (baseSize 제외)
   const layoutElements = Object.entries(layout).filter(
@@ -132,30 +155,48 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
     return { x: snappedX, y: snappedY }
   }, [layout, layoutElements, baseSize])
 
-  // 마우스 다운 핸들러
+  // 마우스 다운 핸들러 - 선택된 요소만 드래그 가능
   const handleMouseDown = useCallback((e: React.MouseEvent, key: string) => {
     e.stopPropagation()
     const element = layout[key] as LayoutElement
     if (!element || key === 'background') return
 
-    setSelectedElement(key)
-    setIsDragging(true)
+    // 이미 선택된 요소를 클릭한 경우 → 드래그 준비
+    if (selectedElement === key) {
+      setPendingElement(key)
 
-    const rect = containerRef.current?.getBoundingClientRect()
-    if (rect) {
-      const scaleX = baseSize.width / rect.width
-      const scaleY = baseSize.height / rect.height
-      const mouseX = (e.clientX - rect.left) * scaleX
-      const mouseY = (e.clientY - rect.top) * scaleY
-      setDragOffset({
-        x: mouseX - element.x,
-        y: mouseY - element.y
-      })
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (rect) {
+        const scaleX = baseSize.width / rect.width
+        const scaleY = baseSize.height / rect.height
+        const mouseX = (e.clientX - rect.left) * scaleX
+        const mouseY = (e.clientY - rect.top) * scaleY
+        setDragStartPos({ x: e.clientX, y: e.clientY })
+        setDragOffset({
+          x: mouseX - element.x,
+          y: mouseY - element.y
+        })
+      }
+    } else {
+      // 선택되지 않은 요소 클릭 → 선택만 함
+      setSelectedElement(key)
     }
-  }, [layout, baseSize])
+  }, [layout, baseSize, selectedElement])
 
   // 마우스 이동 핸들러
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    // 드래그 준비 상태에서 임계값 체크
+    if (pendingElement && dragStartPos && !isDragging) {
+      const dx = Math.abs(e.clientX - dragStartPos.x)
+      const dy = Math.abs(e.clientY - dragStartPos.y)
+      if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
+        // 드래그 시작
+        setIsDragging(true)
+      } else {
+        return // 아직 임계값 미달
+      }
+    }
+
     if (!isDragging || !selectedElement || !containerRef.current) return
 
     const rect = containerRef.current.getBoundingClientRect()
@@ -192,12 +233,15 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
       }
     }
     onLayoutChange(newLayout)
-  }, [isDragging, selectedElement, layout, baseSize, dragOffset, applySnap, calculateGuidelines, onLayoutChange])
+  }, [isDragging, pendingElement, dragStartPos, selectedElement, layout, baseSize, dragOffset, applySnap, calculateGuidelines, onLayoutChange, DRAG_THRESHOLD])
 
-  // 마우스 업 핸들러
+  // 마우스 업 핸들러 - 선택 상태는 유지
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)
+    setPendingElement(null)
+    setDragStartPos(null)
     setGuidelines([])
+    // 좌표 표시만 잠시 후 숨김 (선택은 유지)
     setTimeout(() => setShowCoordinates(null), 1500)
   }, [])
 
@@ -213,9 +257,12 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
     return () => window.removeEventListener('mouseup', handleGlobalMouseUp)
   }, [isDragging, handleMouseUp])
 
-  // 컨테이너 클릭 시 선택 해제
-  const handleContainerClick = useCallback(() => {
-    setSelectedElement(null)
+  // 컨테이너 클릭 시 선택 해제 (빈 공간 클릭 시에만)
+  const handleContainerClick = useCallback((e: React.MouseEvent) => {
+    // 요소가 아닌 빈 공간을 클릭했을 때만 선택 해제
+    if (e.target === e.currentTarget) {
+      setSelectedElement(null)
+    }
   }, [])
 
   // 요소 데이터 가져오기
@@ -233,6 +280,25 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
       default: return key
     }
   }
+
+  // 이미지 URL 가져오기
+  const getImageUrl = (key: string) => {
+    const weddingData = data.wedding as Record<string, string> | undefined
+    if (!weddingData) return null
+
+    switch (key) {
+      case 'photo': return weddingData.photo
+      case 'decoration': return weddingData.decoration
+      case 'background': return weddingData.cardBackground || templateSet?.cards?.main
+      default: return null
+    }
+  }
+
+  // 배경 이미지 URL
+  const backgroundImageUrl = (() => {
+    const weddingData = data.wedding as Record<string, string> | undefined
+    return weddingData?.cardBackground || templateSet?.cards?.main || null
+  })()
 
   // 요소 렌더링 스타일
   const getElementStyle = (key: string, el: LayoutElement): React.CSSProperties => {
@@ -265,14 +331,35 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
       {/* 에디터 영역 */}
       <div className="flex-1">
         <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm text-gray-500">
-            요소를 드래그해서 위치를 조정하세요
-          </p>
-          {showCoordinates && (
-            <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-mono">
-              x: {showCoordinates.x}, y: {showCoordinates.y}
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-gray-500">
+              요소 클릭 → 선택 / 선택된 요소 드래그 → 이동
+            </p>
+            {showCoordinates && (
+              <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-mono">
+                x: {showCoordinates.x}, y: {showCoordinates.y}
+              </div>
+            )}
+          </div>
+          <div className="flex gap-2">
+            {onReset && (
+              <button
+                onClick={onReset}
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                초기화
+              </button>
+            )}
+            {onSave && (
+              <button
+                onClick={onSave}
+                disabled={isSaving}
+                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+              >
+                {isSaving ? '저장 중...' : '레이아웃 저장'}
+              </button>
+            )}
+          </div>
         </div>
 
         <div
@@ -282,14 +369,32 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
           onClick={handleContainerClick}
           onMouseMove={handleMouseMove}
         >
+          {/* 배경 이미지 */}
+          {backgroundImageUrl && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: 0 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={backgroundImageUrl}
+                alt="배경"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none'
+                }}
+              />
+            </div>
+          )}
+
           {/* 중앙 가이드라인 (항상 표시, 연하게) */}
           <div
             className="absolute top-0 bottom-0 w-px bg-blue-200 pointer-events-none"
-            style={{ left: '50%', opacity: 0.5 }}
+            style={{ left: '50%', opacity: 0.5, zIndex: 999 }}
           />
           <div
             className="absolute left-0 right-0 h-px bg-blue-200 pointer-events-none"
-            style={{ top: '50%', opacity: 0.5 }}
+            style={{ top: '50%', opacity: 0.5, zIndex: 999 }}
           />
 
           {/* 동적 가이드라인 */}
@@ -311,6 +416,8 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
           {layoutElements.map(([key, el]) => {
             if (key === 'background') return null
 
+            const imageUrl = getImageUrl(key)
+
             return (
               <div
                 key={key}
@@ -319,17 +426,46 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
                 title={`${key}: (${el.x}, ${el.y})`}
               >
                 {el.type === 'text' && (
-                  <span>{getElementData(key)}</span>
+                  <span style={{ whiteSpace: 'pre-line' }}>{getElementData(key)}</span>
                 )}
                 {el.type === 'image' && (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
-                    {key === 'photo' ? '📷 사진' : key}
-                  </div>
+                  imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageUrl}
+                      alt={key}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // 이미지 로드 실패 시 플레이스홀더 표시
+                        const target = e.target as HTMLImageElement
+                        target.style.display = 'none'
+                        target.parentElement!.innerHTML = `<div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">${key === 'photo' ? '📷 사진' : key}</div>`
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+                      {key === 'photo' ? '📷 사진' : key}
+                    </div>
+                  )
                 )}
                 {el.type === 'vector' && (
-                  <div className="w-full h-full bg-purple-100 flex items-center justify-center text-purple-400 text-xs">
-                    {key}
-                  </div>
+                  imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageUrl}
+                      alt={key}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.style.display = 'none'
+                        target.parentElement!.innerHTML = `<div class="w-full h-full bg-purple-100 flex items-center justify-center text-purple-400 text-xs">${key}</div>`
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-purple-100 flex items-center justify-center text-purple-400 text-xs">
+                      {key}
+                    </div>
+                  )
                 )}
               </div>
             )
@@ -427,7 +563,7 @@ export default function LayoutEditor({ layout, data, onLayoutChange }: LayoutEdi
               </div>
             </div>
             <div>
-              <label className="text-xs text-gray-500">Z-Index</label>
+              <label className="text-xs text-gray-500">레이어 순서 (숫자가 클수록 앞)</label>
               <input
                 type="number"
                 value={(layout[selectedElement] as LayoutElement).zIndex || 0}
