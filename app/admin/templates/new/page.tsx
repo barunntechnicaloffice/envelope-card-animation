@@ -55,6 +55,48 @@ const CATEGORY_OPTIONS = [
 const FIGMA_API_KEY_STORAGE = 'figma_api_key'
 const FIGMA_FILE_KEY_STORAGE = 'figma_file_key'
 
+// Figma URL 파싱 함수
+function parseFigmaUrl(url: string): { fileKey: string; nodeId: string } | null {
+  // URL 형식들:
+  // https://www.figma.com/design/FILE_KEY/파일명?node-id=NODE_ID
+  // https://www.figma.com/file/FILE_KEY/파일명?node-id=NODE_ID
+  // https://figma.com/design/FILE_KEY/파일명?node-id=NODE_ID&...
+
+  try {
+    const urlObj = new URL(url)
+
+    // 호스트 체크
+    if (!urlObj.hostname.includes('figma.com')) {
+      return null
+    }
+
+    // 경로에서 file key 추출
+    const pathParts = urlObj.pathname.split('/')
+    let fileKey = ''
+
+    // /design/FILE_KEY/... 또는 /file/FILE_KEY/... 형태
+    const designIndex = pathParts.indexOf('design')
+    const fileIndex = pathParts.indexOf('file')
+
+    if (designIndex !== -1 && pathParts[designIndex + 1]) {
+      fileKey = pathParts[designIndex + 1]
+    } else if (fileIndex !== -1 && pathParts[fileIndex + 1]) {
+      fileKey = pathParts[fileIndex + 1]
+    }
+
+    // node-id 파라미터 추출
+    const nodeId = urlObj.searchParams.get('node-id') || ''
+
+    if (fileKey && nodeId) {
+      return { fileKey, nodeId }
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}
+
 export default function NewTemplatePage() {
   const [step, setStep] = useState(1)
   const [templateId, setTemplateId] = useState('')
@@ -63,6 +105,7 @@ export default function NewTemplatePage() {
   const [figmaNodeId, setFigmaNodeId] = useState('')
   const [figmaFileKey, setFigmaFileKey] = useState('')
   const [figmaApiKey, setFigmaApiKey] = useState('')
+  const [figmaUrl, setFigmaUrl] = useState('') // 새로 추가: Figma URL 입력
   const [bgOffset, setBgOffset] = useState({ x: 0, y: 0 })
   const [baseSize, setBaseSize] = useState({ width: 335, height: 515 })
   const [parsedElements, setParsedElements] = useState<FigmaElement[]>([])
@@ -70,6 +113,7 @@ export default function NewTemplatePage() {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fetchSuccess, setFetchSuccess] = useState(false)
+  const [urlParseSuccess, setUrlParseSuccess] = useState(false) // URL 파싱 성공 여부
 
   // localStorage에서 API 키 및 File Key 불러오기
   useEffect(() => {
@@ -89,6 +133,25 @@ export default function NewTemplatePage() {
   const saveFileKey = useCallback((key: string) => {
     setFigmaFileKey(key)
     localStorage.setItem(FIGMA_FILE_KEY_STORAGE, key)
+  }, [])
+
+  // Figma URL 변경 시 자동 파싱
+  const handleFigmaUrlChange = useCallback((url: string) => {
+    setFigmaUrl(url)
+    setUrlParseSuccess(false)
+
+    if (!url.trim()) {
+      return
+    }
+
+    const parsed = parseFigmaUrl(url)
+    if (parsed) {
+      setFigmaFileKey(parsed.fileKey)
+      setFigmaNodeId(parsed.nodeId)
+      setUrlParseSuccess(true)
+      // File Key도 저장
+      localStorage.setItem(FIGMA_FILE_KEY_STORAGE, parsed.fileKey)
+    }
   }, [])
 
   // Figma API로 메타데이터 가져오기
@@ -550,19 +613,6 @@ export default function NewTemplatePage() {
             <p className="text-xs text-gray-500 mt-1">⚠️ 반드시 한글 카테고리 사용</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Figma Node ID (선택)
-            </label>
-            <input
-              type="text"
-              value={figmaNodeId}
-              onChange={(e) => setFigmaNodeId(e.target.value)}
-              placeholder="46-1150"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
           <button
             onClick={() => setStep(2)}
             disabled={!templateId || !templateName}
@@ -579,11 +629,37 @@ export default function NewTemplatePage() {
           <h2 className="text-lg font-semibold">2. Figma에서 메타데이터 가져오기</h2>
 
           <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-800">
-            <p className="font-medium mb-2">Figma API를 통해 자동으로 메타데이터를 가져옵니다.</p>
-            <p>File Key와 Node ID를 입력하고 &quot;가져오기&quot; 버튼을 클릭하세요.</p>
+            <p className="font-medium mb-2">Figma URL만 붙여넣으면 자동으로 정보를 추출합니다!</p>
+            <p>템플릿 프레임을 선택하고 우클릭 → Copy link로 URL을 복사하세요.</p>
           </div>
 
-          {/* Figma API Key */}
+          {/* Figma URL 입력 (가장 중요!) */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border-2 border-purple-200">
+            <label className="block text-sm font-medium text-purple-700 mb-2">
+              Figma URL 붙여넣기 (자동 파싱)
+            </label>
+            <input
+              type="text"
+              value={figmaUrl}
+              onChange={(e) => handleFigmaUrlChange(e.target.value)}
+              placeholder="https://www.figma.com/design/ABC123/파일명?node-id=46-1150"
+              className="w-full px-4 py-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
+            />
+            {urlParseSuccess && (
+              <div className="mt-2 flex items-center gap-2 text-green-600">
+                <span>✅</span>
+                <span className="text-sm">URL 파싱 성공! File Key와 Node ID가 자동으로 입력되었습니다.</span>
+              </div>
+            )}
+            {figmaUrl && !urlParseSuccess && (
+              <div className="mt-2 flex items-center gap-2 text-orange-600">
+                <span>⚠️</span>
+                <span className="text-sm">URL 형식이 올바르지 않습니다. node-id가 포함된 URL인지 확인해주세요.</span>
+              </div>
+            )}
+          </div>
+
+          {/* API Key (한번만 입력하면 됨) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Figma API Key *
@@ -597,44 +673,45 @@ export default function NewTemplatePage() {
             />
             <p className="text-xs text-gray-500 mt-1">
               Figma 설정 → Account → Personal access tokens에서 생성
-              {figmaApiKey && <span className="text-green-600 ml-2">✓ 저장됨</span>}
+              {figmaApiKey && <span className="text-green-600 ml-2">✓ 저장됨 (브라우저에 기억)</span>}
             </p>
           </div>
 
-          {/* Figma File Key */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Figma File Key *
-            </label>
-            <input
-              type="text"
-              value={figmaFileKey}
-              onChange={(e) => saveFileKey(e.target.value)}
-              placeholder="ABC123xyz..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Figma URL: figma.com/design/<strong>FILE_KEY</strong>/파일명
-              {figmaFileKey && <span className="text-green-600 ml-2">✓ 저장됨</span>}
-            </p>
-          </div>
+          {/* 자동 파싱된 값 표시 (접이식) */}
+          <details className="bg-gray-50 rounded-lg">
+            <summary className="px-4 py-2 cursor-pointer text-sm text-gray-600 hover:text-gray-900">
+              상세 설정 (자동 입력됨) {figmaFileKey && figmaNodeId && '✅'}
+            </summary>
+            <div className="px-4 pb-4 space-y-3">
+              {/* Figma File Key */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Figma File Key
+                </label>
+                <input
+                  type="text"
+                  value={figmaFileKey}
+                  onChange={(e) => saveFileKey(e.target.value)}
+                  placeholder="ABC123xyz..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                />
+              </div>
 
-          {/* Figma Node ID */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Figma Node ID *
-            </label>
-            <input
-              type="text"
-              value={figmaNodeId}
-              onChange={(e) => setFigmaNodeId(e.target.value)}
-              placeholder="46-1150"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              템플릿 프레임 선택 → 우클릭 → Copy link → URL의 node-id 값
-            </p>
-          </div>
+              {/* Figma Node ID */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Figma Node ID
+                </label>
+                <input
+                  type="text"
+                  value={figmaNodeId}
+                  onChange={(e) => setFigmaNodeId(e.target.value)}
+                  placeholder="46-1150"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                />
+              </div>
+            </div>
+          </details>
 
           {/* 성공 메시지 */}
           {fetchSuccess && (
@@ -702,11 +779,12 @@ export default function NewTemplatePage() {
 
           {/* 도움말 */}
           <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-2">💡 Figma 정보 찾는 방법:</p>
+            <p className="font-medium mb-2">💡 간단 사용법:</p>
             <ol className="list-decimal list-inside space-y-1">
-              <li><strong>API Key:</strong> Figma → 설정 → Account → Personal access tokens</li>
-              <li><strong>File Key:</strong> Figma 파일 URL에서 /design/ 다음 부분</li>
-              <li><strong>Node ID:</strong> 템플릿 프레임 우클릭 → Copy link → URL의 node-id 파라미터</li>
+              <li>Figma에서 템플릿 프레임 선택</li>
+              <li>우클릭 → <strong>Copy link</strong></li>
+              <li>위 입력창에 <strong>붙여넣기</strong> (Ctrl+V / Cmd+V)</li>
+              <li><strong>Figma에서 가져오기</strong> 버튼 클릭</li>
             </ol>
           </div>
         </div>

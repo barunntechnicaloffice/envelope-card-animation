@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface TemplateInfo {
   id: string
@@ -14,10 +15,12 @@ interface TemplateInfo {
 }
 
 export default function TemplatesListPage() {
+  const router = useRouter()
   const [templates, setTemplates] = useState<TemplateInfo[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [duplicating, setDuplicating] = useState(false)
 
   useEffect(() => {
     loadTemplates()
@@ -39,6 +42,57 @@ export default function TemplatesListPage() {
       setTemplates([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  // 템플릿 복제
+  async function handleDuplicate(templateId: string) {
+    // 새 템플릿 ID 생성 (다음 번호)
+    const existingNumbers = templates
+      .map(t => {
+        const match = t.id.match(/wedding-card-(\d+)/)
+        return match ? parseInt(match[1]) : 0
+      })
+      .filter(n => n > 0)
+
+    const nextNumber = Math.max(...existingNumbers, 0) + 1
+    const newTemplateId = `wedding-card-${String(nextNumber).padStart(3, '0')}`
+
+    const newName = prompt(
+      `새 템플릿 정보를 입력하세요.\n\n복제할 템플릿: ${templateId}\n새 템플릿 ID: ${newTemplateId}`,
+      `${templates.find(t => t.id === templateId)?.name || '템플릿'} (복사본)`
+    )
+
+    if (!newName) return
+
+    setDuplicating(true)
+
+    try {
+      const response = await fetch('/api/templates/duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sourceTemplateId: templateId,
+          newTemplateId,
+          newName,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        alert(result.error || '복제에 실패했습니다.')
+        return
+      }
+
+      alert(`템플릿이 복제되었습니다!\n새 ID: ${newTemplateId}`)
+
+      // 편집 페이지로 이동
+      router.push(`/admin/templates/${newTemplateId}`)
+    } catch {
+      alert('네트워크 오류가 발생했습니다.')
+    } finally {
+      setDuplicating(false)
     }
   }
 
@@ -99,6 +153,16 @@ export default function TemplatesListPage() {
         />
       </div>
 
+      {/* 복제 중 오버레이 */}
+      {duplicating && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 flex items-center gap-3">
+            <span className="animate-spin text-2xl">⏳</span>
+            <span className="text-gray-700">템플릿 복제 중...</span>
+          </div>
+        </div>
+      )}
+
       {/* 템플릿 그리드 */}
       {loading ? (
         <div className="flex items-center justify-center h-64">
@@ -107,7 +171,7 @@ export default function TemplatesListPage() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredTemplates.map((template) => (
-            <TemplateCard key={template.id} template={template} />
+            <TemplateCard key={template.id} template={template} onDuplicate={handleDuplicate} />
           ))}
         </div>
       )}
@@ -115,8 +179,14 @@ export default function TemplatesListPage() {
   )
 }
 
-function TemplateCard({ template }: { template: TemplateInfo }) {
+function TemplateCard({ template, onDuplicate }: { template: TemplateInfo; onDuplicate: (id: string) => void }) {
   const [imgError, setImgError] = useState(false)
+
+  const handleDuplicate = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onDuplicate(template.id)
+  }
 
   return (
     <Link
@@ -160,6 +230,15 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
             </span>
           </div>
         )}
+
+        {/* 복제 버튼 (호버 시 표시) */}
+        <button
+          onClick={handleDuplicate}
+          className="absolute bottom-2 right-2 px-2 py-1 bg-white/90 hover:bg-white text-gray-700 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border border-gray-200"
+          title="템플릿 복제"
+        >
+          📋 복제
+        </button>
       </div>
 
       {/* 정보 */}

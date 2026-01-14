@@ -106,10 +106,21 @@ function parseNode(node: FigmaNode, elements: ParsedElement[]): void {
 
 // BG 요소 찾기
 function findBgElement(elements: ParsedElement[]): ParsedElement | null {
-  return elements.find(el =>
-    el.name.toLowerCase() === 'bg' ||
-    el.name.toLowerCase() === 'background'
-  ) || null
+  // 정확히 일치하는 것 먼저 찾기
+  const exactMatch = elements.find(el => {
+    const name = el.name.toLowerCase().replace(/\s*\[.*?\]\s*/g, '').trim()
+    return name === 'bg' || name === 'background'
+  })
+  if (exactMatch) return exactMatch
+
+  // 이름에 bg 또는 background 포함하는 것 찾기
+  const partialMatch = elements.find(el => {
+    const name = el.name.toLowerCase()
+    return name.includes('bg') || name.includes('background')
+  })
+  if (partialMatch) return partialMatch
+
+  return null
 }
 
 export async function POST(request: NextRequest) {
@@ -175,11 +186,13 @@ export async function POST(request: NextRequest) {
     const elements: ParsedElement[] = []
     parseNode(rootNode, elements)
 
-    // BG 요소 찾기
+    // BG 요소 찾기 (없으면 루트 노드 좌표 사용)
     const bgElement = findBgElement(elements)
     const bgOffset = bgElement
       ? { x: bgElement.x, y: bgElement.y }
-      : { x: 0, y: 0 }
+      : rootNode.absoluteBoundingBox
+        ? { x: rootNode.absoluteBoundingBox.x, y: rootNode.absoluteBoundingBox.y }
+        : { x: 0, y: 0 }
 
     // baseSize 계산 (BG 또는 루트 노드 기준)
     const baseSize = bgElement
