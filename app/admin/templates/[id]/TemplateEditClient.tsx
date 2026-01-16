@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, use } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import LayoutEditor from '@/components/admin/LayoutEditor'
 
@@ -31,6 +32,7 @@ export default function TemplateEditClient({
   params: Promise<{ id: string }>
 }) {
   const { id: templateId } = use(params)
+  const router = useRouter()
 
   const [templateData, setTemplateData] = useState<TemplateData | null>(null)
   const [jsonString, setJsonString] = useState('')
@@ -39,7 +41,7 @@ export default function TemplateEditClient({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [jsonError, setJsonError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'editor' | 'preview' | 'info'>('editor')
+  const [activeTab, setActiveTab] = useState<'editor' | 'preview' | 'info'>('preview')
 
   useEffect(() => {
     loadTemplate()
@@ -176,6 +178,37 @@ export default function TemplateEditClient({
     URL.revokeObjectURL(url)
   }
 
+  async function handleDelete() {
+    const confirmed = confirm(
+      `정말로 "${templateId}" 템플릿을 삭제하시겠습니까?\n\n` +
+      `⚠️ 이 작업은 되돌릴 수 없습니다.\n` +
+      `- JSON 파일이 삭제됩니다\n` +
+      `- 에셋 폴더가 삭제됩니다`
+    )
+
+    if (!confirmed) return
+
+    try {
+      const response = await fetch('/api/templates/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateId }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        alert(result.error || '삭제에 실패했습니다.')
+        return
+      }
+
+      alert('템플릿이 삭제되었습니다.')
+      router.push('/admin/templates')
+    } catch {
+      alert('네트워크 오류가 발생했습니다.')
+    }
+  }
+
   async function handleCopyToClipboard() {
     try {
       await navigator.clipboard.writeText(jsonString)
@@ -238,6 +271,12 @@ export default function TemplateEditClient({
           >
             🔗 미리보기
           </Link>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            🗑️ 삭제
+          </button>
         </div>
       </div>
 

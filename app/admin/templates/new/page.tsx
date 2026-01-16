@@ -432,49 +432,9 @@ export default function NewTemplatePage() {
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
 
-  // 이미지 다운로드
-  const [downloadingImages, setDownloadingImages] = useState(false)
+  // 이미지 다운로드 상태
   const [imagesDownloaded, setImagesDownloaded] = useState(false)
   const [downloadedImages, setDownloadedImages] = useState<{ name: string; path: string }[]>([])
-
-  const downloadImages = useCallback(async () => {
-    if (!figmaFileKey || !figmaNodeId || !figmaApiKey || !templateId) {
-      setError('Figma 정보와 템플릿 ID가 필요합니다.')
-      return
-    }
-
-    setDownloadingImages(true)
-    setError(null)
-    setImagesDownloaded(false)
-
-    try {
-      const response = await fetch('/api/figma/images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fileKey: figmaFileKey,
-          nodeId: figmaNodeId,
-          apiKey: figmaApiKey,
-          templateId,
-        }),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        setError(result.error || '이미지 다운로드에 실패했습니다.')
-        return
-      }
-
-      setDownloadedImages(result.images || [])
-      setImagesDownloaded(true)
-      alert(`${result.images?.length || 0}개 이미지가 /assets/${templateId}/에 저장되었습니다!`)
-    } catch (err) {
-      setError('네트워크 오류가 발생했습니다.')
-    } finally {
-      setDownloadingImages(false)
-    }
-  }, [figmaFileKey, figmaNodeId, figmaApiKey, templateId])
 
   const saveToServer = useCallback(async () => {
     if (!templateId || !generatedJson) {
@@ -485,8 +445,32 @@ export default function NewTemplatePage() {
     setSaving(true)
     setError(null)
     setSaveSuccess(false)
+    setImagesDownloaded(false)
 
     try {
+      // 1. Figma 정보가 있으면 먼저 이미지 저장
+      if (figmaFileKey && figmaNodeId && figmaApiKey) {
+        const imageResponse = await fetch('/api/figma/images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileKey: figmaFileKey,
+            nodeId: figmaNodeId,
+            apiKey: figmaApiKey,
+            templateId,
+          }),
+        })
+
+        const imageResult = await imageResponse.json()
+
+        if (imageResponse.ok && imageResult.images?.length > 0) {
+          setDownloadedImages(imageResult.images)
+          setImagesDownloaded(true)
+        }
+        // 이미지 저장 실패해도 JSON 저장은 계속 진행
+      }
+
+      // 2. JSON 저장
       const response = await fetch('/api/templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -504,13 +488,19 @@ export default function NewTemplatePage() {
       }
 
       setSaveSuccess(true)
-      alert('템플릿이 서버에 저장되었습니다!')
+
+      // 성공 메시지 (이미지 포함 여부에 따라 다르게)
+      if (imagesDownloaded) {
+        alert(`템플릿이 저장되었습니다!\n- JSON: /templates/${templateId}.json\n- 이미지: /assets/${templateId}/`)
+      } else {
+        alert('템플릿이 서버에 저장되었습니다!')
+      }
     } catch (err) {
       setError('네트워크 오류가 발생했습니다.')
     } finally {
       setSaving(false)
     }
-  }, [templateId, generatedJson])
+  }, [templateId, generatedJson, figmaFileKey, figmaNodeId, figmaApiKey, imagesDownloaded])
 
   return (
     <div className="space-y-6">
@@ -924,23 +914,6 @@ export default function NewTemplatePage() {
               📥 JSON 다운로드
             </button>
             <button
-              onClick={downloadImages}
-              disabled={downloadingImages || !figmaFileKey || !figmaNodeId}
-              className="px-6 py-2 border border-purple-300 text-purple-700 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50 flex items-center gap-2"
-            >
-              {downloadingImages ? (
-                <>
-                  <span className="animate-spin">⏳</span>
-                  이미지 다운로드 중...
-                </>
-              ) : (
-                <>
-                  <span>🖼️</span>
-                  Figma 이미지 가져오기
-                </>
-              )}
-            </button>
-            <button
               onClick={saveToServer}
               disabled={saving}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
@@ -950,26 +923,44 @@ export default function NewTemplatePage() {
                   <span className="animate-spin">⏳</span>
                   저장 중...
                 </>
+              ) : saveSuccess ? (
+                <>
+                  <span>✅</span>
+                  저장 완료
+                </>
               ) : (
                 <>
                   <span>💾</span>
-                  서버에 저장
+                  서버에 저장 (이미지 + JSON)
                 </>
               )}
             </button>
-            <Link
-              href={`/admin/templates/${templateId}`}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
-              🔗 편집 페이지로
-            </Link>
+            {saveSuccess ? (
+              <Link
+                href={`/admin/templates/${templateId}`}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+              >
+                <span>🔗</span>
+                편집 페이지로
+              </Link>
+            ) : (
+              <button
+                disabled
+                className="px-6 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed flex items-center gap-2"
+                title="먼저 서버에 저장해주세요"
+              >
+                <span>🔗</span>
+                편집 페이지로
+              </button>
+            )}
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-2">💡 저장 순서:</p>
-            <ol className="list-decimal list-inside space-y-1">
-              <li><strong>Figma 이미지 가져오기:</strong> 카드 배경 이미지를 <code className="bg-gray-200 px-1 rounded">/assets/{templateId}/</code>에 자동 저장</li>
-              <li><strong>서버에 저장:</strong> JSON을 <code className="bg-gray-200 px-1 rounded">/templates/{templateId}.json</code>에 저장</li>
+            <p className="font-medium mb-2">💡 저장 안내:</p>
+            <p><strong>서버에 저장</strong> 버튼을 누르면:</p>
+            <ol className="list-decimal list-inside space-y-1 mt-2">
+              <li>Figma에서 이미지 자동 다운로드 → <code className="bg-gray-200 px-1 rounded">/assets/{templateId}/</code></li>
+              <li>JSON 템플릿 저장 → <code className="bg-gray-200 px-1 rounded">/templates/{templateId}.json</code></li>
             </ol>
           </div>
         </div>

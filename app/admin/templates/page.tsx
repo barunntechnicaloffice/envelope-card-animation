@@ -21,6 +21,7 @@ export default function TemplatesListPage() {
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [duplicating, setDuplicating] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     loadTemplates()
@@ -42,6 +43,44 @@ export default function TemplatesListPage() {
       setTemplates([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  // 템플릿 삭제
+  async function handleDelete(templateId: string) {
+    const confirmed = confirm(
+      `정말로 "${templateId}" 템플릿을 삭제하시겠습니까?\n\n` +
+      `⚠️ 이 작업은 되돌릴 수 없습니다.\n` +
+      `- JSON 파일이 삭제됩니다\n` +
+      `- 에셋 폴더가 삭제됩니다`
+    )
+
+    if (!confirmed) return
+
+    setDeleting(true)
+
+    try {
+      const response = await fetch('/api/templates/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateId }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        alert(result.error || '삭제에 실패했습니다.')
+        return
+      }
+
+      alert('템플릿이 삭제되었습니다.')
+
+      // 목록 새로고침
+      loadTemplates()
+    } catch {
+      alert('네트워크 오류가 발생했습니다.')
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -153,12 +192,14 @@ export default function TemplatesListPage() {
         />
       </div>
 
-      {/* 복제 중 오버레이 */}
-      {duplicating && (
+      {/* 복제/삭제 중 오버레이 */}
+      {(duplicating || deleting) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 flex items-center gap-3">
             <span className="animate-spin text-2xl">⏳</span>
-            <span className="text-gray-700">템플릿 복제 중...</span>
+            <span className="text-gray-700">
+              {duplicating ? '템플릿 복제 중...' : '템플릿 삭제 중...'}
+            </span>
           </div>
         </div>
       )}
@@ -171,7 +212,12 @@ export default function TemplatesListPage() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredTemplates.map((template) => (
-            <TemplateCard key={template.id} template={template} onDuplicate={handleDuplicate} />
+            <TemplateCard
+              key={template.id}
+              template={template}
+              onDuplicate={handleDuplicate}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}
@@ -179,13 +225,27 @@ export default function TemplatesListPage() {
   )
 }
 
-function TemplateCard({ template, onDuplicate }: { template: TemplateInfo; onDuplicate: (id: string) => void }) {
+function TemplateCard({
+  template,
+  onDuplicate,
+  onDelete
+}: {
+  template: TemplateInfo
+  onDuplicate: (id: string) => void
+  onDelete: (id: string) => void
+}) {
   const [imgError, setImgError] = useState(false)
 
   const handleDuplicate = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     onDuplicate(template.id)
+  }
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onDelete(template.id)
   }
 
   return (
@@ -231,14 +291,23 @@ function TemplateCard({ template, onDuplicate }: { template: TemplateInfo; onDup
           </div>
         )}
 
-        {/* 복제 버튼 (호버 시 표시) */}
-        <button
-          onClick={handleDuplicate}
-          className="absolute bottom-2 right-2 px-2 py-1 bg-white/90 hover:bg-white text-gray-700 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border border-gray-200"
-          title="템플릿 복제"
-        >
-          📋 복제
-        </button>
+        {/* 복제/삭제 버튼 (호버 시 표시) */}
+        <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={handleDuplicate}
+            className="px-2 py-1 bg-white/90 hover:bg-white text-gray-700 rounded-lg text-xs font-medium shadow-sm border border-gray-200"
+            title="템플릿 복제"
+          >
+            📋 복제
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-medium shadow-sm border border-red-200"
+            title="템플릿 삭제"
+          >
+            🗑️
+          </button>
+        </div>
       </div>
 
       {/* 정보 */}
