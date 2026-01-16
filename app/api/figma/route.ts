@@ -127,9 +127,19 @@ export async function POST(request: NextRequest) {
   try {
     const { fileKey, nodeId, apiKey } = await request.json()
 
-    if (!fileKey || !nodeId || !apiKey) {
+    // 환경변수에서 토큰 읽기 (클라이언트에서 전달한 값이 있으면 그것 사용)
+    const figmaToken = apiKey || process.env.FIGMA_ACCESS_TOKEN
+
+    if (!fileKey || !nodeId) {
       return NextResponse.json(
-        { error: 'fileKey, nodeId, apiKey가 필요합니다.' },
+        { error: 'fileKey, nodeId가 필요합니다.' },
+        { status: 400 }
+      )
+    }
+
+    if (!figmaToken) {
+      return NextResponse.json(
+        { error: 'Figma API 토큰이 설정되지 않았습니다. 서버 환경변수를 확인해주세요.' },
         { status: 400 }
       )
     }
@@ -142,7 +152,7 @@ export async function POST(request: NextRequest) {
 
     const response = await fetch(figmaUrl, {
       headers: {
-        'X-Figma-Token': apiKey,
+        'X-Figma-Token': figmaToken,
       },
     })
 

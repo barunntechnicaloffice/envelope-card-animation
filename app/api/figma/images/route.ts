@@ -9,9 +9,19 @@ export async function POST(request: NextRequest) {
   try {
     const { fileKey, nodeId, apiKey, templateId } = await request.json()
 
-    if (!fileKey || !nodeId || !apiKey || !templateId) {
+    // 환경변수에서 토큰 읽기 (클라이언트에서 전달한 값이 있으면 그것 사용)
+    const figmaToken = apiKey || process.env.FIGMA_ACCESS_TOKEN
+
+    if (!fileKey || !nodeId || !templateId) {
       return NextResponse.json(
-        { error: 'fileKey, nodeId, apiKey, templateId가 모두 필요합니다.' },
+        { error: 'fileKey, nodeId, templateId가 필요합니다.' },
+        { status: 400 }
+      )
+    }
+
+    if (!figmaToken) {
+      return NextResponse.json(
+        { error: 'Figma API 토큰이 설정되지 않았습니다. 서버 환경변수를 확인해주세요.' },
         { status: 400 }
       )
     }
@@ -23,7 +33,7 @@ export async function POST(request: NextRequest) {
     const nodesUrl = `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${encodeURIComponent(formattedNodeId)}`
 
     const nodesResponse = await fetch(nodesUrl, {
-      headers: { 'X-Figma-Token': apiKey },
+      headers: { 'X-Figma-Token': figmaToken },
     })
 
     if (!nodesResponse.ok) {
@@ -51,6 +61,8 @@ export async function POST(request: NextRequest) {
     }
 
     const nodesToExport: NodeToExport[] = []
+    // 중복 방지를 위한 Set (이름 기준)
+    const exportedNames = new Set<string>()
 
     // 이미지로 내보낼 노드 찾기 (BG, photo, decoration 등)
     function findImageNodes(node: any, depth: number = 0) {
@@ -69,31 +81,40 @@ export async function POST(request: NextRequest) {
 
       // BG 노드 → card-main-bg로 저장 (배경 이미지)
       if (cleanName === 'bg' || cleanName === 'background') {
-        console.log(`  → Found BG node: ${node.id}`)
-        nodesToExport.push({
-          id: node.id,
-          name: 'card-main-bg',
-          type: 'bg'
-        })
+        if (!exportedNames.has('card-main-bg')) {
+          console.log(`  → Found BG node: ${node.id}`)
+          nodesToExport.push({
+            id: node.id,
+            name: 'card-main-bg',
+            type: 'bg'
+          })
+          exportedNames.add('card-main-bg')
+        }
       }
       // photo 노드 (vector, rectangle, frame 등 모든 타입)
       else if (cleanName.includes('photo') || cleanName.includes('image')) {
-        console.log(`  → Found photo node: ${node.id}`)
-        nodesToExport.push({
-          id: node.id,
-          name: 'photo',
-          type: 'photo'
-        })
+        if (!exportedNames.has('photo')) {
+          console.log(`  → Found photo node: ${node.id}`)
+          nodesToExport.push({
+            id: node.id,
+            name: 'photo',
+            type: 'photo'
+          })
+          exportedNames.add('photo')
+        }
       }
       // decoration 노드 (SVG/벡터 장식)
       else if (cleanName.includes('decoration') || cleanName.includes('ornament')) {
         const decoName = cleanName.replace(/\s+/g, '-') || 'decoration'
-        console.log(`  → Found decoration node: ${node.id} as ${decoName}`)
-        nodesToExport.push({
-          id: node.id,
-          name: decoName,
-          type: 'decoration'
-        })
+        if (!exportedNames.has(decoName)) {
+          console.log(`  → Found decoration node: ${node.id} as ${decoName}`)
+          nodesToExport.push({
+            id: node.id,
+            name: decoName,
+            type: 'decoration'
+          })
+          exportedNames.add(decoName)
+        }
       }
 
       // 자식 노드 탐색
@@ -110,7 +131,7 @@ export async function POST(request: NextRequest) {
     const imagesUrl = `https://api.figma.com/v1/images/${fileKey}?ids=${encodeURIComponent(idsParam)}&format=png&scale=2`
 
     const imagesResponse = await fetch(imagesUrl, {
-      headers: { 'X-Figma-Token': apiKey },
+      headers: { 'X-Figma-Token': figmaToken },
     })
 
     if (!imagesResponse.ok) {

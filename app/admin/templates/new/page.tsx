@@ -52,8 +52,46 @@ const CATEGORY_OPTIONS = [
 ] as const
 
 // localStorage 키
-const FIGMA_API_KEY_STORAGE = 'figma_api_key'
 const FIGMA_FILE_KEY_STORAGE = 'figma_file_key'
+
+// Figma 폰트명 → 프로젝트 CSS 폰트명 매핑
+// FONTS_GUIDE.md 참고
+const FONT_MAPPING: Record<string, string> = {
+  // 나눔손글씨 느릿느릿체
+  'Nanum NeuRisNeuRisCe': "'NanumSlow', cursive",
+  'Nanum_NeuRisNeuRisCe': "'NanumSlow', cursive",
+  'NanumNeuRisNeuRisCe': "'NanumSlow', cursive",
+  // 나눔명조
+  'Nanum Myeongjo': "'Nanum Myeongjo', serif",
+  'NanumMyeongjo': "'Nanum Myeongjo', serif",
+  // 나눔스퀘어네오
+  'NanumSquareNeo': "'NanumSquareNeo', sans-serif",
+  'Nanum Square Neo': "'NanumSquareNeo', sans-serif",
+  // 고운바탕
+  'Gowun Batang': "'Gowun Batang', serif",
+  'GowunBatang': "'Gowun Batang', serif",
+  // 프리텐다드
+  'Pretendard': "'Pretendard', sans-serif",
+}
+
+// Figma 폰트명을 프로젝트 CSS 폰트명으로 변환
+function mapFigmaFont(figmaFontFamily: string): string {
+  // 매핑 테이블에서 찾기
+  if (FONT_MAPPING[figmaFontFamily]) {
+    return FONT_MAPPING[figmaFontFamily]
+  }
+
+  // 부분 일치로 찾기 (대소문자 무시)
+  const lowerFont = figmaFontFamily.toLowerCase()
+  for (const [key, value] of Object.entries(FONT_MAPPING)) {
+    if (lowerFont.includes(key.toLowerCase().replace(/[\s_]/g, ''))) {
+      return value
+    }
+  }
+
+  // 매핑이 없으면 기본 형식으로 반환
+  return `'${figmaFontFamily}', serif`
+}
 
 // Figma URL 파싱 함수
 function parseFigmaUrl(url: string): { fileKey: string; nodeId: string } | null {
@@ -104,8 +142,7 @@ export default function NewTemplatePage() {
   const [category, setCategory] = useState('웨딩')
   const [figmaNodeId, setFigmaNodeId] = useState('')
   const [figmaFileKey, setFigmaFileKey] = useState('')
-  const [figmaApiKey, setFigmaApiKey] = useState('')
-  const [figmaUrl, setFigmaUrl] = useState('') // 새로 추가: Figma URL 입력
+  const [figmaUrl, setFigmaUrl] = useState('') // Figma URL 입력
   const [bgOffset, setBgOffset] = useState({ x: 0, y: 0 })
   const [baseSize, setBaseSize] = useState({ width: 335, height: 515 })
   const [parsedElements, setParsedElements] = useState<FigmaElement[]>([])
@@ -114,25 +151,18 @@ export default function NewTemplatePage() {
   const [error, setError] = useState<string | null>(null)
   const [fetchSuccess, setFetchSuccess] = useState(false)
   const [urlParseSuccess, setUrlParseSuccess] = useState(false) // URL 파싱 성공 여부
+  const [figmaTokenConfigured, setFigmaTokenConfigured] = useState<boolean | null>(null) // 환경변수 토큰 설정 여부
 
-  // localStorage에서 API 키 및 File Key 불러오기
+  // localStorage에서 File Key 불러오기 + Figma 토큰 상태 확인
   useEffect(() => {
-    const savedApiKey = localStorage.getItem(FIGMA_API_KEY_STORAGE)
     const savedFileKey = localStorage.getItem(FIGMA_FILE_KEY_STORAGE)
-    if (savedApiKey) setFigmaApiKey(savedApiKey)
     if (savedFileKey) setFigmaFileKey(savedFileKey)
-  }, [])
 
-  // API 키 저장
-  const saveApiKey = useCallback((key: string) => {
-    setFigmaApiKey(key)
-    localStorage.setItem(FIGMA_API_KEY_STORAGE, key)
-  }, [])
-
-  // File Key 저장
-  const saveFileKey = useCallback((key: string) => {
-    setFigmaFileKey(key)
-    localStorage.setItem(FIGMA_FILE_KEY_STORAGE, key)
+    // Figma 토큰 설정 상태 확인
+    fetch('/api/figma/status')
+      .then(res => res.json())
+      .then(data => setFigmaTokenConfigured(data.configured))
+      .catch(() => setFigmaTokenConfigured(false))
   }, [])
 
   // Figma URL 변경 시 자동 파싱
@@ -156,8 +186,8 @@ export default function NewTemplatePage() {
 
   // Figma API로 메타데이터 가져오기
   const fetchFigmaMetadata = useCallback(async () => {
-    if (!figmaFileKey || !figmaNodeId || !figmaApiKey) {
-      setError('Figma File Key, Node ID, API Key를 모두 입력해주세요.')
+    if (!figmaFileKey || !figmaNodeId) {
+      setError('Figma URL을 입력해주세요.')
       return
     }
 
@@ -172,7 +202,6 @@ export default function NewTemplatePage() {
         body: JSON.stringify({
           fileKey: figmaFileKey,
           nodeId: figmaNodeId,
-          apiKey: figmaApiKey,
         }),
       })
 
@@ -201,7 +230,7 @@ export default function NewTemplatePage() {
     } finally {
       setProcessing(false)
     }
-  }, [figmaFileKey, figmaNodeId, figmaApiKey])
+  }, [figmaFileKey, figmaNodeId])
 
 
   // JSON 생성
@@ -263,11 +292,14 @@ export default function NewTemplatePage() {
         .replace(/[^a-z0-9]+(.)/g, (_, char) => char.toUpperCase())
         .replace(/^./, (char) => char.toLowerCase())
 
+      // groom, bride는 항상 width: 'auto' 사용 (텍스트 길이에 맞춤)
+      const shouldUseAutoWidth = ['groom', 'bride'].includes(normalizedName)
+
       const converted: ConvertedElement = {
         type: elementType,
         x: Math.round(relativeX * 100) / 100,
         y: Math.round(relativeY * 100) / 100,
-        width: el.width > 0 ? Math.round(el.width * 100) / 100 : 'auto',
+        width: shouldUseAutoWidth ? 'auto' : (el.width > 0 ? Math.round(el.width * 100) / 100 : 'auto'),
         zIndex: index + 1,
         editable: el.name.includes('[editable]') || ['groom', 'bride', 'date', 'venue', 'photo'].includes(normalizedName),
       }
@@ -279,7 +311,7 @@ export default function NewTemplatePage() {
       // 텍스트 속성 추가
       if (elementType === 'text') {
         if (el.fontSize) converted.fontSize = el.fontSize
-        if (el.fontFamily) converted.fontFamily = `'${el.fontFamily}', serif`
+        if (el.fontFamily) converted.fontFamily = mapFigmaFont(el.fontFamily)
         if (el.fontWeight) converted.fontWeight = el.fontWeight
         if (el.color) converted.color = el.color
         if (el.textAlign) converted.align = el.textAlign as 'left' | 'center' | 'right'
@@ -449,14 +481,13 @@ export default function NewTemplatePage() {
 
     try {
       // 1. Figma 정보가 있으면 먼저 이미지 저장
-      if (figmaFileKey && figmaNodeId && figmaApiKey) {
+      if (figmaFileKey && figmaNodeId) {
         const imageResponse = await fetch('/api/figma/images', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             fileKey: figmaFileKey,
             nodeId: figmaNodeId,
-            apiKey: figmaApiKey,
             templateId,
           }),
         })
@@ -500,7 +531,7 @@ export default function NewTemplatePage() {
     } finally {
       setSaving(false)
     }
-  }, [templateId, generatedJson, figmaFileKey, figmaNodeId, figmaApiKey, imagesDownloaded])
+  }, [templateId, generatedJson, figmaFileKey, figmaNodeId, imagesDownloaded])
 
   return (
     <div className="space-y-6">
@@ -649,22 +680,15 @@ export default function NewTemplatePage() {
             )}
           </div>
 
-          {/* API Key (한번만 입력하면 됨) */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Figma API Key *
-            </label>
-            <input
-              type="password"
-              value={figmaApiKey}
-              onChange={(e) => saveApiKey(e.target.value)}
-              placeholder="figd_xxxxx..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Figma 설정 → Account → Personal access tokens에서 생성
-              {figmaApiKey && <span className="text-green-600 ml-2">✓ 저장됨 (브라우저에 기억)</span>}
-            </p>
+          {/* Figma API 토큰 상태 */}
+          <div className={`p-3 rounded-lg ${figmaTokenConfigured === null ? 'bg-gray-100' : figmaTokenConfigured ? 'bg-green-50' : 'bg-red-50'}`}>
+            {figmaTokenConfigured === null ? (
+              <span className="text-gray-600">🔄 Figma 연결 상태 확인 중...</span>
+            ) : figmaTokenConfigured ? (
+              <span className="text-green-700">✅ Figma API 연결됨 (서버 환경변수 설정 완료)</span>
+            ) : (
+              <span className="text-red-700">❌ Figma API 토큰이 설정되지 않았습니다. 관리자에게 문의하세요.</span>
+            )}
           </div>
 
           {/* 자동 파싱된 값 표시 (접이식) */}
@@ -681,7 +705,10 @@ export default function NewTemplatePage() {
                 <input
                   type="text"
                   value={figmaFileKey}
-                  onChange={(e) => saveFileKey(e.target.value)}
+                  onChange={(e) => {
+                    setFigmaFileKey(e.target.value)
+                    localStorage.setItem(FIGMA_FILE_KEY_STORAGE, e.target.value)
+                  }}
                   placeholder="ABC123xyz..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 />
@@ -720,7 +747,7 @@ export default function NewTemplatePage() {
             </button>
             <button
               onClick={fetchFigmaMetadata}
-              disabled={!figmaFileKey || !figmaNodeId || !figmaApiKey || processing}
+              disabled={!figmaFileKey || !figmaNodeId || !figmaTokenConfigured || processing}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {processing ? (

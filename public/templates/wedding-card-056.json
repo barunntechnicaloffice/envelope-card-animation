@@ -4,7 +4,7 @@
   "name": "템플릿56번",
   "category": "웨딩",
   "thumbnail": "/assets/wedding-card-056/card-main-bg.png",
-  "figmaNodeId": "221-6736",
+  "figmaNodeId": "1002-17579",
   "set": {
     "envelope": {
       "pattern": "/assets/wedding-card-056/envelope-pattern.png",
@@ -35,101 +35,95 @@
     },
     "photo": {
       "type": "image",
-      "x": 80.2,
-      "y": 182,
-      "width": 174.6,
-      "zIndex": 3,
+      "x": 35.62,
+      "y": 32.22,
+      "width": 262.75,
+      "zIndex": 6,
       "editable": true,
-      "height": 185.67
+      "height": 458.55
     },
-    "venue": {
+    "obj": {
+      "type": "container",
+      "x": 24.95,
+      "y": 19.89,
+      "width": 284.1,
+      "zIndex": 7,
+      "editable": false,
+      "height": 483.22
+    },
+    "decoration": {
+      "type": "vector",
+      "x": 24.95,
+      "y": 19.89,
+      "width": 284.1,
+      "zIndex": 8,
+      "editable": false,
+      "height": 483.22
+    },
+    "vector": {
+      "type": "vector",
+      "x": 34.16,
+      "y": 30.63,
+      "width": 265.7,
+      "zIndex": 10,
+      "editable": false,
+      "height": 461.74
+    },
+    "groom": {
       "type": "text",
-      "x": 12.11,
-      "y": 412.4,
-      "width": 311,
-      "zIndex": 5,
+      "x": 124.01,
+      "y": 73.5,
+      "width": "auto",
+      "zIndex": 13,
       "editable": true,
-      "height": 20,
-      "fontSize": 13,
-      "fontFamily": "'Pretendard', serif",
+      "height": 32,
+      "fontSize": 28,
+      "fontFamily": "'NanumSlow', cursive",
       "fontWeight": 400,
-      "color": "#be9e71",
+      "color": "#333333",
+      "align": "center",
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 126.01,
+      "y": 105.5,
+      "width": "auto",
+      "zIndex": 15,
+      "editable": true,
+      "height": 32,
+      "fontSize": 28,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
       "align": "center",
       "centerAlign": true
     },
     "date": {
       "type": "text",
-      "x": 12.11,
-      "y": 393.4,
+      "x": 12,
+      "y": 143.5,
       "width": 311,
-      "zIndex": 6,
+      "zIndex": 16,
       "editable": true,
-      "height": 20,
-      "fontSize": 13,
-      "fontFamily": "'Pretendard', serif",
-      "fontWeight": 400,
-      "color": "#be9e71",
-      "align": "center",
-      "centerAlign": true
-    },
-    "groom": {
-      "type": "text",
-      "x": 117.5,
-      "y": 68.27,
-      "width": 100,
-      "zIndex": 8,
-      "editable": true,
-      "height": 29,
+      "height": 23,
       "fontSize": 20,
-      "fontFamily": "'Gowun Batang', serif",
+      "fontFamily": "'NanumSlow', cursive",
       "fontWeight": 400,
-      "color": "#be9e71",
+      "color": "#333333",
       "align": "center",
-      "letterSpacing": 2,
-      "centerAlign": true
-    },
-    "bride": {
-      "type": "text",
-      "x": 117.5,
-      "y": 141.27,
-      "width": 100,
-      "zIndex": 10,
-      "editable": true,
-      "height": 29,
-      "fontSize": 20,
-      "fontFamily": "'Gowun Batang', serif",
-      "fontWeight": 400,
-      "color": "#be9e71",
-      "align": "center",
-      "letterSpacing": 2,
-      "centerAlign": true
-    },
-    "text": {
-      "type": "text",
-      "x": 11.5,
-      "y": 105.27,
-      "width": 311,
-      "zIndex": 12,
-      "editable": false,
-      "height": 22,
-      "fontSize": 15,
-      "fontFamily": "'Gowun Batang', serif",
-      "fontWeight": 400,
-      "color": "#be9e71",
-      "align": "center",
-      "letterSpacing": 1.5,
       "centerAlign": true
     }
   },
   "data": {
     "wedding": {
-      "groom": "이 준 서",
-      "bride": "김 은 재",
-      "date": "2038년 10월 23일 토요일 오후 2시",
-      "venue": "메종 드 프리미어 그랜드홀",
+      "groom": "Lee Junseo",
+      "bride": "Kim Eunjae",
+      "date": "October 23, 2038",
+      "venue": "예식장 이름",
       "photo": "/assets/wedding-card-056/photo.png",
       "cardBackground": "/assets/wedding-card-056/card-main-bg.png",
-      "text": "and"
+      "decoration": "/assets/wedding-card-056/decoration.png"
     }
   },
   "components": [
@@ -143,7 +137,7 @@
         "venue": "$.data.wedding.venue",
         "photo": "$.data.wedding.photo",
         "backgroundImage": "$.data.wedding.cardBackground",
-        "text": "$.data.wedding.text"
+        "decoration": "$.data.wedding.decoration"
       }
     }
   ]

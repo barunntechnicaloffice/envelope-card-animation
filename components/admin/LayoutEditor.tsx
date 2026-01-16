@@ -6,7 +6,7 @@ interface LayoutElement {
   type: string
   x: number
   y: number
-  width: number
+  width: number | 'auto'
   height?: number
   zIndex?: number
   editable?: boolean
@@ -17,6 +17,7 @@ interface LayoutElement {
   align?: string
   centerAlign?: boolean
   letterSpacing?: number
+  transform?: string
 }
 
 interface LayoutData {
@@ -69,11 +70,16 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     ([key]) => key !== 'baseSize'
   ) as [string, LayoutElement][]
 
+  // width를 숫자로 변환하는 헬퍼 함수
+  const getNumericWidth = (width: number | 'auto'): number => {
+    return typeof width === 'number' ? width : 50
+  }
+
   // 가이드라인 계산 (중앙선 + 다른 요소들의 엣지)
   const calculateGuidelines = useCallback((currentKey: string, newX: number, newY: number) => {
     const guides: { type: 'horizontal' | 'vertical'; position: number }[] = []
     const currentElement = layout[currentKey] as LayoutElement
-    const currentWidth = currentElement.width || 0
+    const currentWidth = getNumericWidth(currentElement.width)
     const currentHeight = currentElement.height || 0
 
     // 중앙선
@@ -97,14 +103,15 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     // 다른 요소들과 정렬
     layoutElements.forEach(([key, el]) => {
       if (key === currentKey || key === 'background') return
+      const elWidth = getNumericWidth(el.width)
 
       // 왼쪽 엣지 정렬
       if (Math.abs(newX - el.x) < SNAP_THRESHOLD) {
         guides.push({ type: 'vertical', position: el.x })
       }
       // 오른쪽 엣지 정렬
-      if (Math.abs(newX + currentWidth - (el.x + el.width)) < SNAP_THRESHOLD) {
-        guides.push({ type: 'vertical', position: el.x + el.width })
+      if (Math.abs(newX + currentWidth - (el.x + elWidth)) < SNAP_THRESHOLD) {
+        guides.push({ type: 'vertical', position: el.x + elWidth })
       }
       // 위쪽 엣지 정렬
       if (Math.abs(newY - el.y) < SNAP_THRESHOLD) {
@@ -124,8 +131,8 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     let snappedX = x
     let snappedY = y
     const currentElement = layout[currentKey] as LayoutElement
-    const currentWidth = currentElement.width || 0
-    const currentHeight = currentElement.height || 0
+    const currentWidth = getNumericWidth(currentElement.width)
+    const currentHeight = currentElement.height || 20
 
     const centerX = baseSize.width / 2
     const centerY = baseSize.height / 2
@@ -208,8 +215,10 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
 
     // 경계 제한
     const element = layout[selectedElement] as LayoutElement
-    newX = Math.max(0, Math.min(baseSize.width - element.width, newX))
-    newY = Math.max(0, Math.min(baseSize.height - (element.height || 20), newY))
+    const elementWidth = getNumericWidth(element.width)
+    const elementHeight = element.height || 20
+    newX = Math.max(0, Math.min(baseSize.width - elementWidth, newX))
+    newY = Math.max(0, Math.min(baseSize.height - elementHeight, newY))
 
     // 스냅 적용
     const snapped = applySnap(selectedElement, newX, newY)
@@ -288,8 +297,10 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
 
     switch (key) {
       case 'photo': return weddingData.photo
-      case 'decoration': return weddingData.decoration
+      case 'decoration': return weddingData.decoration || weddingData.decorationImage
       case 'background': return weddingData.cardBackground || templateSet?.cards?.main
+      // vector 키도 decoration 이미지로 시도
+      case 'vector': return weddingData.decoration || weddingData.decorationImage
       default: return null
     }
   }
@@ -305,11 +316,22 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     const isSelected = selectedElement === key
     const pxToPercent = (px: number, base: number) => `${(px / base) * 100}%`
 
+    // centerAlign 또는 transform 처리
+    let transform: string | undefined = undefined
+    let left: string = pxToPercent(el.x, baseSize.width)
+
+    if (el.centerAlign) {
+      left = '50%'
+      transform = 'translateX(-50%)'
+    } else if (el.transform) {
+      transform = el.transform
+    }
+
     return {
       position: 'absolute',
-      left: pxToPercent(el.x, baseSize.width),
+      left,
       top: pxToPercent(el.y, baseSize.height),
-      width: pxToPercent(el.width, baseSize.width),
+      width: typeof el.width === 'number' ? pxToPercent(el.width, baseSize.width) : 'auto',
       height: el.height ? pxToPercent(el.height, baseSize.height) : 'auto',
       zIndex: el.zIndex || 1,
       cursor: key === 'background' ? 'default' : 'move',
@@ -322,6 +344,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
       color: el.color,
       textAlign: el.align as 'left' | 'center' | 'right' | undefined,
       letterSpacing: el.letterSpacing,
+      transform,
       userSelect: 'none',
     }
   }
@@ -417,6 +440,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
             if (key === 'background') return null
 
             const imageUrl = getImageUrl(key)
+            const isSelected = selectedElement === key
 
             return (
               <div
@@ -425,6 +449,24 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 onMouseDown={(e) => handleMouseDown(e, key)}
                 title={`${key}: (${el.x}, ${el.y})`}
               >
+                {/* 선택된 요소에 삭제 버튼 표시 */}
+                {isSelected && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (confirm(`"${key}" 요소를 삭제하시겠습니까?`)) {
+                        const newLayout = { ...layout }
+                        delete newLayout[key]
+                        onLayoutChange(newLayout)
+                        setSelectedElement(null)
+                      }
+                    }}
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md z-50"
+                    title="요소 삭제"
+                  >
+                    ×
+                  </button>
+                )}
                 {el.type === 'text' && (
                   <span style={{ whiteSpace: 'pre-line' }}>{getElementData(key)}</span>
                 )}
@@ -458,14 +500,20 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
                         target.style.display = 'none'
-                        target.parentElement!.innerHTML = `<div class="w-full h-full bg-purple-100 flex items-center justify-center text-purple-400 text-xs">${key}</div>`
                       }}
                     />
                   ) : (
-                    <div className="w-full h-full bg-purple-100 flex items-center justify-center text-purple-400 text-xs">
-                      {key}
+                    // 이미지 없는 vector는 점선 테두리만 표시
+                    <div className="w-full h-full border border-dashed border-purple-300 rounded flex items-center justify-center">
+                      <span className="text-purple-300 text-xs">{key}</span>
                     </div>
                   )
+                )}
+                {el.type === 'container' && (
+                  // container는 점선 테두리로 영역만 표시
+                  <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center">
+                    <span className="text-gray-300 text-xs">{key}</span>
+                  </div>
                 )}
               </div>
             )
@@ -491,7 +539,8 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">X</label>
                 <input
                   type="number"
-                  value={(layout[selectedElement] as LayoutElement).x}
+                  step="0.01"
+                  value={Number((layout[selectedElement] as LayoutElement).x) || 0}
                   onChange={(e) => {
                     const newLayout = {
                       ...layout,
@@ -509,7 +558,8 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">Y</label>
                 <input
                   type="number"
-                  value={(layout[selectedElement] as LayoutElement).y}
+                  step="0.01"
+                  value={Number((layout[selectedElement] as LayoutElement).y) || 0}
                   onChange={(e) => {
                     const newLayout = {
                       ...layout,
@@ -529,16 +579,20 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">너비</label>
                 <input
                   type="number"
-                  value={(layout[selectedElement] as LayoutElement).width}
+                  step="0.01"
+                  value={typeof (layout[selectedElement] as LayoutElement).width === 'number'
+                    ? (layout[selectedElement] as LayoutElement).width
+                    : ''}
+                  placeholder="auto"
                   onChange={(e) => {
                     const newLayout = {
                       ...layout,
                       [selectedElement]: {
                         ...(layout[selectedElement] as LayoutElement),
-                        width: parseFloat(e.target.value) || 0
+                        width: e.target.value ? parseFloat(e.target.value) : 'auto' as const
                       }
                     }
-                    onLayoutChange(newLayout)
+                    onLayoutChange(newLayout as LayoutData)
                   }}
                   className="w-full px-2 py-1 border rounded text-sm font-mono"
                 />
@@ -547,13 +601,17 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">높이</label>
                 <input
                   type="number"
-                  value={(layout[selectedElement] as LayoutElement).height || 'auto'}
+                  step="0.01"
+                  value={typeof (layout[selectedElement] as LayoutElement).height === 'number'
+                    ? (layout[selectedElement] as LayoutElement).height
+                    : ''}
+                  placeholder="auto"
                   onChange={(e) => {
                     const newLayout = {
                       ...layout,
                       [selectedElement]: {
                         ...(layout[selectedElement] as LayoutElement),
-                        height: parseFloat(e.target.value) || undefined
+                        height: e.target.value ? parseFloat(e.target.value) : undefined
                       }
                     }
                     onLayoutChange(newLayout)
@@ -580,6 +638,30 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 className="w-full px-2 py-1 border rounded text-sm font-mono"
               />
             </div>
+            {/* 텍스트 요소일 때만 text-align 표시 */}
+            {(layout[selectedElement] as LayoutElement).type === 'text' && (
+              <div>
+                <label className="text-xs text-gray-500">텍스트 정렬</label>
+                <select
+                  value={(layout[selectedElement] as LayoutElement).align || 'left'}
+                  onChange={(e) => {
+                    const newLayout = {
+                      ...layout,
+                      [selectedElement]: {
+                        ...(layout[selectedElement] as LayoutElement),
+                        align: e.target.value as 'left' | 'center' | 'right'
+                      }
+                    }
+                    onLayoutChange(newLayout)
+                  }}
+                  className="w-full px-2 py-1 border rounded text-sm bg-white"
+                >
+                  <option value="left">왼쪽 (left)</option>
+                  <option value="center">가운데 (center)</option>
+                  <option value="right">오른쪽 (right)</option>
+                </select>
+              </div>
+            )}
           </div>
         ) : (
           <div className="p-4 bg-gray-50 rounded-lg text-center text-gray-400 text-sm">
