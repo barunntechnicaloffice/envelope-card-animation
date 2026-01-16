@@ -350,41 +350,48 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
   }
 
   return (
-    <div className="flex gap-6">
-      {/* 에디터 영역 */}
-      <div className="flex-1">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <p className="text-sm text-gray-500">
+    <div className="flex flex-col lg:flex-row gap-6">
+      {/* 에디터 영역 - 가운데 정렬 */}
+      <div className="flex-1 flex flex-col items-center">
+        {/* 상단 안내 및 버튼 영역 */}
+        <div className="w-full max-w-[400px] mb-4">
+          <div className="flex flex-col items-center gap-3">
+            {/* 안내 문구 */}
+            <p className="text-sm text-gray-500 text-center">
               요소 클릭 → 선택 / 선택된 요소 드래그 → 이동
             </p>
+
+            {/* 좌표 표시 */}
             {showCoordinates && (
               <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-mono">
                 x: {showCoordinates.x}, y: {showCoordinates.y}
               </div>
             )}
-          </div>
-          <div className="flex gap-2">
-            {onReset && (
-              <button
-                onClick={onReset}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                초기화
-              </button>
-            )}
-            {onSave && (
-              <button
-                onClick={onSave}
-                disabled={isSaving}
-                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-              >
-                {isSaving ? '저장 중...' : '레이아웃 저장'}
-              </button>
-            )}
+
+            {/* 버튼 영역 */}
+            <div className="flex gap-2">
+              {onReset && (
+                <button
+                  onClick={onReset}
+                  className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  초기화
+                </button>
+              )}
+              {onSave && (
+                <button
+                  onClick={onSave}
+                  disabled={isSaving}
+                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {isSaving ? '저장 중...' : '레이아웃 저장'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
+        {/* 템플릿 미리보기 */}
         <div
           ref={containerRef}
           className="relative bg-white rounded-lg overflow-hidden shadow-lg border-2 border-gray-200"
@@ -521,9 +528,9 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
         </div>
       </div>
 
-      {/* 선택된 요소 정보 */}
-      <div className="w-64">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">요소 속성</h3>
+      {/* 선택된 요소 정보 - 사이드바 */}
+      <div className="w-full lg:w-64 lg:flex-shrink-0">
+        <h3 className="text-sm font-semibold text-gray-900 mb-3 text-center lg:text-left">요소 속성</h3>
         {selectedElement ? (
           <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
             <div>
@@ -670,7 +677,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
         )}
 
         {/* 요소 목록 */}
-        <h3 className="text-sm font-semibold text-gray-900 mt-6 mb-3">요소 목록</h3>
+        <h3 className="text-sm font-semibold text-gray-900 mt-6 mb-3 text-center lg:text-left">요소 목록</h3>
         <div className="space-y-1">
           {layoutElements
             .filter(([key]) => key !== 'background')

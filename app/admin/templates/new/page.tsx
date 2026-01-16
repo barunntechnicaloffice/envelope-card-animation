@@ -5,6 +5,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false })
+const LayoutEditor = dynamic(() => import('@/components/admin/LayoutEditor'), { ssr: false })
 
 interface FigmaElement {
   id: string
@@ -234,7 +235,7 @@ export default function NewTemplatePage() {
 
 
   // JSON 생성
-  const generateJson = useCallback(() => {
+  const generateJson = useCallback(async () => {
     const layout: Record<string, ConvertedElement> = {}
 
     // Figma에서 추출한 텍스트 값 저장
@@ -435,9 +436,63 @@ export default function NewTemplatePage() {
       ]
     }
 
-    setGeneratedJson(JSON.stringify(templateJson, null, 2))
-    setStep(4)
-  }, [parsedElements, bgOffset, baseSize, templateId, templateName, category, figmaNodeId])
+    const jsonString = JSON.stringify(templateJson, null, 2)
+    setGeneratedJson(jsonString)
+
+    // JSON 생성 후 바로 서버에 저장
+    setSaving(true)
+    setError(null)
+    setSaveSuccess(false)
+    setImagesDownloaded(false)
+
+    try {
+      // 1. Figma 정보가 있으면 먼저 이미지 저장
+      if (figmaFileKey && figmaNodeId) {
+        const imageResponse = await fetch('/api/figma/images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileKey: figmaFileKey,
+            nodeId: figmaNodeId,
+            templateId,
+          }),
+        })
+
+        const imageResult = await imageResponse.json()
+
+        if (imageResponse.ok && imageResult.images?.length > 0) {
+          setDownloadedImages(imageResult.images)
+          setImagesDownloaded(true)
+        }
+      }
+
+      // 2. JSON 저장
+      const response = await fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId,
+          content: jsonString,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || '저장에 실패했습니다.')
+        setStep(4) // 에러가 나도 Step 4로 이동하여 수동 저장 가능
+        return
+      }
+
+      setSaveSuccess(true)
+      setStep(4)
+    } catch (err) {
+      setError('네트워크 오류가 발생했습니다.')
+      setStep(4)
+    } finally {
+      setSaving(false)
+    }
+  }, [parsedElements, bgOffset, baseSize, templateId, templateName, category, figmaNodeId, figmaFileKey])
 
   // JSON 다운로드
   const downloadJson = useCallback(() => {
@@ -467,6 +522,9 @@ export default function NewTemplatePage() {
   // 이미지 다운로드 상태
   const [imagesDownloaded, setImagesDownloaded] = useState(false)
   const [downloadedImages, setDownloadedImages] = useState<{ name: string; path: string }[]>([])
+
+  // Step 4 탭 상태 (미리보기가 기본)
+  const [step4Tab, setStep4Tab] = useState<'preview' | 'json'>('preview')
 
   const saveToServer = useCallback(async () => {
     if (!templateId || !generatedJson) {
@@ -862,9 +920,20 @@ export default function NewTemplatePage() {
             </button>
             <button
               onClick={generateJson}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              disabled={saving}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              JSON 생성 →
+              {saving ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  저장 중...
+                </>
+              ) : (
+                <>
+                  <span>💾</span>
+                  템플릿 생성 및 저장 →
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -876,33 +945,111 @@ export default function NewTemplatePage() {
           <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
             <span className="text-2xl">✅</span>
             <div>
-              <p className="font-medium text-green-800">JSON 스키마가 생성되었습니다!</p>
-              <p className="text-sm text-green-700">아래 JSON을 확인하고 필요한 부분을 수정하세요.</p>
+              <p className="font-medium text-green-800">템플릿이 저장되었습니다!</p>
+              <p className="text-sm text-green-700">미리보기에서 요소 위치를 조정하고 저장하세요.</p>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="h-[500px]">
-              <MonacoEditor
-                height="100%"
-                language="json"
-                theme="vs-light"
-                value={generatedJson}
-                onChange={(value) => setGeneratedJson(value || '')}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  wordWrap: 'on',
-                }}
-              />
-            </div>
+          {/* 탭 버튼 */}
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setStep4Tab('preview')}
+              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                step4Tab === 'preview'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              미리보기
+            </button>
+            <button
+              onClick={() => setStep4Tab('json')}
+              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                step4Tab === 'json'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              JSON 코드
+            </button>
           </div>
+
+          {/* 미리보기 탭 */}
+          {step4Tab === 'preview' && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-6">
+              {(() => {
+                try {
+                  const parsed = JSON.parse(generatedJson)
+                  const layout = parsed.layout || {}
+                  const data = parsed.data || {}
+                  const templateSet = parsed.set || {}
+
+                  return (
+                    <LayoutEditor
+                      layout={layout}
+                      data={data}
+                      templateSet={templateSet}
+                      onLayoutChange={(newLayout) => {
+                        const updated = { ...parsed, layout: newLayout }
+                        setGeneratedJson(JSON.stringify(updated, null, 2))
+                      }}
+                      onSave={async () => {
+                        // 변경사항 저장
+                        try {
+                          const response = await fetch('/api/templates', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              templateId,
+                              content: generatedJson,
+                            }),
+                          })
+                          if (response.ok) {
+                            alert('저장되었습니다!')
+                          }
+                        } catch {
+                          alert('저장에 실패했습니다.')
+                        }
+                      }}
+                    />
+                  )
+                } catch {
+                  return (
+                    <div className="p-8 text-center text-gray-500">
+                      <p>JSON 파싱 오류가 발생했습니다.</p>
+                      <p className="text-sm mt-2">JSON 코드 탭에서 수정해주세요.</p>
+                    </div>
+                  )
+                }
+              })()}
+            </div>
+          )}
+
+          {/* JSON 코드 탭 */}
+          {step4Tab === 'json' && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="h-[500px]">
+                <MonacoEditor
+                  height="100%"
+                  language="json"
+                  theme="vs-light"
+                  value={generatedJson}
+                  onChange={(value) => setGeneratedJson(value || '')}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    wordWrap: 'on',
+                  }}
+                />
+              </div>
+            </div>
+          )}
 
           {/* 저장 성공 메시지 */}
           {saveSuccess && (
             <div className="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
               <span>✅</span>
-              <span>템플릿이 서버에 저장되었습니다! 이제 미리보기에서 확인할 수 있습니다.</span>
+              <span>템플릿이 서버에 저장되었습니다!</span>
             </div>
           )}
 
