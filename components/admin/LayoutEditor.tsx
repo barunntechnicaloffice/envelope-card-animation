@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { renderLayoutElement } from '@/lib/layout-utils'
 
 interface LayoutElement {
   type: string
@@ -16,8 +17,11 @@ interface LayoutElement {
   color?: string
   align?: string
   centerAlign?: boolean
-  letterSpacing?: number
+  letterSpacing?: number | string
   transform?: string
+  transformOrigin?: string
+  right?: number
+  textTransform?: string
 }
 
 interface LayoutData {
@@ -279,14 +283,29 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     const weddingData = data.wedding as Record<string, string> | undefined
     if (!weddingData) return key
 
+    // weddingData에 해당 key가 있으면 그 값을 반환
+    if (weddingData[key] !== undefined) {
+      return weddingData[key]
+    }
+
+    // 기본값 매핑 (텍스트 타입 요소들)
     switch (key) {
-      case 'groom': return weddingData.groom || '신랑'
-      case 'bride': return weddingData.bride || '신부'
-      case 'date': return weddingData.date || '날짜'
-      case 'venue': return weddingData.venue || '장소'
-      case 'text': return weddingData.text || '초대 문구'
-      case 'separator': return weddingData.separator || '&'
-      default: return key
+      case 'groom': return '신랑'
+      case 'bride': return '신부'
+      case 'date': return '날짜'
+      case 'venue': return '장소'
+      case 'text': return '초대 문구'
+      case 'separator': return '&'
+      case 'and': return '&'
+      case 'groomLabel': return 'GROOM'
+      case 'brideLabel': return 'BRIDE'
+      case 'subtitle': return 'Wedding Invitation'
+      case 'title': return 'We\'re Getting Married'
+      case 'weddingDayLabel': return 'Wedding Day'
+      case 'value': return ''
+      case 'month': return 'October'
+      case 'day': return '23'
+      default: return ''  // 알 수 없는 텍스트 키는 빈 문자열로 표시
     }
   }
 
@@ -295,6 +314,12 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     const weddingData = data.wedding as Record<string, string> | undefined
     if (!weddingData) return null
 
+    // weddingData에 해당 key가 직접 있으면 그 값을 반환 (decorationFrame 등)
+    if (weddingData[key]) {
+      return weddingData[key]
+    }
+
+    // 레거시 호환 및 특수 케이스 처리
     switch (key) {
       case 'photo': return weddingData.photo
       case 'decoration': return weddingData.decoration || weddingData.decorationImage
@@ -311,40 +336,20 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     return weddingData?.cardBackground || templateSet?.cards?.main || null
   })()
 
-  // 요소 렌더링 스타일
+  // 요소 렌더링 스타일 - 실제 /templates/ 페이지와 동일하게 renderLayoutElement 사용
   const getElementStyle = (key: string, el: LayoutElement): React.CSSProperties => {
     const isSelected = selectedElement === key
-    const pxToPercent = (px: number, base: number) => `${(px / base) * 100}%`
 
-    // centerAlign 또는 transform 처리
-    let transform: string | undefined = undefined
-    let left: string = pxToPercent(el.x, baseSize.width)
+    // renderLayoutElement 사용하여 실제 렌더링과 동일한 스타일 적용
+    const baseStyle = renderLayoutElement(key, el, baseSize, data)
 
-    if (el.centerAlign) {
-      left = '50%'
-      transform = 'translateX(-50%)'
-    } else if (el.transform) {
-      transform = el.transform
-    }
-
+    // 어드민 에디터 전용 스타일 추가
     return {
-      position: 'absolute',
-      left,
-      top: pxToPercent(el.y, baseSize.height),
-      width: typeof el.width === 'number' ? pxToPercent(el.width, baseSize.width) : 'auto',
-      height: el.height ? pxToPercent(el.height, baseSize.height) : 'auto',
-      zIndex: el.zIndex || 1,
+      ...baseStyle,
       cursor: key === 'background' ? 'default' : 'move',
       outline: isSelected ? '2px solid #3b82f6' : 'none',
       outlineOffset: '2px',
       backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-      fontSize: el.fontSize ? `${el.fontSize}px` : undefined,
-      fontFamily: el.fontFamily,
-      fontWeight: el.fontWeight,
-      color: el.color,
-      textAlign: el.align as 'left' | 'center' | 'right' | undefined,
-      letterSpacing: el.letterSpacing,
-      transform,
       userSelect: 'none',
     }
   }
@@ -399,22 +404,23 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
           onClick={handleContainerClick}
           onMouseMove={handleMouseMove}
         >
-          {/* 배경 이미지 */}
-          {backgroundImageUrl && (
+          {/* 배경 이미지 - 실제 카드 컴포넌트와 동일하게 inset: 0으로 전체 채움 */}
+          {backgroundImageUrl && layout.background && (
             <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ zIndex: 0 }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={backgroundImageUrl}
-                alt="배경"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none'
-                }}
-              />
-            </div>
+              className={`cursor-pointer ${selectedElement === 'background' ? 'ring-2 ring-blue-500' : ''}`}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${backgroundImageUrl})`,
+                backgroundSize: (layout.background as LayoutElement & { backgroundSize?: string })?.backgroundSize || 'cover',
+                backgroundPosition: (layout.background as LayoutElement & { backgroundPosition?: string })?.backgroundPosition || 'center',
+                zIndex: (layout.background as LayoutElement).zIndex || 0
+              }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setSelectedElement('background')
+              }}
+            />
           )}
 
           {/* 중앙 가이드라인 (항상 표시, 연하게) */}
@@ -510,17 +516,13 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                       }}
                     />
                   ) : (
-                    // 이미지 없는 vector는 점선 테두리만 표시
-                    <div className="w-full h-full border border-dashed border-purple-300 rounded flex items-center justify-center">
-                      <span className="text-purple-300 text-xs">{key}</span>
-                    </div>
+                    // 이미지 없는 vector는 배경색만 표시 (텍스트 노출 방지)
+                    <div className="w-full h-full bg-gray-300 rounded" title={key} />
                   )
                 )}
                 {el.type === 'container' && (
-                  // container는 점선 테두리로 영역만 표시
-                  <div className="w-full h-full border border-dashed border-gray-300 rounded flex items-center justify-center">
-                    <span className="text-gray-300 text-xs">{key}</span>
-                  </div>
+                  // container는 점선 테두리로 영역만 표시 (텍스트 노출 방지)
+                  <div className="w-full h-full border border-dashed border-gray-200 rounded" title={key} />
                 )}
               </div>
             )
@@ -679,6 +681,20 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
         {/* 요소 목록 */}
         <h3 className="text-sm font-semibold text-gray-900 mt-6 mb-3 text-center lg:text-left">요소 목록</h3>
         <div className="space-y-1">
+          {/* 배경 요소 (항상 맨 위에 표시) */}
+          {layout.background && (
+            <button
+              onClick={() => setSelectedElement('background')}
+              className={`w-full px-3 py-2 text-left text-sm rounded transition-colors ${
+                selectedElement === 'background'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'hover:bg-gray-100 text-gray-700'
+              }`}
+            >
+              <span className="font-mono">background</span>
+              <span className="text-xs text-gray-400 ml-2">(배경)</span>
+            </button>
+          )}
           {layoutElements
             .filter(([key]) => key !== 'background')
             .map(([key, el]) => (

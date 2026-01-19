@@ -9,7 +9,7 @@ const nextConfig = {
   },
   // Skip API routes for static export
   skipTrailingSlashRedirect: true,
-  ...(isProd && { trailingSlash: true }) // Trailing slash only for production
+  ...(isProd && { trailingSlash: true }), // Trailing slash only for production
 }
 
 module.exports = nextConfig
