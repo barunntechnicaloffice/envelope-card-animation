@@ -10,15 +10,25 @@ interface TemplateInfo {
   name: string
   version: string
   thumbnail?: string
+  category?: string
   status: 'published' | 'draft' | 'error'
   hasLayout: boolean
 }
+
+// 카테고리 옵션
+const CATEGORY_OPTIONS = [
+  { value: 'all', label: '전체 카테고리' },
+  { value: '웨딩', label: '웨딩' },
+  { value: '생일파티', label: '생일파티' },
+  { value: '신년카드', label: '신년카드' },
+] as const
 
 export default function TemplatesListPage() {
   const router = useRouter()
   const [templates, setTemplates] = useState<TemplateInfo[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all')
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [duplicating, setDuplicating] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -136,11 +146,18 @@ export default function TemplatesListPage() {
   }
 
   const filteredTemplates = templates.filter(t => {
-    const matchesFilter = filter === 'all' || t.status === filter
+    const matchesStatus = statusFilter === 'all' || t.status === statusFilter
+    const matchesCategory = categoryFilter === 'all' || t.category === categoryFilter
     const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          t.id.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesFilter && matchesSearch
+    return matchesStatus && matchesCategory && matchesSearch
   })
+
+  // 카테고리별 통계
+  const categoryStats = CATEGORY_OPTIONS.slice(1).map(cat => ({
+    category: cat.value,
+    count: templates.filter(t => t.category === cat.value).length
+  }))
 
   const stats = {
     total: templates.length,
@@ -167,29 +184,61 @@ export default function TemplatesListPage() {
       </div>
 
       {/* 필터 및 검색 */}
-      <div className="flex gap-4 items-center">
-        <div className="flex gap-2">
-          {(['all', 'published', 'draft'] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === f
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {f === 'all' ? '전체' : f === 'published' ? '게시됨' : '임시저장'}
-            </button>
-          ))}
+      <div className="flex flex-col gap-4">
+        {/* 카테고리 필터 */}
+        <div className="flex gap-2 flex-wrap">
+          {CATEGORY_OPTIONS.map((cat) => {
+            const count = cat.value === 'all'
+              ? templates.length
+              : categoryStats.find(s => s.category === cat.value)?.count || 0
+            return (
+              <button
+                key={cat.value}
+                onClick={() => setCategoryFilter(cat.value)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                  categoryFilter === cat.value
+                    ? 'bg-purple-100 text-purple-700 border-2 border-purple-300'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-2 border-transparent'
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  categoryFilter === cat.value
+                    ? 'bg-purple-200 text-purple-800'
+                    : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            )
+          })}
         </div>
-        <input
-          type="text"
-          placeholder="템플릿 검색..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-1 max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+
+        {/* 상태 필터 및 검색 */}
+        <div className="flex gap-4 items-center">
+          <div className="flex gap-2">
+            {(['all', 'published', 'draft'] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setStatusFilter(f)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  statusFilter === f
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {f === 'all' ? '전체 상태' : f === 'published' ? '게시됨' : '임시저장'}
+              </button>
+            ))}
+          </div>
+          <input
+            type="text"
+            placeholder="템플릿 검색..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
       </div>
 
       {/* 복제/삭제 중 오버레이 */}
@@ -317,6 +366,13 @@ function TemplateCard({
           <span className="text-xs text-gray-500">{template.id}</span>
           <span className="text-xs text-gray-400">v{template.version}</span>
         </div>
+        {template.category && (
+          <div className="mt-2">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-600">
+              {template.category}
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   )

@@ -1,0 +1,100 @@
+{
+  "id": "test-card-002",
+  "version": "1.0.0",
+  "name": "노란 ",
+  "category": "웨딩",
+  "thumbnail": "/assets/test-card-002/card-main-bg.png",
+  "figmaNodeId": "166-2333",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/test-card-002/envelope-pattern.png",
+      "seal": "/assets/test-card-002/envelope-seal.png",
+      "lining": "/assets/test-card-002/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/test-card-002/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/test-card-002/card-main-bg.png",
+      "default": "/assets/test-card-002/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "groom": {
+      "type": "text",
+      "x": 167.5,
+      "y": 130.04,
+      "width": "auto",
+      "zIndex": 5,
+      "editable": true,
+      "fontSize": 35,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "letterSpacing": -0.5530000150203706,
+      "centerAlign": true
+    },
+    "bride": {
+      "type": "text",
+      "x": 167.5,
+      "y": 218.5,
+      "width": "auto",
+      "zIndex": 7,
+      "editable": true,
+      "fontSize": 35,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "letterSpacing": -0.5530000150203706,
+      "centerAlign": true
+    },
+    "text": {
+      "type": "text",
+      "x": 167.5,
+      "y": 184.27,
+      "width": 311,
+      "zIndex": 8,
+      "editable": false,
+      "fontSize": 20,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "centerAlign": true
+    }
+  },
+  "data": {
+    "wedding": {
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "text": "그리고"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "backgroundImage": "$.set.cards.main",
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "text": "$.data.wedding.text"
+      }
+    }
+  ]
+}

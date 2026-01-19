@@ -124,7 +124,10 @@ function parseFigmaUrl(url: string): { fileKey: string; nodeId: string } | null 
     }
 
     // node-id 파라미터 추출
-    const nodeId = urlObj.searchParams.get('node-id') || ''
+    // Figma URL에서는 하이픈(166-2333) 형식이지만,
+    // 기존 템플릿들은 콜론(166:2333) 형식을 사용하므로 변환
+    const rawNodeId = urlObj.searchParams.get('node-id') || ''
+    const nodeId = rawNodeId.replace('-', ':')
 
     if (fileKey && nodeId) {
       return { fileKey, nodeId }
@@ -296,16 +299,25 @@ export default function NewTemplatePage() {
       // groom, bride는 항상 width: 'auto' 사용 (텍스트 길이에 맞춤)
       const shouldUseAutoWidth = ['groom', 'bride'].includes(normalizedName)
 
+      // 중앙 정렬 감지: 요소의 중심이 캔버스 중앙과 10px 이내인지 확인
+      const centerX = relativeX + (el.width / 2)
+      const isCenterAligned = Math.abs(centerX - baseSize.width / 2) < 10
+
+      // 중앙 정렬 요소는 x를 정확히 중앙(167.5)으로 설정
+      const finalX = isCenterAligned ? (baseSize.width / 2) : Math.round(relativeX * 100) / 100
+
       const converted: ConvertedElement = {
         type: elementType,
-        x: Math.round(relativeX * 100) / 100,
+        x: finalX,
         y: Math.round(relativeY * 100) / 100,
         width: shouldUseAutoWidth ? 'auto' : (el.width > 0 ? Math.round(el.width * 100) / 100 : 'auto'),
         zIndex: index + 1,
         editable: el.name.includes('[editable]') || ['groom', 'bride', 'date', 'venue', 'photo'].includes(normalizedName),
       }
 
-      if (el.height && el.height > 0) {
+      // text 타입은 height 제외 (fontSize로 결정됨)
+      // image, vector 타입만 height 포함
+      if (el.height && el.height > 0 && elementType !== 'text') {
         converted.height = Math.round(el.height * 100) / 100
       }
 
@@ -318,9 +330,16 @@ export default function NewTemplatePage() {
         if (el.textAlign) converted.align = el.textAlign as 'left' | 'center' | 'right'
         if (el.letterSpacing) converted.letterSpacing = el.letterSpacing
 
-        // 중앙 정렬 감지
-        const centerX = relativeX + (el.width / 2)
-        if (Math.abs(centerX - baseSize.width / 2) < 10) {
+        // lineHeight: Figma에서 가져오거나 기본값 1.0 사용
+        if (el.lineHeight) {
+          converted.lineHeight = el.lineHeight
+        } else {
+          // 기본값 1.0 (단일 행 텍스트에 적합)
+          converted.lineHeight = 1.0
+        }
+
+        // 중앙 정렬이면 centerAlign 추가 (위에서 이미 감지함)
+        if (isCenterAligned) {
           converted.centerAlign = true
         }
 
@@ -333,59 +352,74 @@ export default function NewTemplatePage() {
       layout[normalizedName] = converted
     })
 
-    // layout에 있는 요소들 확인
+    // layout에 있는 요소들 확인 (실제 layout에 존재하는 요소만 체크)
+    const hasGroom = 'groom' in layout
+    const hasBride = 'bride' in layout
+    const hasDate = 'date' in layout
+    const hasVenue = 'venue' in layout
+    const hasPhoto = 'photo' in layout
     const hasSeparator = 'separator' in layout
     const hasDecoration = 'decoration' in layout
     const hasText = 'text' in layout
 
-    // wedding data 기본값
+    // wedding data: layout에 있는 요소만 추가
     // Figma에서 추출한 텍스트 값이 있으면 사용, 없으면 기본값
-    // photo는 템플릿별 이미지 경로 사용 (Figma에서 다운로드됨)
-    const weddingData: Record<string, string> = {
-      groom: figmaTextValues.groom || '신랑 이름',
-      bride: figmaTextValues.bride || '신부 이름',
-      date: figmaTextValues.date || '2025년 1월 1일 토요일 오후 2시',
-      venue: figmaTextValues.venue || '예식장 이름',
-      photo: `/assets/${templateId}/photo.png`,
-      cardBackground: `/assets/${templateId}/card-main-bg.png`
+    const weddingData: Record<string, string> = {}
+
+    // 필수 요소: groom, bride (대부분의 템플릿에 존재)
+    if (hasGroom) {
+      weddingData.groom = figmaTextValues.groom || '신랑 이름'
+    }
+    if (hasBride) {
+      weddingData.bride = figmaTextValues.bride || '신부 이름'
     }
 
-    // separator가 있으면 data에도 추가
+    // 선택 요소: layout에 있는 경우만 추가
+    if (hasDate) {
+      weddingData.date = figmaTextValues.date || '2025년 1월 1일 토요일 오후 2시'
+    }
+    if (hasVenue) {
+      weddingData.venue = figmaTextValues.venue || '예식장 이름'
+    }
+    if (hasPhoto) {
+      weddingData.photo = `/assets/${templateId}/photo.png`
+    }
     if (hasSeparator) {
-      weddingData.separator = '&'
+      weddingData.separator = figmaTextValues.separator || '&'
     }
-
-    // decoration이 있으면 data에도 추가
     if (hasDecoration) {
       weddingData.decoration = `/assets/${templateId}/decoration.png`
     }
-
-    // text가 있으면 초대 문구 추가 (Figma 값 우선)
     if (hasText) {
       weddingData.text = figmaTextValues.text || 'you are invited to join\nin our celebration of love'
     }
 
-    // component data 기본값
+    // component data: layout에 있는 요소만 추가
     const componentData: Record<string, string> = {
-      groom: '$.data.wedding.groom',
-      bride: '$.data.wedding.bride',
-      date: '$.data.wedding.date',
-      venue: '$.data.wedding.venue',
-      photo: '$.data.wedding.photo',
-      backgroundImage: '$.data.wedding.cardBackground'
+      backgroundImage: '$.set.cards.main'  // 배경은 항상 포함
     }
 
-    // separator가 있으면 component data에도 추가
+    if (hasGroom) {
+      componentData.groom = '$.data.wedding.groom'
+    }
+    if (hasBride) {
+      componentData.bride = '$.data.wedding.bride'
+    }
+    if (hasDate) {
+      componentData.date = '$.data.wedding.date'
+    }
+    if (hasVenue) {
+      componentData.venue = '$.data.wedding.venue'
+    }
+    if (hasPhoto) {
+      componentData.photo = '$.data.wedding.photo'
+    }
     if (hasSeparator) {
       componentData.separator = '$.data.wedding.separator'
     }
-
-    // decoration이 있으면 component data에도 추가
     if (hasDecoration) {
       componentData.decoration = '$.data.wedding.decoration'
     }
-
-    // text가 있으면 component data에도 추가
     if (hasText) {
       componentData.text = '$.data.wedding.text'
     }

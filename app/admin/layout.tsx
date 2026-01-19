@@ -7,7 +7,7 @@ const navigation = [
   { name: '대시보드', href: '/admin', icon: '📊' },
   { name: '템플릿 관리', href: '/admin/templates', icon: '🎨' },
   { name: '새 템플릿', href: '/admin/templates/new', icon: '➕' },
-  { name: '에셋 관리', href: '/admin/assets', icon: '🖼️' },
+  // { name: '에셋 관리', href: '/admin/assets', icon: '🖼️' },  // 임시 숨김
   { name: '설정', href: '/admin/settings', icon: '⚙️' },
 ]
 
@@ -22,7 +22,7 @@ export default function AdminLayout({
     <div className="min-h-screen bg-gray-100">
       {/* 상단 헤더 */}
       <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
               <Link href="/admin" className="text-xl font-bold text-gray-900">
