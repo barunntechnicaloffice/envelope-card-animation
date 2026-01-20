@@ -45,15 +45,15 @@ interface ConvertedElement {
   centerAlign?: boolean
 }
 
-// 카테고리 옵션 (한글 필수)
-const CATEGORY_OPTIONS = [
-  { value: '웨딩', label: '웨딩' },
-  { value: '생일파티', label: '생일파티' },
-  { value: '신년카드', label: '신년카드' },
-] as const
+// 카테고리 타입
+interface CategoryOption {
+  value: string
+  label: string
+}
 
 // localStorage 키
 const FIGMA_FILE_KEY_STORAGE = 'figma_file_key'
+const FIGMA_TOKEN_STORAGE = 'figma_access_token'
 
 // Figma 폰트명 → 프로젝트 CSS 폰트명 매핑
 // FONTS_GUIDE.md 참고
@@ -66,8 +66,10 @@ const FONT_MAPPING: Record<string, string> = {
   'Nanum Myeongjo': "'Nanum Myeongjo', serif",
   'NanumMyeongjo': "'Nanum Myeongjo', serif",
   // 나눔스퀘어네오
-  'NanumSquareNeo': "'NanumSquareNeo', sans-serif",
-  'Nanum Square Neo': "'NanumSquareNeo', sans-serif",
+  'NanumSquareNeo': "'NanumSquare Neo', sans-serif",
+  'Nanum Square Neo': "'NanumSquare Neo', sans-serif",
+  'NanumSquare Neo': "'NanumSquare Neo', sans-serif",
+  'Nanum SquareNeo': "'NanumSquare Neo', sans-serif",
   // 고운바탕
   'Gowun Batang': "'Gowun Batang', serif",
   'GowunBatang': "'Gowun Batang', serif",
@@ -143,7 +145,8 @@ export default function NewTemplatePage() {
   const [step, setStep] = useState(1)
   const [templateId, setTemplateId] = useState('')
   const [templateName, setTemplateName] = useState('')
-  const [category, setCategory] = useState('웨딩')
+  const [category, setCategory] = useState('')
+  const [customCategory, setCustomCategory] = useState('') // 직접 입력용
   const [figmaNodeId, setFigmaNodeId] = useState('')
   const [figmaFileKey, setFigmaFileKey] = useState('')
   const [figmaUrl, setFigmaUrl] = useState('') // Figma URL 입력
@@ -155,18 +158,29 @@ export default function NewTemplatePage() {
   const [error, setError] = useState<string | null>(null)
   const [fetchSuccess, setFetchSuccess] = useState(false)
   const [urlParseSuccess, setUrlParseSuccess] = useState(false) // URL 파싱 성공 여부
-  const [figmaTokenConfigured, setFigmaTokenConfigured] = useState<boolean | null>(null) // 환경변수 토큰 설정 여부
+  const [figmaToken, setFigmaToken] = useState('') // 사용자가 입력한 Figma 토큰
+  const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([])
 
-  // localStorage에서 File Key 불러오기 + Figma 토큰 상태 확인
+  // localStorage에서 File Key와 토큰 불러오기 + 카테고리 로드
   useEffect(() => {
     const savedFileKey = localStorage.getItem(FIGMA_FILE_KEY_STORAGE)
     if (savedFileKey) setFigmaFileKey(savedFileKey)
 
-    // Figma 토큰 설정 상태 확인
-    fetch('/api/figma/status')
+    const savedToken = localStorage.getItem(FIGMA_TOKEN_STORAGE)
+    if (savedToken) setFigmaToken(savedToken)
+
+    // 카테고리 JSON 로드
+    fetch('/config/categories.json')
       .then(res => res.json())
-      .then(data => setFigmaTokenConfigured(data.configured))
-      .catch(() => setFigmaTokenConfigured(false))
+      .then(data => {
+        if (data.categories && data.categories.length > 0) {
+          setCategoryOptions(data.categories)
+        }
+      })
+      .catch(() => {
+        // 로드 실패 시 기본값 유지
+        console.warn('카테고리 설정을 불러오지 못했습니다. 기본값을 사용합니다.')
+      })
   }, [])
 
   // Figma URL 변경 시 자동 파싱
@@ -195,6 +209,11 @@ export default function NewTemplatePage() {
       return
     }
 
+    if (!figmaToken) {
+      setError('Figma Personal Access Token을 입력해주세요.')
+      return
+    }
+
     setError(null)
     setProcessing(true)
     setFetchSuccess(false)
@@ -206,6 +225,7 @@ export default function NewTemplatePage() {
         body: JSON.stringify({
           fileKey: figmaFileKey,
           nodeId: figmaNodeId,
+          apiKey: figmaToken,
         }),
       })
 
@@ -234,7 +254,7 @@ export default function NewTemplatePage() {
     } finally {
       setProcessing(false)
     }
-  }, [figmaFileKey, figmaNodeId])
+  }, [figmaFileKey, figmaNodeId, figmaToken])
 
 
   // JSON 생성
@@ -352,46 +372,29 @@ export default function NewTemplatePage() {
       layout[normalizedName] = converted
     })
 
-    // layout에 있는 요소들 확인 (실제 layout에 존재하는 요소만 체크)
-    const hasGroom = 'groom' in layout
-    const hasBride = 'bride' in layout
-    const hasDate = 'date' in layout
-    const hasVenue = 'venue' in layout
-    const hasPhoto = 'photo' in layout
-    const hasSeparator = 'separator' in layout
-    const hasDecoration = 'decoration' in layout
-    const hasText = 'text' in layout
+    // 모든 카테고리에서 data.wedding 사용 (bdc-web 호환)
+    const dataKey = 'wedding'
 
-    // wedding data: layout에 있는 요소만 추가
-    // Figma에서 추출한 텍스트 값이 있으면 사용, 없으면 기본값
-    const weddingData: Record<string, string> = {}
+    // layout에 있는 요소들의 키 목록
+    const layoutKeys = Object.keys(layout)
 
-    // 필수 요소: groom, bride (대부분의 템플릿에 존재)
-    if (hasGroom) {
-      weddingData.groom = figmaTextValues.groom || '신랑 이름'
-    }
-    if (hasBride) {
-      weddingData.bride = figmaTextValues.bride || '신부 이름'
-    }
+    // 카테고리 data: layout에 있는 모든 텍스트 요소 추가
+    // Figma에서 추출한 텍스트 값이 있으면 사용
+    const categoryData: Record<string, string> = {}
 
-    // 선택 요소: layout에 있는 경우만 추가
-    if (hasDate) {
-      weddingData.date = figmaTextValues.date || '2025년 1월 1일 토요일 오후 2시'
-    }
-    if (hasVenue) {
-      weddingData.venue = figmaTextValues.venue || '예식장 이름'
-    }
-    if (hasPhoto) {
-      weddingData.photo = `/assets/${templateId}/photo.png`
-    }
-    if (hasSeparator) {
-      weddingData.separator = figmaTextValues.separator || '&'
-    }
-    if (hasDecoration) {
-      weddingData.decoration = `/assets/${templateId}/decoration.png`
-    }
-    if (hasText) {
-      weddingData.text = figmaTextValues.text || 'you are invited to join\nin our celebration of love'
+    // layout의 각 요소를 순회하며 데이터 추가
+    for (const key of layoutKeys) {
+      const element = layout[key]
+      if (!element || typeof element !== 'object') continue
+
+      // 텍스트 타입 요소
+      if (element.type === 'text') {
+        categoryData[key] = figmaTextValues[key] || key
+      }
+      // 이미지 타입 요소
+      else if (element.type === 'image') {
+        categoryData[key] = `/assets/${templateId}/${key}.png`
+      }
     }
 
     // component data: layout에 있는 요소만 추가
@@ -399,29 +402,12 @@ export default function NewTemplatePage() {
       backgroundImage: '$.set.cards.main'  // 배경은 항상 포함
     }
 
-    if (hasGroom) {
-      componentData.groom = '$.data.wedding.groom'
-    }
-    if (hasBride) {
-      componentData.bride = '$.data.wedding.bride'
-    }
-    if (hasDate) {
-      componentData.date = '$.data.wedding.date'
-    }
-    if (hasVenue) {
-      componentData.venue = '$.data.wedding.venue'
-    }
-    if (hasPhoto) {
-      componentData.photo = '$.data.wedding.photo'
-    }
-    if (hasSeparator) {
-      componentData.separator = '$.data.wedding.separator'
-    }
-    if (hasDecoration) {
-      componentData.decoration = '$.data.wedding.decoration'
-    }
-    if (hasText) {
-      componentData.text = '$.data.wedding.text'
+    for (const key of layoutKeys) {
+      const element = layout[key]
+      if (!element || typeof element !== 'object') continue
+      if (element.type === 'text' || element.type === 'image') {
+        componentData[key] = `$.data.${dataKey}.${key}`
+      }
     }
 
     const templateJson = {
@@ -459,7 +445,7 @@ export default function NewTemplatePage() {
         ...layout
       },
       data: {
-        wedding: weddingData
+        [dataKey]: categoryData
       },
       components: [
         {
@@ -481,7 +467,7 @@ export default function NewTemplatePage() {
 
     try {
       // 1. Figma 정보가 있으면 먼저 이미지 저장
-      if (figmaFileKey && figmaNodeId) {
+      if (figmaFileKey && figmaNodeId && figmaToken) {
         const imageResponse = await fetch('/api/figma/images', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -489,6 +475,7 @@ export default function NewTemplatePage() {
             fileKey: figmaFileKey,
             nodeId: figmaNodeId,
             templateId,
+            apiKey: figmaToken,
           }),
         })
 
@@ -526,7 +513,7 @@ export default function NewTemplatePage() {
     } finally {
       setSaving(false)
     }
-  }, [parsedElements, bgOffset, baseSize, templateId, templateName, category, figmaNodeId, figmaFileKey])
+  }, [parsedElements, bgOffset, baseSize, templateId, templateName, category, figmaNodeId, figmaFileKey, figmaToken])
 
   // JSON 다운로드
   const downloadJson = useCallback(() => {
@@ -573,7 +560,7 @@ export default function NewTemplatePage() {
 
     try {
       // 1. Figma 정보가 있으면 먼저 이미지 저장
-      if (figmaFileKey && figmaNodeId) {
+      if (figmaFileKey && figmaNodeId && figmaToken) {
         const imageResponse = await fetch('/api/figma/images', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -581,6 +568,7 @@ export default function NewTemplatePage() {
             fileKey: figmaFileKey,
             nodeId: figmaNodeId,
             templateId,
+            apiKey: figmaToken,
           }),
         })
 
@@ -623,7 +611,7 @@ export default function NewTemplatePage() {
     } finally {
       setSaving(false)
     }
-  }, [templateId, generatedJson, figmaFileKey, figmaNodeId, imagesDownloaded])
+  }, [templateId, generatedJson, figmaFileKey, figmaNodeId, figmaToken, imagesDownloaded])
 
   return (
     <div className="space-y-6">
@@ -712,23 +700,49 @@ export default function NewTemplatePage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               카테고리 *
             </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            >
-              {CATEGORY_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">⚠️ 반드시 한글 카테고리 사용</p>
+            <div className="flex gap-2">
+              <select
+                value={categoryOptions.some(opt => opt.value === category) ? category : '__custom__'}
+                onChange={(e) => {
+                  if (e.target.value === '__custom__') {
+                    setCategory(customCategory)
+                  } else {
+                    setCategory(e.target.value)
+                    setCustomCategory('')
+                  }
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              >
+                <option value="" disabled>카테고리 선택</option>
+                {categoryOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+                <option value="__custom__">직접 입력</option>
+              </select>
+            </div>
+            {/* 직접 입력 필드 */}
+            {(!categoryOptions.some(opt => opt.value === category) || category === '') && (
+              <input
+                type="text"
+                value={customCategory}
+                onChange={(e) => {
+                  setCustomCategory(e.target.value)
+                  setCategory(e.target.value)
+                }}
+                placeholder="카테고리를 직접 입력하세요"
+                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              기존 카테고리를 선택하거나 새로운 카테고리를 직접 입력할 수 있습니다
+            </p>
           </div>
 
           <button
             onClick={() => setStep(2)}
-            disabled={!templateId || !templateName}
+            disabled={!templateId || !templateName || !category}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             다음 →
@@ -772,14 +786,37 @@ export default function NewTemplatePage() {
             )}
           </div>
 
-          {/* Figma API 토큰 상태 */}
-          <div className={`p-3 rounded-lg ${figmaTokenConfigured === null ? 'bg-gray-100' : figmaTokenConfigured ? 'bg-green-50' : 'bg-red-50'}`}>
-            {figmaTokenConfigured === null ? (
-              <span className="text-gray-600">🔄 Figma 연결 상태 확인 중...</span>
-            ) : figmaTokenConfigured ? (
-              <span className="text-green-700">✅ Figma API 연결됨 (서버 환경변수 설정 완료)</span>
-            ) : (
-              <span className="text-red-700">❌ Figma API 토큰이 설정되지 않았습니다. 관리자에게 문의하세요.</span>
+          {/* Figma Personal Access Token 입력 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Figma Personal Access Token *
+            </label>
+            <input
+              type="password"
+              value={figmaToken}
+              onChange={(e) => {
+                setFigmaToken(e.target.value)
+                localStorage.setItem(FIGMA_TOKEN_STORAGE, e.target.value)
+              }}
+              placeholder="figd_xxxxxxxxxxxxxxxxxxxxxxxx"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              <a
+                href="https://www.figma.com/developers/api#access-tokens"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Figma → Settings → Personal access tokens
+              </a>
+              에서 발급 (한 번 입력하면 브라우저에 저장됨)
+            </p>
+            {figmaToken && (
+              <div className="mt-2 flex items-center gap-2 text-green-600">
+                <span>✅</span>
+                <span className="text-sm">토큰이 입력되었습니다</span>
+              </div>
             )}
           </div>
 
@@ -839,7 +876,7 @@ export default function NewTemplatePage() {
             </button>
             <button
               onClick={fetchFigmaMetadata}
-              disabled={!figmaFileKey || !figmaNodeId || !figmaTokenConfigured || processing}
+              disabled={!figmaFileKey || !figmaNodeId || !figmaToken || processing}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {processing ? (

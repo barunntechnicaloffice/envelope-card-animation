@@ -1,0 +1,11 @@
+{
+  "categories": [
+    { "value": "wedding", "label": "웨딩" },
+    { "value": "생일파티", "label": "생일파티" },
+    { "value": "신년카드", "label": "신년카드" },
+    { "value": "돌잔치", "label": "돌잔치" },
+    { "value": "파티", "label": "파티" },
+    { "value": "qna", "label": "문답" },
+    { "value": "기타", "label": "기타" }
+  ]
+}

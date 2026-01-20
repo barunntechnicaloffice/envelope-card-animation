@@ -1,0 +1,156 @@
+{
+  "id": "qna-card-001",
+  "version": "1.0.0",
+  "name": "석식1번",
+  "category": "qna",
+  "thumbnail": "/assets/qna-card-001/card-main-bg.png",
+  "figmaNodeId": "220:5632",
+  "set": {
+    "envelope": {
+      "pattern": "/assets/qna-card-001/envelope-pattern.png",
+      "seal": "/assets/qna-card-001/envelope-seal.png",
+      "lining": "/assets/qna-card-001/envelope-lining.png"
+    },
+    "page": {
+      "background": "/assets/qna-card-001/page-bg.png"
+    },
+    "cards": {
+      "main": "/assets/qna-card-001/card-main-bg.png",
+      "default": "/assets/qna-card-001/card-default-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "date": {
+      "type": "text",
+      "x": 167.5,
+      "y": 444,
+      "width": 311,
+      "zIndex": 4,
+      "editable": true,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "lineHeight": 1,
+      "centerAlign": true
+    },
+    "venue": {
+      "type": "text",
+      "x": 167.5,
+      "y": 466,
+      "width": 311,
+      "zIndex": 5,
+      "editable": true,
+      "fontSize": 14,
+      "fontFamily": "'Pretendard', sans-serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "lineHeight": 1,
+      "centerAlign": true
+    },
+    "groom": {
+      "type": "text",
+      "x": 64.25,
+      "y": 401.58,
+      "width": "auto",
+      "zIndex": 7,
+      "editable": true,
+      "fontSize": 20,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "right",
+      "letterSpacing": 1.6,
+      "lineHeight": 1
+    },
+    "bride": {
+      "type": "text",
+      "x": 197.75,
+      "y": 401.58,
+      "width": "auto",
+      "zIndex": 9,
+      "editable": true,
+      "fontSize": 20,
+      "fontFamily": "'Gowun Batang', serif",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "left",
+      "letterSpacing": 1.6,
+      "lineHeight": 1
+    },
+    "text": {
+      "type": "text",
+      "x": 167.5,
+      "y": 20,
+      "width": 311,
+      "zIndex": 11,
+      "editable": false,
+      "fontSize": 13,
+      "fontFamily": "'Nanum Myeongjo', serif",
+      "fontWeight": 600,
+      "color": "#333333",
+      "align": "center",
+      "letterSpacing": 1.95,
+      "lineHeight": 1,
+      "centerAlign": true
+    },
+    "decoration": {
+      "type": "vector",
+      "x": 167.5,
+      "y": 399.85,
+      "width": 32,
+      "zIndex": 12,
+      "editable": false,
+      "height": 31.47
+    },
+    "photo": {
+      "type": "image",
+      "x": 167.5,
+      "y": 55.5,
+      "width": 236.5,
+      "zIndex": 13,
+      "editable": true,
+      "height": 325.78
+    }
+  },
+  "data": {
+    "wedding": {
+      "date": "2038년 10월 23일 토요일 오후 2시",
+      "venue": "메종 드 프리미어 그랜드홀",
+      "groom": "이 준 서",
+      "bride": "김 은 재",
+      "text": "The marriage of",
+      "photo": "/assets/qna-card-001/photo.png"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "backgroundImage": "$.set.cards.main",
+        "date": "$.data.wedding.date",
+        "venue": "$.data.wedding.venue",
+        "groom": "$.data.wedding.groom",
+        "bride": "$.data.wedding.bride",
+        "text": "$.data.wedding.text",
+        "photo": "$.data.wedding.photo"
+      }
+    }
+  ]
+}

@@ -279,13 +279,33 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
   }, [])
 
   // 요소 데이터 가져오기
+  // 카테고리별로 다른 data 키 지원 (wedding, vote, birthday 등)
   const getElementData = (key: string) => {
-    const weddingData = data.wedding as Record<string, string> | undefined
-    if (!weddingData) return key
+    // data 내의 모든 카테고리 데이터를 순회하여 찾기
+    const categoryKeys = Object.keys(data).filter(k => typeof data[k] === 'object')
+    let dataSource: Record<string, string> | undefined
 
-    // weddingData에 해당 key가 있으면 그 값을 반환
-    if (weddingData[key] !== undefined) {
-      return weddingData[key]
+    for (const catKey of categoryKeys) {
+      const catData = data[catKey] as Record<string, string> | undefined
+      if (catData && catData[key] !== undefined) {
+        dataSource = catData
+        break
+      }
+    }
+
+    // 첫 번째 카테고리 데이터를 기본값으로 사용
+    if (!dataSource && categoryKeys.length > 0) {
+      dataSource = data[categoryKeys[0]] as Record<string, string> | undefined
+    }
+
+    if (!dataSource) {
+      // 데이터가 없으면 레이아웃의 요소 이름 자체를 표시
+      return key
+    }
+
+    // dataSource에 해당 key가 있으면 그 값을 반환
+    if (dataSource[key] !== undefined) {
+      return dataSource[key]
     }
 
     // 기본값 매핑 (텍스트 타입 요소들)
@@ -305,35 +325,54 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
       case 'value': return ''
       case 'month': return 'October'
       case 'day': return '23'
-      default: return ''  // 알 수 없는 텍스트 키는 빈 문자열로 표시
+      default: return key  // 알 수 없는 텍스트 키는 키 이름 표시
     }
   }
 
   // 이미지 URL 가져오기
+  // 카테고리별로 다른 data 키 지원 (wedding, vote, birthday 등)
   const getImageUrl = (key: string) => {
-    const weddingData = data.wedding as Record<string, string> | undefined
-    if (!weddingData) return null
+    // data 내의 모든 카테고리 데이터를 순회하여 찾기
+    const categoryKeys = Object.keys(data).filter(k => typeof data[k] === 'object')
+    let dataSource: Record<string, string> | undefined
 
-    // weddingData에 해당 key가 직접 있으면 그 값을 반환 (decorationFrame 등)
-    if (weddingData[key]) {
-      return weddingData[key]
+    for (const catKey of categoryKeys) {
+      const catData = data[catKey] as Record<string, string> | undefined
+      if (catData) {
+        dataSource = catData
+        break
+      }
+    }
+
+    if (!dataSource) return null
+
+    // dataSource에 해당 key가 직접 있으면 그 값을 반환 (decorationFrame 등)
+    if (dataSource[key]) {
+      return dataSource[key]
     }
 
     // 레거시 호환 및 특수 케이스 처리
     switch (key) {
-      case 'photo': return weddingData.photo
-      case 'decoration': return weddingData.decoration || weddingData.decorationImage
-      case 'background': return weddingData.cardBackground || templateSet?.cards?.main
+      case 'photo': return dataSource.photo
+      case 'decoration': return dataSource.decoration || dataSource.decorationImage
+      case 'background': return dataSource.cardBackground || templateSet?.cards?.main
       // vector 키도 decoration 이미지로 시도
-      case 'vector': return weddingData.decoration || weddingData.decorationImage
+      case 'vector': return dataSource.decoration || dataSource.decorationImage
       default: return null
     }
   }
 
   // 배경 이미지 URL
+  // 카테고리별로 다른 data 키 지원
   const backgroundImageUrl = (() => {
-    const weddingData = data.wedding as Record<string, string> | undefined
-    return weddingData?.cardBackground || templateSet?.cards?.main || null
+    const categoryKeys = Object.keys(data).filter(k => typeof data[k] === 'object')
+    for (const catKey of categoryKeys) {
+      const catData = data[catKey] as Record<string, string> | undefined
+      if (catData?.cardBackground) {
+        return catData.cardBackground
+      }
+    }
+    return templateSet?.cards?.main || null
   })()
 
   // 요소 렌더링 스타일 - 실제 /templates/ 페이지와 동일하게 renderLayoutElement 사용
