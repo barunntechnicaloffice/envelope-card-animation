@@ -1,0 +1,73 @@
+# Base values file (default configuration)
+# Environment-specific values files (values-dev.yaml, values-prod.yaml) override these defaults
+
+image:
+  repository: "768157413559.dkr.ecr.ap-northeast-2.amazonaws.com/bdc-card-admin"
+  tag: dev-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: alb
+  host: "example.local"
+  path: /
+  annotations: {}
+
+namespace: bdc-card-admin
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 75
+
+rollout:
+  enabled: true
+  annotations: {}
+  blueGreen:
+    autoPromotionEnabled: true
+    scaleDownDelaySeconds: 30
+
+healthCheck:
+  liveness:
+    path: /api/health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    path: /api/health
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+replicaCount: 1
+
+configMap:
+  enabled: false
+  data: {}
+
+secret:
+  enabled: false
+  data: {}
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+vaultSecrets:
+  enabled: false
+  secrets: []
+
+affinity: {}
