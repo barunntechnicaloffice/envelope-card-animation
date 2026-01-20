@@ -1,0 +1,4 @@
+apiVersion: v2
+name: bdc-card-admin
+version: 1.0.0
+description: Helm chart for bdc-card-admin service
