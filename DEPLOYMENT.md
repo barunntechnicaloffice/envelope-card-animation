@@ -25,7 +25,14 @@ ALLOWED_EMAIL_DOMAIN=barun.com            # 로그인 허용 도메인
 USE_S3=true
 AWS_REGION=ap-northeast-2
 AWS_S3_BUCKET=xxx
-AWS_CLOUDFRONT_DOMAIN=xxx
+AWS_S3_PREFIX=card-templates              # S3 내 폴더 prefix
+AWS_CLOUDFRONT_DOMAIN=xxx                 # CloudFront CDN 도메인 (선택)
+```
+
+### bdc-web 백오피스 API 연동
+```bash
+BDC_WEB_API_URL=https://api.barunsoncard.com  # bdc-web-server-backoffice API URL
+BDC_WEB_API_KEY=xxx                            # API 키 (X-API-KEY 헤더에 사용)
 ```
 
 ### Figma API (선택)
@@ -109,7 +116,83 @@ npm run dev
 
 ---
 
+## bdc-web 백오피스 API 연동
+
+### 개요
+어드민에서 생성한 템플릿 JSON을 bdc-web 백오피스에 API로 등록합니다.
+기존에는 JSON을 수동으로 복사해서 붙여넣기 했으나, API 연동으로 자동화합니다.
+
+### API 엔드포인트 (bdc-web-server-backoffice)
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| POST | `/admin/resources/templates` | 템플릿 생성 |
+| PUT | `/admin/resources/templates/:id` | 템플릿 수정 |
+| DELETE | `/admin/resources/templates/:id` | 템플릿 삭제 |
+| GET | `/api/resources/templates` | 템플릿 목록 조회 |
+| GET | `/api/resources/templates/:id` | 단일 템플릿 조회 |
+
+### 인증
+- `X-API-KEY` 헤더에 API 키 전달
+- API 키는 bdc-web-server-backoffice에서 발급
+
+### 템플릿 JSON 스키마
+
+```typescript
+interface TemplateEntity {
+  id: string           // 템플릿 ID (예: "wedding-card-001")
+  version: string      // 버전 (예: "1.0.0")
+  name: string         // 이름 (예: "웨딩 청첩장 템플릿 001")
+  category: string     // 카테고리 (예: "웨딩")
+  thumbnail?: string   // 썸네일 URL
+  figmaNodeId?: string // Figma 노드 ID
+  layout: {
+    baseSize: { width: number, height: number }
+    [elementName: string]: LayoutElement
+  }
+  data: {
+    wedding: {
+      groom: string
+      bride: string
+      date: string
+      venue: string
+      photo: string
+      cardBackground?: string
+    }
+  }
+  components: [{
+    id: string
+    type: "template"   // 항상 "template"
+    data: Record<string, string>  // JSONPath 표현식
+  }]
+  common?: {
+    envelope?: {
+      pattern?: string
+      seal?: string
+    }
+    background?: string
+  }
+}
+```
+
+### 연동 흐름
+
+1. 어드민에서 템플릿 생성/수정
+2. "bdc-web에 등록" 버튼 클릭
+3. `POST /admin/resources/templates` API 호출
+4. 성공 시 템플릿이 bdc-web 백오피스 DB에 저장됨
+5. bdc-web 클라이언트에서 템플릿 사용 가능
+
+### 이미지 URL 처리
+
+- S3 업로드 시: CloudFront CDN URL 사용 (예: `https://cdn.barunsoncard.com/card-templates/...`)
+- 로컬 업로드 시: 상대 경로 (예: `/assets/wedding-card-001/...`)
+- bdc-web에 등록 시 절대 URL로 변환 필요
+
+---
+
 ## 참고
 
 - 인증 로직: bdc-web-server-backoffice 프로젝트 참고
 - 환경변수 예시: `.env.example` 파일 참고
+- 템플릿 API: `/Users/parkhojoon/Desktop/barun/bdc-web-server-backoffice/backend/src/routes/publicApi/resources.routes.ts`

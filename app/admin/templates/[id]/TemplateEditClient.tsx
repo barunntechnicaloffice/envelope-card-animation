@@ -107,6 +107,8 @@ export default function TemplateEditClient({
   }, [])
 
   const [saveSuccess, setSaveSuccess] = useState(false)
+  const [publishing, setPublishing] = useState(false)
+  const [publishSuccess, setPublishSuccess] = useState(false)
 
   async function handleSave() {
     if (jsonError) {
@@ -218,6 +220,48 @@ export default function TemplateEditClient({
     }
   }
 
+  async function handlePublishToBdcWeb() {
+    if (jsonError) {
+      alert('JSON 오류를 먼저 수정해주세요.')
+      return
+    }
+
+    const confirmed = confirm(
+      `"${templateData?.name || templateId}" 템플릿을 bdc-web에 등록하시겠습니까?\n\n` +
+      `이미 등록된 템플릿이면 업데이트됩니다.`
+    )
+
+    if (!confirmed) return
+
+    setPublishing(true)
+    setPublishSuccess(false)
+    setError(null)
+
+    try {
+      const template = JSON.parse(jsonString)
+
+      const response = await fetch('/api/templates/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ template }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || 'bdc-web 등록에 실패했습니다.')
+        return
+      }
+
+      setPublishSuccess(true)
+      alert('템플릿이 bdc-web에 등록되었습니다!')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'bdc-web 등록 중 오류가 발생했습니다.')
+    } finally {
+      setPublishing(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -264,6 +308,13 @@ export default function TemplateEditClient({
           >
             {saving ? '저장 중...' : '💾 서버 저장'}
           </button>
+          <button
+            onClick={handlePublishToBdcWeb}
+            disabled={publishing || !!jsonError}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+          >
+            {publishing ? '등록 중...' : '🚀 bdc-web 등록'}
+          </button>
           <Link
             href={`/templates/${templateId}`}
             target="_blank"
@@ -285,6 +336,14 @@ export default function TemplateEditClient({
         <div className="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
           <span>✅</span>
           <span>템플릿이 서버에 저장되었습니다!</span>
+        </div>
+      )}
+
+      {/* bdc-web 등록 성공 메시지 */}
+      {publishSuccess && (
+        <div className="p-4 bg-purple-50 text-purple-700 rounded-lg flex items-center gap-2">
+          <span>🚀</span>
+          <span>템플릿이 bdc-web에 등록되었습니다!</span>
         </div>
       )}
 

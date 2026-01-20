@@ -7,8 +7,16 @@ const protectedPaths = ['/admin']
 // 인증 없이 접근 가능한 경로들
 const publicPaths = ['/login', '/api/auth']
 
+// 로컬 개발용 인증 우회 (SKIP_AUTH=true)
+const skipAuth = process.env.SKIP_AUTH === 'true'
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // 로컬 개발 시 인증 우회
+  if (skipAuth) {
+    return NextResponse.next()
+  }
 
   // 정적 파일, API 인증 경로는 통과
   if (
