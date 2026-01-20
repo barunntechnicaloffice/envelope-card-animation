@@ -50,7 +50,7 @@ vaultSecrets:
   enabled: true
   secrets:
     - name: vault-secret
-      path: bdc-card-admin/prod
+      path: prod/bdc-card-admin
       refreshInterval: 30s
 
 serviceAccount:
