@@ -106,7 +106,8 @@
       "groom": "준 서",
       "separator": "그리고",
       "bride": "은 재",
-      "venue": "메종 드 프리미어 그랜드홀"
+      "venue": "메종 드 프리미어 그랜드홀",
+      "decoration": "/assets/wedding-card-019/decoration.png"
     }
   },
   "components": [
