@@ -80,18 +80,23 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
   }
 
   // 가이드라인 계산 (중앙선 + 다른 요소들의 엣지)
+  // centerAlign 요소: x는 요소의 중앙 좌표
+  // 일반 요소: x는 왼쪽 가장자리 좌표
   const calculateGuidelines = useCallback((currentKey: string, newX: number, newY: number) => {
     const guides: { type: 'horizontal' | 'vertical'; position: number }[] = []
     const currentElement = layout[currentKey] as LayoutElement
     const currentWidth = getNumericWidth(currentElement.width)
     const currentHeight = currentElement.height || 0
+    const isCenterAligned = currentElement.centerAlign
 
     // 중앙선
     const centerX = baseSize.width / 2
     const centerY = baseSize.height / 2
 
     // 현재 요소의 중앙
-    const elementCenterX = newX + currentWidth / 2
+    // centerAlign: x가 이미 중앙
+    // 일반: x + width/2가 중앙
+    const elementCenterX = isCenterAligned ? newX : (newX + currentWidth / 2)
     const elementCenterY = newY + currentHeight / 2
 
     // 수직 중앙선 스냅
@@ -107,21 +112,26 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     // 다른 요소들과 정렬
     layoutElements.forEach(([key, el]) => {
       if (key === currentKey || key === 'background') return
-      const elWidth = getNumericWidth(el.width)
 
-      // 왼쪽 엣지 정렬
-      if (Math.abs(newX - el.x) < SNAP_THRESHOLD) {
-        guides.push({ type: 'vertical', position: el.x })
+      // 같은 좌표 시스템끼리만 x 정렬
+      if (el.centerAlign === isCenterAligned) {
+        const elWidth = getNumericWidth(el.width)
+
+        // x 좌표 정렬
+        if (Math.abs(newX - el.x) < SNAP_THRESHOLD) {
+          guides.push({ type: 'vertical', position: el.x })
+        }
+
+        // 일반 요소만 오른쪽 엣지 정렬
+        if (!isCenterAligned && Math.abs(newX + currentWidth - (el.x + elWidth)) < SNAP_THRESHOLD) {
+          guides.push({ type: 'vertical', position: el.x + elWidth })
+        }
       }
-      // 오른쪽 엣지 정렬
-      if (Math.abs(newX + currentWidth - (el.x + elWidth)) < SNAP_THRESHOLD) {
-        guides.push({ type: 'vertical', position: el.x + elWidth })
-      }
-      // 위쪽 엣지 정렬
+
+      // y 좌표는 모든 요소와 정렬
       if (Math.abs(newY - el.y) < SNAP_THRESHOLD) {
         guides.push({ type: 'horizontal', position: el.y })
       }
-      // 아래쪽 엣지 정렬
       if (el.height && Math.abs(newY + currentHeight - (el.y + el.height)) < SNAP_THRESHOLD) {
         guides.push({ type: 'horizontal', position: el.y + el.height })
       }
@@ -131,32 +141,42 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
   }, [layout, layoutElements, baseSize])
 
   // 스냅 적용
+  // centerAlign 요소: x는 요소의 중앙 좌표
+  // 일반 요소: x는 왼쪽 가장자리 좌표
   const applySnap = useCallback((currentKey: string, x: number, y: number) => {
     let snappedX = x
     let snappedY = y
     const currentElement = layout[currentKey] as LayoutElement
     const currentWidth = getNumericWidth(currentElement.width)
     const currentHeight = currentElement.height || 20
+    const isCenterAligned = currentElement.centerAlign
 
     const centerX = baseSize.width / 2
     const centerY = baseSize.height / 2
-    const elementCenterX = x + currentWidth / 2
+
+    // 요소 중앙 좌표 계산
+    // centerAlign: x가 이미 중앙
+    // 일반: x + width/2가 중앙
+    const elementCenterX = isCenterAligned ? x : (x + currentWidth / 2)
     const elementCenterY = y + currentHeight / 2
 
-    // 중앙 스냅
+    // 중앙 스냅 (요소 중앙이 캔버스 중앙에 맞춰지도록)
     if (Math.abs(elementCenterX - centerX) < SNAP_THRESHOLD) {
-      snappedX = centerX - currentWidth / 2
+      snappedX = isCenterAligned ? centerX : (centerX - currentWidth / 2)
     }
     if (Math.abs(elementCenterY - centerY) < SNAP_THRESHOLD) {
       snappedY = centerY - currentHeight / 2
     }
 
-    // 다른 요소와 스냅
+    // 다른 요소와 스냅 (같은 좌표 시스템끼리)
     layoutElements.forEach(([key, el]) => {
       if (key === currentKey || key === 'background') return
 
-      if (Math.abs(x - el.x) < SNAP_THRESHOLD) {
-        snappedX = el.x
+      // 같은 centerAlign 속성을 가진 요소끼리만 x 스냅
+      if (el.centerAlign === isCenterAligned) {
+        if (Math.abs(x - el.x) < SNAP_THRESHOLD) {
+          snappedX = el.x
+        }
       }
       if (Math.abs(y - el.y) < SNAP_THRESHOLD) {
         snappedY = el.y
@@ -183,6 +203,10 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
         const mouseX = (e.clientX - rect.left) * scaleX
         const mouseY = (e.clientY - rect.top) * scaleY
         setDragStartPos({ x: e.clientX, y: e.clientY })
+
+        // centerAlign 요소: element.x는 요소의 중앙 좌표
+        // 일반 요소: element.x는 요소의 왼쪽 가장자리 좌표
+        // 드래그 오프셋은 마우스 위치에서 element.x까지의 거리
         setDragOffset({
           x: mouseX - element.x,
           y: mouseY - element.y
@@ -194,60 +218,6 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     }
   }, [layout, baseSize, selectedElement])
 
-  // 마우스 이동 핸들러
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    // 드래그 준비 상태에서 임계값 체크
-    if (pendingElement && dragStartPos && !isDragging) {
-      const dx = Math.abs(e.clientX - dragStartPos.x)
-      const dy = Math.abs(e.clientY - dragStartPos.y)
-      if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
-        // 드래그 시작
-        setIsDragging(true)
-      } else {
-        return // 아직 임계값 미달
-      }
-    }
-
-    if (!isDragging || !selectedElement || !containerRef.current) return
-
-    const rect = containerRef.current.getBoundingClientRect()
-    const scaleX = baseSize.width / rect.width
-    const scaleY = baseSize.height / rect.height
-
-    let newX = (e.clientX - rect.left) * scaleX - dragOffset.x
-    let newY = (e.clientY - rect.top) * scaleY - dragOffset.y
-
-    // 경계 제한
-    const element = layout[selectedElement] as LayoutElement
-    const elementWidth = getNumericWidth(element.width)
-    const elementHeight = element.height || 20
-    newX = Math.max(0, Math.min(baseSize.width - elementWidth, newX))
-    newY = Math.max(0, Math.min(baseSize.height - elementHeight, newY))
-
-    // 스냅 적용
-    const snapped = applySnap(selectedElement, newX, newY)
-    newX = snapped.x
-    newY = snapped.y
-
-    // 가이드라인 업데이트
-    const guides = calculateGuidelines(selectedElement, newX, newY)
-    setGuidelines(guides)
-
-    // 좌표 표시
-    setShowCoordinates({ x: Math.round(newX * 100) / 100, y: Math.round(newY * 100) / 100 })
-
-    // 레이아웃 업데이트
-    const newLayout = {
-      ...layout,
-      [selectedElement]: {
-        ...element,
-        x: Math.round(newX * 100) / 100,
-        y: Math.round(newY * 100) / 100
-      }
-    }
-    onLayoutChange(newLayout)
-  }, [isDragging, pendingElement, dragStartPos, selectedElement, layout, baseSize, dragOffset, applySnap, calculateGuidelines, onLayoutChange, DRAG_THRESHOLD])
-
   // 마우스 업 핸들러 - 선택 상태는 유지
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)
@@ -258,17 +228,97 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
     setTimeout(() => setShowCoordinates(null), 1500)
   }, [])
 
-  // 전역 마우스 이벤트 리스너
+  // 전역 마우스 이벤트 리스너 (드래그 중 컨테이너 밖으로 나가도 계속 동작)
   useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      // 드래그 준비 상태에서 임계값 체크
+      if (pendingElement && dragStartPos && !isDragging) {
+        const dx = Math.abs(e.clientX - dragStartPos.x)
+        const dy = Math.abs(e.clientY - dragStartPos.y)
+        if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
+          setIsDragging(true)
+        } else {
+          return
+        }
+      }
+
+      if (!isDragging || !selectedElement || !containerRef.current) return
+
+      const rect = containerRef.current.getBoundingClientRect()
+      const scaleX = baseSize.width / rect.width
+      const scaleY = baseSize.height / rect.height
+
+      let newX = (e.clientX - rect.left) * scaleX - dragOffset.x
+      let newY = (e.clientY - rect.top) * scaleY - dragOffset.y
+
+      // 경계 제한을 위한 변수 준비
+      const element = layout[selectedElement] as LayoutElement
+      const elementWidth = getNumericWidth(element.width)
+      const elementHeight = element.height || 20
+      const isCenterAligned = element.centerAlign
+
+      // 경계 제한 함수 (스냅 전후 모두 사용)
+      // centerAlign: x는 요소의 중앙 좌표 → 경계: width/2 ~ baseWidth - width/2
+      // 일반 요소: x는 왼쪽 가장자리 좌표 → 경계: 0 ~ baseWidth - width
+      const clampToBounds = (x: number, y: number) => {
+        let clampedX: number
+        if (isCenterAligned) {
+          const halfWidth = elementWidth / 2
+          clampedX = Math.max(halfWidth, Math.min(baseSize.width - halfWidth, x))
+        } else {
+          clampedX = Math.max(0, Math.min(baseSize.width - elementWidth, x))
+        }
+        const clampedY = Math.max(0, Math.min(baseSize.height - elementHeight, y))
+        return { x: clampedX, y: clampedY }
+      }
+
+      // 1차 경계 제한
+      const clamped = clampToBounds(newX, newY)
+      newX = clamped.x
+      newY = clamped.y
+
+      // 스냅 적용
+      const snapped = applySnap(selectedElement, newX, newY)
+      newX = snapped.x
+      newY = snapped.y
+
+      // 스냅 후 2차 경계 제한 (스냅이 경계를 벗어나지 않도록)
+      const finalClamped = clampToBounds(newX, newY)
+      newX = finalClamped.x
+      newY = finalClamped.y
+
+      // 가이드라인 업데이트
+      const guides = calculateGuidelines(selectedElement, newX, newY)
+      setGuidelines(guides)
+
+      // 좌표 표시
+      setShowCoordinates({ x: Math.round(newX * 100) / 100, y: Math.round(newY * 100) / 100 })
+
+      // 레이아웃 업데이트
+      const newLayout = {
+        ...layout,
+        [selectedElement]: {
+          ...element,
+          x: Math.round(newX * 100) / 100,
+          y: Math.round(newY * 100) / 100
+        }
+      }
+      onLayoutChange(newLayout)
+    }
+
     const handleGlobalMouseUp = () => {
-      if (isDragging) {
+      if (isDragging || pendingElement) {
         handleMouseUp()
       }
     }
 
+    window.addEventListener('mousemove', handleGlobalMouseMove)
     window.addEventListener('mouseup', handleGlobalMouseUp)
-    return () => window.removeEventListener('mouseup', handleGlobalMouseUp)
-  }, [isDragging, handleMouseUp])
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalMouseMove)
+      window.removeEventListener('mouseup', handleGlobalMouseUp)
+    }
+  }, [isDragging, pendingElement, dragStartPos, selectedElement, layout, baseSize, dragOffset, applySnap, calculateGuidelines, onLayoutChange, handleMouseUp, DRAG_THRESHOLD])
 
   // 컨테이너 클릭 시 선택 해제 (빈 공간 클릭 시에만)
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
@@ -358,7 +408,12 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
       case 'background': return dataSource.cardBackground || templateSet?.cards?.main
       // vector 키도 decoration 이미지로 시도
       case 'vector': return dataSource.decoration || dataSource.decorationImage
-      default: return null
+      default:
+        // decoration1, decoration2 등 숫자가 붙은 decoration 키 처리
+        if (key.startsWith('decoration')) {
+          return dataSource[key] || null
+        }
+        return null
     }
   }
 
@@ -441,7 +496,6 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
           className="relative bg-white rounded-lg overflow-hidden shadow-lg border-2 border-gray-200"
           style={{ width: 335, height: 515 }}
           onClick={handleContainerClick}
-          onMouseMove={handleMouseMove}
         >
           {/* 배경 이미지 - 실제 카드 컴포넌트와 동일하게 inset: 0으로 전체 채움 */}
           {backgroundImageUrl && layout.background && (

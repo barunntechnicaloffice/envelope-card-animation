@@ -104,8 +104,14 @@ export async function POST(request: NextRequest) {
         }
       }
       // decoration 노드 (SVG/벡터 장식)
+      // decoration, decoration1, decoration2, decoration 1, Decoration_01 등 다양한 형식 지원
       else if (cleanName.includes('decoration') || cleanName.includes('ornament')) {
-        const decoName = cleanName.replace(/\s+/g, '-') || 'decoration'
+        // 공백, 언더스코어를 제거하고 숫자만 추출
+        const numMatch = cleanName.match(/(\d+)/)
+        const num = numMatch ? numMatch[1] : ''
+        // decoration1, decoration2 형식으로 통일
+        const decoName = num ? `decoration${num}` : 'decoration'
+
         if (!exportedNames.has(decoName)) {
           console.log(`  → Found decoration node: ${node.id} as ${decoName}`)
           nodesToExport.push({

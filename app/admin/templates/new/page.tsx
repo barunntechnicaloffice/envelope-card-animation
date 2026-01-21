@@ -320,11 +320,15 @@ export default function NewTemplatePage() {
       const shouldUseAutoWidth = ['groom', 'bride'].includes(normalizedName)
 
       // 중앙 정렬 감지: 요소의 중심이 캔버스 중앙과 10px 이내인지 확인
-      const centerX = relativeX + (el.width / 2)
-      const isCenterAligned = Math.abs(centerX - baseSize.width / 2) < 10
+      const elementCenterX = relativeX + (el.width / 2)
+      const isCenterAligned = Math.abs(elementCenterX - baseSize.width / 2) < 10
 
-      // 중앙 정렬 요소는 x를 정확히 중앙(167.5)으로 설정
-      const finalX = isCenterAligned ? (baseSize.width / 2) : Math.round(relativeX * 100) / 100
+      // centerAlign: true일 때 x는 요소의 중앙 좌표 (bdc-web 호환)
+      // translateX(-50%)와 함께 사용되어 요소가 정확히 x 위치에 중앙 정렬됨
+      // 중앙 정렬 요소는 x를 캔버스 중앙(167.5)으로 설정
+      const finalX = isCenterAligned
+        ? baseSize.width / 2
+        : Math.round(relativeX * 100) / 100
 
       const converted: ConvertedElement = {
         type: elementType,
@@ -339,6 +343,11 @@ export default function NewTemplatePage() {
       // image, vector 타입만 height 포함
       if (el.height && el.height > 0 && elementType !== 'text') {
         converted.height = Math.round(el.height * 100) / 100
+      }
+
+      // 중앙 정렬이면 centerAlign 추가 (모든 요소 타입에 적용 - bdc-web 호환)
+      if (isCenterAligned) {
+        converted.centerAlign = true
       }
 
       // 텍스트 속성 추가
@@ -356,11 +365,6 @@ export default function NewTemplatePage() {
         } else {
           // 기본값 1.0 (단일 행 텍스트에 적합)
           converted.lineHeight = 1.0
-        }
-
-        // 중앙 정렬이면 centerAlign 추가 (위에서 이미 감지함)
-        if (isCenterAligned) {
-          converted.centerAlign = true
         }
 
         // Figma에서 추출한 텍스트 값 저장 (characters 필드)
@@ -395,6 +399,10 @@ export default function NewTemplatePage() {
       else if (element.type === 'image') {
         categoryData[key] = `/assets/${templateId}/${key}.png`
       }
+      // 벡터 타입 요소 (decoration, decoration1, decoration2 등)
+      else if (element.type === 'vector') {
+        categoryData[key] = `/assets/${templateId}/${key}.png`
+      }
     }
 
     // component data: layout에 있는 요소만 추가
@@ -405,10 +413,35 @@ export default function NewTemplatePage() {
     for (const key of layoutKeys) {
       const element = layout[key]
       if (!element || typeof element !== 'object') continue
-      if (element.type === 'text' || element.type === 'image') {
+      if (element.type === 'text' || element.type === 'image' || element.type === 'vector') {
         componentData[key] = `$.data.${dataKey}.${key}`
       }
     }
+
+    // 카테고리에 따라 set 구조 결정
+    // 설문(survey) 카테고리는 cards.main만 필요
+    const isMinimalSet = category === '설문카드'
+
+    const templateSet = isMinimalSet
+      ? {
+          cards: {
+            main: `/assets/${templateId}/card-main-bg.png`
+          }
+        }
+      : {
+          envelope: {
+            pattern: `/assets/${templateId}/envelope-pattern.png`,
+            seal: `/assets/${templateId}/envelope-seal.png`,
+            lining: `/assets/${templateId}/envelope-lining.png`
+          },
+          page: {
+            background: `/assets/${templateId}/page-bg.png`
+          },
+          cards: {
+            main: `/assets/${templateId}/card-main-bg.png`,
+            default: `/assets/${templateId}/card-default-bg.png`
+          }
+        }
 
     const templateJson = {
       id: templateId || 'wedding-card-new',
@@ -417,20 +450,7 @@ export default function NewTemplatePage() {
       category: category,
       thumbnail: `/assets/${templateId}/card-main-bg.png`,
       figmaNodeId: figmaNodeId || undefined,
-      set: {
-        envelope: {
-          pattern: `/assets/${templateId}/envelope-pattern.png`,
-          seal: `/assets/${templateId}/envelope-seal.png`,
-          lining: `/assets/${templateId}/envelope-lining.png`
-        },
-        page: {
-          background: `/assets/${templateId}/page-bg.png`
-        },
-        cards: {
-          main: `/assets/${templateId}/card-main-bg.png`,
-          default: `/assets/${templateId}/card-default-bg.png`
-        }
-      },
+      set: templateSet,
       layout: {
         baseSize,
         background: {
@@ -1080,6 +1100,12 @@ export default function NewTemplatePage() {
                           }
                         } catch {
                           alert('저장에 실패했습니다.')
+                        }
+                      }}
+                      onReset={() => {
+                        // Figma 데이터로 다시 생성
+                        if (confirm('레이아웃을 초기 상태로 되돌리시겠습니까?')) {
+                          generateJson()
                         }
                       }}
                     />

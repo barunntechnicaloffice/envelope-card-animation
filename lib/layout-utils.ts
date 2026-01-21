@@ -171,10 +171,10 @@ export function eventToCanvasCoords(
  * JSON layout의 모든 타입을 자동으로 처리
  */
 export function renderLayoutElement(
-  key: string,
+  _key: string,
   element: any,
   baseSize: BaseSize,
-  data: Record<string, any>
+  _data: Record<string, any>
 ): React.CSSProperties {
   const pxToPercent = (px: number, base: number) => `${(px / base) * 100}%`
 
@@ -220,25 +220,35 @@ export function renderLayoutElement(
       style.textTransform = element.textTransform as any
     }
 
-    // centerAlign 처리
+    // centerAlign 처리 (좌우 중앙 정렬) - bdc-web 호환
     if (element.centerAlign) {
       style.transform = 'translateX(-50%)'
     }
+
+    // transform 속성이 명시적으로 있으면 centerAlign보다 우선
+    if (element.transform) {
+      style.transform = element.transform
+    }
   }
 
-  // 이미지 스타일
-  if (element.type === 'image') {
+  // 이미지/벡터 스타일
+  if (element.type === 'image' || element.type === 'vector') {
     style.overflow = 'hidden'
+
+    // 이미지/벡터도 centerAlign 지원 - bdc-web 호환
+    if (element.centerAlign) {
+      style.transform = 'translateX(-50%)'
+    }
+
+    // transform 속성이 명시적으로 있으면 centerAlign보다 우선
+    if (element.transform) {
+      style.transform = element.transform
+    }
   }
 
   // borderRadius 처리
   if (element.borderRadius !== undefined) {
     style.borderRadius = element.borderRadius
-  }
-
-  // transform 속성 처리 (JSON에서 명시적으로 제공된 경우)
-  if (element.transform) {
-    style.transform = element.transform
   }
 
   // transformOrigin 속성 처리
