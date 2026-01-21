@@ -448,7 +448,6 @@ export default function NewTemplatePage() {
       version: '1.0.0',
       name: templateName || '새 웨딩 카드 템플릿',
       category: category,
-      thumbnail: `/assets/${templateId}/card-main-bg.png`,
       figmaNodeId: figmaNodeId || undefined,
       set: templateSet,
       layout: {
