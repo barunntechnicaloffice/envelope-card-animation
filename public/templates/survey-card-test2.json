@@ -1,0 +1,58 @@
+{
+  "id": "survey-card-test2",
+  "version": "1.0.0",
+  "name": "설문테스트2번",
+  "category": "설문카드",
+  "figmaNodeId": "1471:11167",
+  "set": {
+    "cards": {
+      "main": "/assets/survey-card-test2/card-main-bg.png"
+    }
+  },
+  "layout": {
+    "baseSize": {
+      "width": 335,
+      "height": 515
+    },
+    "background": {
+      "type": "background",
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 515,
+      "zIndex": 0,
+      "editable": false
+    },
+    "text": {
+      "type": "text",
+      "x": 167.5,
+      "y": 411,
+      "width": 170,
+      "zIndex": 3,
+      "editable": false,
+      "centerAlign": true,
+      "fontSize": 50,
+      "fontFamily": "'NanumSlow', cursive",
+      "fontWeight": 400,
+      "color": "#333333",
+      "align": "center",
+      "letterSpacing": 0.7250000238418579,
+      "lineHeight": 1
+    }
+  },
+  "data": {
+    "wedding": {
+      "text": "오늘 뭐 먹지?"
+    }
+  },
+  "components": [
+    {
+      "id": "wedding-card-main",
+      "type": "template",
+      "data": {
+        "backgroundImage": "$.set.cards.main",
+        "text": "$.data.wedding.text"
+      }
+    }
+  ]
+}

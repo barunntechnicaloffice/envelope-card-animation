@@ -656,7 +656,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">X</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={Number((layout[selectedElement] as LayoutElement).x) || 0}
                   onChange={(e) => {
                     const newLayout = {
@@ -675,7 +675,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">Y</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={Number((layout[selectedElement] as LayoutElement).y) || 0}
                   onChange={(e) => {
                     const newLayout = {
@@ -696,7 +696,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">너비</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={typeof (layout[selectedElement] as LayoutElement).width === 'number'
                     ? (layout[selectedElement] as LayoutElement).width
                     : ''}
@@ -718,7 +718,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">높이</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={typeof (layout[selectedElement] as LayoutElement).height === 'number'
                     ? (layout[selectedElement] as LayoutElement).height
                     : ''}
