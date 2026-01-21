@@ -15,17 +15,15 @@ interface TemplateInfo {
   hasLayout: boolean
 }
 
-// 카테고리 옵션
-const CATEGORY_OPTIONS = [
-  { value: 'all', label: '전체 카테고리' },
-  { value: '웨딩', label: '웨딩' },
-  { value: '생일파티', label: '생일파티' },
-  { value: '신년카드', label: '신년카드' },
-] as const
+interface CategoryOption {
+  value: string
+  label: string
+}
 
 export default function TemplatesListPage() {
   const router = useRouter()
   const [templates, setTemplates] = useState<TemplateInfo[]>([])
+  const [categories, setCategories] = useState<CategoryOption[]>([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
@@ -34,8 +32,22 @@ export default function TemplatesListPage() {
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
+    loadCategories()
     loadTemplates()
   }, [])
+
+  async function loadCategories() {
+    try {
+      const res = await fetch('/config/categories.json')
+      if (res.ok) {
+        const data = await res.json()
+        setCategories(data.categories || [])
+      }
+    } catch {
+      // 기본값 사용
+      setCategories([])
+    }
+  }
 
   async function loadTemplates() {
     setLoading(true)
@@ -154,7 +166,7 @@ export default function TemplatesListPage() {
   })
 
   // 카테고리별 통계
-  const categoryStats = CATEGORY_OPTIONS.slice(1).map(cat => ({
+  const categoryStats = categories.map(cat => ({
     category: cat.value,
     count: templates.filter(t => t.category === cat.value).length
   }))
@@ -187,10 +199,27 @@ export default function TemplatesListPage() {
       <div className="flex flex-col gap-4">
         {/* 카테고리 필터 */}
         <div className="flex gap-2 flex-wrap">
-          {CATEGORY_OPTIONS.map((cat) => {
-            const count = cat.value === 'all'
-              ? templates.length
-              : categoryStats.find(s => s.category === cat.value)?.count || 0
+          {/* 전체 카테고리 버튼 */}
+          <button
+            onClick={() => setCategoryFilter('all')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+              categoryFilter === 'all'
+                ? 'bg-purple-100 text-purple-700 border-2 border-purple-300'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-2 border-transparent'
+            }`}
+          >
+            <span>전체 카테고리</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+              categoryFilter === 'all'
+                ? 'bg-purple-200 text-purple-800'
+                : 'bg-gray-200 text-gray-500'
+            }`}>
+              {templates.length}
+            </span>
+          </button>
+          {/* 개별 카테고리 버튼 */}
+          {categories.map((cat) => {
+            const count = categoryStats.find(s => s.category === cat.value)?.count || 0
             return (
               <button
                 key={cat.value}
