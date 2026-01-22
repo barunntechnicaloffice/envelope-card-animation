@@ -55,6 +55,55 @@ export function isBdcWebApiEnabled(): boolean {
 }
 
 /**
+ * card-admin 템플릿 JSON → backoffice cardTemplates 스키마로 변환
+ *
+ * card-admin JSON:
+ * {
+ *   id: "wedding-card-049",
+ *   version: "4.0.0",
+ *   name: "러브 스토리",
+ *   category: "웨딩",
+ *   layout: {...},
+ *   data: {...},
+ *   components: [...]
+ * }
+ *
+ * backoffice cardTemplates 스키마:
+ * {
+ *   name: string,
+ *   category: string,
+ *   templateSchema: Record<string, any>,  // 전체 JSON
+ *   config: Record<string, any>,
+ *   aspectRatio: { x: number, y: number },
+ *   thumbNail?: string,
+ *   order?: number,
+ *   version: number
+ * }
+ */
+function transformTemplateForBackoffice(template: Record<string, unknown>): Record<string, unknown> {
+  const layout = template.layout as Record<string, unknown> | undefined
+  const baseSize = layout?.baseSize as { width: number; height: number } | undefined
+
+  return {
+    name: template.name || template.id,
+    category: template.category || '웨딩',
+    templateSchema: template,  // 전체 JSON을 templateSchema에 저장
+    config: {
+      id: template.id,
+      figmaNodeId: template.figmaNodeId,
+    },
+    aspectRatio: {
+      x: baseSize?.width || 335,
+      y: baseSize?.height || 515,
+    },
+    thumbNail: template.thumbnail as string | undefined,
+    version: typeof template.version === 'string'
+      ? parseInt(template.version.split('.')[0], 10) || 1
+      : (template.version as number) || 1,
+  }
+}
+
+/**
  * bdc-web API 호출
  */
 async function callBdcWebApi<T>(
@@ -160,9 +209,12 @@ export async function getTemplate(templateId: string): Promise<BdcWebApiResponse
 export async function createTemplate(
   template: Record<string, unknown>
 ): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
+  const transformedData = transformTemplateForBackoffice(template)
+  console.log('[bdc-web API] 변환된 데이터:', JSON.stringify(transformedData, null, 2).substring(0, 500))
+
   return callBdcWebApi<TemplateCreateResponse>('/api/resources/cardTemplates', {
     method: 'POST',
-    body: JSON.stringify(template),
+    body: JSON.stringify(transformedData),
   })
 }
 
@@ -173,9 +225,12 @@ export async function updateTemplate(
   templateId: string,
   template: Record<string, unknown>
 ): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
+  const transformedData = transformTemplateForBackoffice(template)
+  console.log('[bdc-web API] 변환된 데이터:', JSON.stringify(transformedData, null, 2).substring(0, 500))
+
   return callBdcWebApi<TemplateCreateResponse>(`/api/resources/cardTemplates/${templateId}`, {
     method: 'PUT',
-    body: JSON.stringify(template),
+    body: JSON.stringify(transformedData),
   })
 }
 
@@ -191,17 +246,12 @@ export async function deleteTemplate(
 }
 
 /**
- * 템플릿 존재 여부 확인
- */
-export async function checkTemplateExists(templateId: string): Promise<boolean> {
-  const result = await getTemplate(templateId)
-  return result.success
-}
-
-/**
  * 템플릿 생성 또는 수정 (upsert)
- * - 이미 존재하면 수정
- * - 없으면 생성
+ *
+ * 참고: backoffice는 MongoDB _id를 사용하므로,
+ * card-admin의 template.id로는 조회할 수 없음.
+ * 따라서 항상 POST로 생성 시도함.
+ * (backoffice에서 name 기준 중복 처리 필요)
  */
 export async function upsertTemplate(
   template: Record<string, unknown>
@@ -215,11 +265,6 @@ export async function upsertTemplate(
     }
   }
 
-  const exists = await checkTemplateExists(templateId)
-
-  if (exists) {
-    return updateTemplate(templateId, template)
-  } else {
-    return createTemplate(template)
-  }
+  // 항상 새로 생성 (backoffice에서 중복 처리)
+  return createTemplate(template)
 }
