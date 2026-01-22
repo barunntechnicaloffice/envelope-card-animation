@@ -144,14 +144,14 @@ async function callBdcWebApi<T>(
  * 템플릿 목록 조회
  */
 export async function getTemplates(): Promise<BdcWebApiResponse<TemplateListResponse>> {
-  return callBdcWebApi<TemplateListResponse>('/api/resources/templates')
+  return callBdcWebApi<TemplateListResponse>('/api/resources/cardTemplates')
 }
 
 /**
  * 단일 템플릿 조회
  */
 export async function getTemplate(templateId: string): Promise<BdcWebApiResponse<Record<string, unknown>>> {
-  return callBdcWebApi<Record<string, unknown>>(`/api/resources/templates/${templateId}`)
+  return callBdcWebApi<Record<string, unknown>>(`/api/resources/cardTemplates/${templateId}`)
 }
 
 /**
@@ -160,7 +160,7 @@ export async function getTemplate(templateId: string): Promise<BdcWebApiResponse
 export async function createTemplate(
   template: Record<string, unknown>
 ): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
-  return callBdcWebApi<TemplateCreateResponse>('/admin/resources/templates', {
+  return callBdcWebApi<TemplateCreateResponse>('/api/resources/cardTemplates', {
     method: 'POST',
     body: JSON.stringify(template),
   })
@@ -173,7 +173,7 @@ export async function updateTemplate(
   templateId: string,
   template: Record<string, unknown>
 ): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
-  return callBdcWebApi<TemplateCreateResponse>(`/admin/resources/templates/${templateId}`, {
+  return callBdcWebApi<TemplateCreateResponse>(`/api/resources/cardTemplates/${templateId}`, {
     method: 'PUT',
     body: JSON.stringify(template),
   })
@@ -185,7 +185,7 @@ export async function updateTemplate(
 export async function deleteTemplate(
   templateId: string
 ): Promise<BdcWebApiResponse<{ deleted: boolean; id: string }>> {
-  return callBdcWebApi<{ deleted: boolean; id: string }>(`/admin/resources/templates/${templateId}`, {
+  return callBdcWebApi<{ deleted: boolean; id: string }>(`/api/resources/cardTemplates/${templateId}`, {
     method: 'DELETE',
   })
 }
