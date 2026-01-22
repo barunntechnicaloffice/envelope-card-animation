@@ -22,6 +22,7 @@ interface LayoutElement {
   transformOrigin?: string
   right?: number
   textTransform?: string
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
 }
 
 interface LayoutData {
@@ -582,7 +583,14 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                     <img
                       src={imageUrl}
                       alt={key}
-                      className="w-full h-full object-cover"
+                      style={{
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        inset: 0,
+                        objectFit: el.objectFit || 'cover',
+                        objectPosition: 'center',
+                      }}
                       onError={(e) => {
                         // 이미지 로드 실패 시 플레이스홀더 표시
                         const target = e.target as HTMLImageElement
@@ -602,7 +610,14 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                     <img
                       src={imageUrl}
                       alt={key}
-                      className="w-full h-full object-contain"
+                      style={{
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        inset: 0,
+                        ...(el.objectFit && { objectFit: el.objectFit }),
+                        objectPosition: 'center',
+                      }}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
                         target.style.display = 'none'
@@ -641,7 +656,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">X</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={Number((layout[selectedElement] as LayoutElement).x) || 0}
                   onChange={(e) => {
                     const newLayout = {
@@ -660,7 +675,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">Y</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={Number((layout[selectedElement] as LayoutElement).y) || 0}
                   onChange={(e) => {
                     const newLayout = {
@@ -681,7 +696,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">너비</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={typeof (layout[selectedElement] as LayoutElement).width === 'number'
                     ? (layout[selectedElement] as LayoutElement).width
                     : ''}
@@ -703,7 +718,7 @@ export default function LayoutEditor({ layout, data, templateSet, onLayoutChange
                 <label className="text-xs text-gray-500">높이</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   value={typeof (layout[selectedElement] as LayoutElement).height === 'number'
                     ? (layout[selectedElement] as LayoutElement).height
                     : ''}

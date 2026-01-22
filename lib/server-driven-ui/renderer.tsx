@@ -2711,7 +2711,12 @@ function renderGenericSDUITemplate(
             <img
               src={imgSrc}
               alt=""
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: element.objectFit || 'cover',
+                objectPosition: 'center',
+              }}
             />
           </div>
         )
@@ -2728,7 +2733,12 @@ function renderGenericSDUITemplate(
               <img
                 src={decorationSrc}
                 alt=""
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  ...(element.objectFit && { objectFit: element.objectFit }),
+                  objectPosition: 'center',
+                }}
               />
             </div>
           )
