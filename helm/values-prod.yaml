@@ -1,7 +1,7 @@
 # Production environment values for bdc-card-admin
 image:
   repository: 909200564439.dkr.ecr.ap-northeast-2.amazonaws.com/bdc-card-admin
-  tag: prod-ad430ef-20260122-095130
+  tag: prod-538b96f-20260122-103520
 ingress:
   enabled: true
   className: alb
