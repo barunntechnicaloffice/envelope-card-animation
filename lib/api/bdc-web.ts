@@ -1,7 +1,7 @@
 /**
  * bdc-web 백오피스 API 클라이언트
  *
- * 템플릿을 bdc-web-server-backoffice에 등록/수정/삭제하는 API
+ * 카드 디자인을 bdc-web-server-backoffice에 등록/수정/삭제하는 API
  */
 
 const BDC_WEB_API_URL = process.env.BDC_WEB_API_URL || ''
@@ -21,24 +21,23 @@ export interface BdcWebApiSuccess<T = unknown> {
 
 export type BdcWebApiResponse<T = unknown> = BdcWebApiSuccess<T> | BdcWebApiError
 
-export interface TemplateCreateResponse {
+export interface CardDesignCreateResponse {
   _id: string
   modified?: boolean
   updatedAt?: string
 }
 
-export interface TemplateListItem {
-  id: string
+export interface CardDesignListItem {
+  _id: string
   name: string
-  version: string
+  version: number
   category: string
-  thumbnail?: string
   createdAt: string
   updatedAt: string
 }
 
-export interface TemplateListResponse {
-  items: TemplateListItem[]
+export interface CardDesignListResponse {
+  items: CardDesignListItem[]
   pagination: {
     page: number
     limit: number
@@ -71,21 +70,50 @@ async function callBdcWebApi<T>(
   const url = `${BDC_WEB_API_URL}${endpoint}`
 
   try {
+    console.log('[bdc-web API] 요청:', { url, method: options.method || 'GET' })
+
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': BDC_WEB_API_KEY,
+        'x-api-key': BDC_WEB_API_KEY,
         ...options.headers,
       },
     })
 
-    const data = await response.json()
+    console.log('[bdc-web API] 응답 상태:', response.status, response.statusText)
 
-    if (!response.ok) {
+    // 응답 텍스트 먼저 확인
+    const responseText = await response.text()
+    console.log('[bdc-web API] 응답 본문 길이:', responseText.length)
+
+    // 빈 응답 처리
+    if (!responseText || responseText.trim() === '') {
+      console.error('[bdc-web API] 빈 응답 수신')
       return {
         success: false,
-        error: data.error || data.message || `HTTP ${response.status} 오류`,
+        error: `서버로부터 빈 응답을 받았습니다. (HTTP ${response.status})`,
+      }
+    }
+
+    // JSON 파싱 시도
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('[bdc-web API] JSON 파싱 실패:', responseText.substring(0, 200))
+      return {
+        success: false,
+        error: `서버 응답을 파싱할 수 없습니다: ${responseText.substring(0, 100)}...`,
+      }
+    }
+
+    if (!response.ok) {
+      // 에러 응답 상세 로깅
+      console.error('[bdc-web API] 에러 응답:', JSON.stringify(data, null, 2))
+      return {
+        success: false,
+        error: data.message || data.error || `HTTP ${response.status} 오류`,
         code: data.code,
       }
     }
@@ -96,7 +124,16 @@ async function callBdcWebApi<T>(
       message: data.message,
     }
   } catch (error) {
-    console.error('bdc-web API 호출 실패:', error)
+    console.error('[bdc-web API] 호출 실패:', error)
+
+    // 네트워크 에러 또는 fetch 실패
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      return {
+        success: false,
+        error: `API 서버에 연결할 수 없습니다. URL을 확인하세요: ${url}`,
+      }
+    }
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'API 호출 중 오류가 발생했습니다.',
@@ -105,71 +142,78 @@ async function callBdcWebApi<T>(
 }
 
 /**
- * 템플릿 목록 조회
+ * 카드 디자인 목록 조회
  */
-export async function getTemplates(): Promise<BdcWebApiResponse<TemplateListResponse>> {
-  return callBdcWebApi<TemplateListResponse>('/api/resources/templates')
+export async function getCardDesigns(): Promise<BdcWebApiResponse<CardDesignListResponse>> {
+  return callBdcWebApi<CardDesignListResponse>('/api/resources/cardDesigns')
 }
 
 /**
- * 단일 템플릿 조회
+ * 단일 카드 디자인 조회
  */
-export async function getTemplate(templateId: string): Promise<BdcWebApiResponse<Record<string, unknown>>> {
-  return callBdcWebApi<Record<string, unknown>>(`/api/resources/templates/${templateId}`)
+export async function getCardDesign(designId: string): Promise<BdcWebApiResponse<Record<string, unknown>>> {
+  return callBdcWebApi<Record<string, unknown>>(`/api/resources/cardDesigns/${designId}`)
 }
 
 /**
- * 템플릿 생성 (bdc-web에 등록)
+ * 카드 디자인 생성 (bdc-web에 등록)
+ *
+ * card-admin JSON과 cardDesigns 스키마 간 필드 차이 처리:
+ * - id: card-admin 전용 식별자 (백엔드에서는 MongoDB _id 사용)
+ * - version: card-admin은 "1.0.0" 형식, 백엔드는 Number 타입 (0 기본값)
  */
-export async function createTemplate(
+export async function createCardDesign(
   template: Record<string, unknown>
-): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
-  return callBdcWebApi<TemplateCreateResponse>('/admin/resources/templates', {
+): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
+  console.log('[bdc-web API] 카드 디자인 생성:', template.name || template.id)
+
+  // 백엔드 스키마와 호환되도록 필드 정리
+  const payload = { ...template }
+  delete payload.id // 백엔드는 MongoDB _id 자동 생성
+  delete payload.version // 백엔드는 Number 타입, 기본값 0 사용
+
+  return callBdcWebApi<CardDesignCreateResponse>('/api/resources/cardDesigns', {
     method: 'POST',
-    body: JSON.stringify(template),
+    body: JSON.stringify(payload),
   })
 }
 
 /**
- * 템플릿 수정
+ * 카드 디자인 수정
  */
-export async function updateTemplate(
-  templateId: string,
+export async function updateCardDesign(
+  designId: string,
   template: Record<string, unknown>
-): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
-  return callBdcWebApi<TemplateCreateResponse>(`/admin/resources/templates/${templateId}`, {
+): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
+  console.log('[bdc-web API] 카드 디자인 수정:', designId)
+
+  return callBdcWebApi<CardDesignCreateResponse>(`/api/resources/cardDesigns/${designId}`, {
     method: 'PUT',
     body: JSON.stringify(template),
   })
 }
 
 /**
- * 템플릿 삭제
+ * 카드 디자인 삭제
  */
-export async function deleteTemplate(
-  templateId: string
+export async function deleteCardDesign(
+  designId: string
 ): Promise<BdcWebApiResponse<{ deleted: boolean; id: string }>> {
-  return callBdcWebApi<{ deleted: boolean; id: string }>(`/admin/resources/templates/${templateId}`, {
+  return callBdcWebApi<{ deleted: boolean; id: string }>(`/api/resources/cardDesigns/${designId}`, {
     method: 'DELETE',
   })
 }
 
 /**
- * 템플릿 존재 여부 확인
+ * 카드 디자인 생성 또는 수정 (upsert)
+ *
+ * 참고: backoffice는 MongoDB _id를 사용하므로,
+ * card-admin의 template.id로는 조회할 수 없음.
+ * 따라서 항상 POST로 생성 시도함.
  */
-export async function checkTemplateExists(templateId: string): Promise<boolean> {
-  const result = await getTemplate(templateId)
-  return result.success
-}
-
-/**
- * 템플릿 생성 또는 수정 (upsert)
- * - 이미 존재하면 수정
- * - 없으면 생성
- */
-export async function upsertTemplate(
+export async function upsertCardDesign(
   template: Record<string, unknown>
-): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
+): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
   const templateId = template.id as string
 
   if (!templateId) {
@@ -179,11 +223,17 @@ export async function upsertTemplate(
     }
   }
 
-  const exists = await checkTemplateExists(templateId)
-
-  if (exists) {
-    return updateTemplate(templateId, template)
-  } else {
-    return createTemplate(template)
-  }
+  // 항상 새로 생성
+  return createCardDesign(template)
 }
+
+// 하위 호환성을 위한 alias
+export const getTemplates = getCardDesigns
+export const getTemplate = getCardDesign
+export const createTemplate = createCardDesign
+export const updateTemplate = updateCardDesign
+export const deleteTemplate = deleteCardDesign
+export const upsertTemplate = upsertCardDesign
+export type TemplateCreateResponse = CardDesignCreateResponse
+export type TemplateListItem = CardDesignListItem
+export type TemplateListResponse = CardDesignListResponse

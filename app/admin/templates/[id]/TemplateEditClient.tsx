@@ -148,7 +148,10 @@ export default function TemplateEditClient({
           const createResult = await createResponse.json()
 
           if (!createResponse.ok) {
-            setError(createResult.error || '저장에 실패했습니다.')
+            const errorMsg = typeof createResult.error === 'string'
+              ? createResult.error
+              : createResult.error?.message || '저장에 실패했습니다.'
+            setError(errorMsg)
             return
           }
 
@@ -157,7 +160,10 @@ export default function TemplateEditClient({
           return
         }
 
-        setError(result.error || '저장에 실패했습니다.')
+        const errorMsg = typeof result.error === 'string'
+          ? result.error
+          : result.error?.message || '저장에 실패했습니다.'
+        setError(errorMsg)
         return
       }
 
@@ -246,16 +252,36 @@ export default function TemplateEditClient({
         body: JSON.stringify({ template }),
       })
 
-      const result = await response.json()
+      // 응답 텍스트 먼저 확인
+      const responseText = await response.text()
+
+      // 빈 응답 처리
+      if (!responseText || responseText.trim() === '') {
+        setError(`서버로부터 빈 응답을 받았습니다. (HTTP ${response.status})`)
+        return
+      }
+
+      // JSON 파싱 시도
+      let result
+      try {
+        result = JSON.parse(responseText)
+      } catch {
+        setError(`서버 응답 파싱 실패: ${responseText.substring(0, 100)}`)
+        return
+      }
 
       if (!response.ok) {
-        setError(result.error || 'bdc-web 등록에 실패했습니다.')
+        const errorMsg = typeof result.error === 'string'
+          ? result.error
+          : result.error?.message || 'bdc-web 등록에 실패했습니다.'
+        setError(errorMsg)
         return
       }
 
       setPublishSuccess(true)
       alert('템플릿이 bdc-web에 등록되었습니다!')
     } catch (err) {
+      console.error('bdc-web 등록 오류:', err)
       setError(err instanceof Error ? err.message : 'bdc-web 등록 중 오류가 발생했습니다.')
     } finally {
       setPublishing(false)
