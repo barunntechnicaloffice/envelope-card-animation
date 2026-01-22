@@ -1,7 +1,7 @@
 # Development environment values for bdc-card-admin
 image:
   repository: 768157413559.dkr.ecr.ap-northeast-2.amazonaws.com/bdc-card-admin
-  tag: dev-976c141-20260121-162756
+  tag: dev-7963a91-20260122-092135
 ingress:
   enabled: true
   className: alb
