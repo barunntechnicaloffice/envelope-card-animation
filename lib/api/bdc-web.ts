@@ -1,7 +1,7 @@
 /**
  * bdc-web 백오피스 API 클라이언트
  *
- * 템플릿을 bdc-web-server-backoffice에 등록/수정/삭제하는 API
+ * 카드 디자인을 bdc-web-server-backoffice에 등록/수정/삭제하는 API
  */
 
 const BDC_WEB_API_URL = process.env.BDC_WEB_API_URL || ''
@@ -21,24 +21,23 @@ export interface BdcWebApiSuccess<T = unknown> {
 
 export type BdcWebApiResponse<T = unknown> = BdcWebApiSuccess<T> | BdcWebApiError
 
-export interface TemplateCreateResponse {
+export interface CardDesignCreateResponse {
   _id: string
   modified?: boolean
   updatedAt?: string
 }
 
-export interface TemplateListItem {
-  id: string
+export interface CardDesignListItem {
+  _id: string
   name: string
-  version: string
+  version: number
   category: string
-  thumbnail?: string
   createdAt: string
   updatedAt: string
 }
 
-export interface TemplateListResponse {
-  items: TemplateListItem[]
+export interface CardDesignListResponse {
+  items: CardDesignListItem[]
   pagination: {
     page: number
     limit: number
@@ -52,55 +51,6 @@ export interface TemplateListResponse {
  */
 export function isBdcWebApiEnabled(): boolean {
   return Boolean(BDC_WEB_API_URL && BDC_WEB_API_KEY)
-}
-
-/**
- * card-admin 템플릿 JSON → backoffice cardTemplates 스키마로 변환
- *
- * card-admin JSON:
- * {
- *   id: "wedding-card-049",
- *   version: "4.0.0",
- *   name: "러브 스토리",
- *   category: "웨딩",
- *   layout: {...},
- *   data: {...},
- *   components: [...]
- * }
- *
- * backoffice cardTemplates 스키마:
- * {
- *   name: string,
- *   category: string,
- *   templateSchema: Record<string, any>,  // 전체 JSON
- *   config: Record<string, any>,
- *   aspectRatio: { x: number, y: number },
- *   thumbNail?: string,
- *   order?: number,
- *   version: number
- * }
- */
-function transformTemplateForBackoffice(template: Record<string, unknown>): Record<string, unknown> {
-  const layout = template.layout as Record<string, unknown> | undefined
-  const baseSize = layout?.baseSize as { width: number; height: number } | undefined
-
-  return {
-    name: template.name || template.id,
-    category: template.category || '웨딩',
-    templateSchema: template,  // 전체 JSON을 templateSchema에 저장
-    config: {
-      id: template.id,
-      figmaNodeId: template.figmaNodeId,
-    },
-    aspectRatio: {
-      x: baseSize?.width || 335,
-      y: baseSize?.height || 515,
-    },
-    thumbNail: template.thumbnail as string | undefined,
-    version: typeof template.version === 'string'
-      ? parseInt(template.version.split('.')[0], 10) || 1
-      : (template.version as number) || 1,
-  }
 }
 
 /**
@@ -190,72 +140,71 @@ async function callBdcWebApi<T>(
 }
 
 /**
- * 템플릿 목록 조회
+ * 카드 디자인 목록 조회
  */
-export async function getTemplates(): Promise<BdcWebApiResponse<TemplateListResponse>> {
-  return callBdcWebApi<TemplateListResponse>('/api/resources/cardTemplates')
+export async function getCardDesigns(): Promise<BdcWebApiResponse<CardDesignListResponse>> {
+  return callBdcWebApi<CardDesignListResponse>('/api/resources/cardDesigns')
 }
 
 /**
- * 단일 템플릿 조회
+ * 단일 카드 디자인 조회
  */
-export async function getTemplate(templateId: string): Promise<BdcWebApiResponse<Record<string, unknown>>> {
-  return callBdcWebApi<Record<string, unknown>>(`/api/resources/cardTemplates/${templateId}`)
+export async function getCardDesign(designId: string): Promise<BdcWebApiResponse<Record<string, unknown>>> {
+  return callBdcWebApi<Record<string, unknown>>(`/api/resources/cardDesigns/${designId}`)
 }
 
 /**
- * 템플릿 생성 (bdc-web에 등록)
+ * 카드 디자인 생성 (bdc-web에 등록)
+ *
+ * card-admin JSON 구조가 cardDesigns 스키마와 동일하므로 변환 없이 그대로 전송
  */
-export async function createTemplate(
+export async function createCardDesign(
   template: Record<string, unknown>
-): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
-  const transformedData = transformTemplateForBackoffice(template)
-  console.log('[bdc-web API] 변환된 데이터:', JSON.stringify(transformedData, null, 2).substring(0, 500))
+): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
+  console.log('[bdc-web API] 카드 디자인 생성:', template.name || template.id)
 
-  return callBdcWebApi<TemplateCreateResponse>('/api/resources/cardTemplates', {
+  return callBdcWebApi<CardDesignCreateResponse>('/api/resources/cardDesigns', {
     method: 'POST',
-    body: JSON.stringify(transformedData),
+    body: JSON.stringify(template),
   })
 }
 
 /**
- * 템플릿 수정
+ * 카드 디자인 수정
  */
-export async function updateTemplate(
-  templateId: string,
+export async function updateCardDesign(
+  designId: string,
   template: Record<string, unknown>
-): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
-  const transformedData = transformTemplateForBackoffice(template)
-  console.log('[bdc-web API] 변환된 데이터:', JSON.stringify(transformedData, null, 2).substring(0, 500))
+): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
+  console.log('[bdc-web API] 카드 디자인 수정:', designId)
 
-  return callBdcWebApi<TemplateCreateResponse>(`/api/resources/cardTemplates/${templateId}`, {
+  return callBdcWebApi<CardDesignCreateResponse>(`/api/resources/cardDesigns/${designId}`, {
     method: 'PUT',
-    body: JSON.stringify(transformedData),
+    body: JSON.stringify(template),
   })
 }
 
 /**
- * 템플릿 삭제
+ * 카드 디자인 삭제
  */
-export async function deleteTemplate(
-  templateId: string
+export async function deleteCardDesign(
+  designId: string
 ): Promise<BdcWebApiResponse<{ deleted: boolean; id: string }>> {
-  return callBdcWebApi<{ deleted: boolean; id: string }>(`/api/resources/cardTemplates/${templateId}`, {
+  return callBdcWebApi<{ deleted: boolean; id: string }>(`/api/resources/cardDesigns/${designId}`, {
     method: 'DELETE',
   })
 }
 
 /**
- * 템플릿 생성 또는 수정 (upsert)
+ * 카드 디자인 생성 또는 수정 (upsert)
  *
  * 참고: backoffice는 MongoDB _id를 사용하므로,
  * card-admin의 template.id로는 조회할 수 없음.
  * 따라서 항상 POST로 생성 시도함.
- * (backoffice에서 name 기준 중복 처리 필요)
  */
-export async function upsertTemplate(
+export async function upsertCardDesign(
   template: Record<string, unknown>
-): Promise<BdcWebApiResponse<TemplateCreateResponse>> {
+): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
   const templateId = template.id as string
 
   if (!templateId) {
@@ -265,6 +214,17 @@ export async function upsertTemplate(
     }
   }
 
-  // 항상 새로 생성 (backoffice에서 중복 처리)
-  return createTemplate(template)
+  // 항상 새로 생성
+  return createCardDesign(template)
 }
+
+// 하위 호환성을 위한 alias
+export const getTemplates = getCardDesigns
+export const getTemplate = getCardDesign
+export const createTemplate = createCardDesign
+export const updateTemplate = updateCardDesign
+export const deleteTemplate = deleteCardDesign
+export const upsertTemplate = upsertCardDesign
+export type TemplateCreateResponse = CardDesignCreateResponse
+export type TemplateListItem = CardDesignListItem
+export type TemplateListResponse = CardDesignListResponse
