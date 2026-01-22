@@ -71,6 +71,8 @@ async function callBdcWebApi<T>(
   const url = `${BDC_WEB_API_URL}${endpoint}`
 
   try {
+    console.log('[bdc-web API] 요청:', { url, method: options.method || 'GET' })
+
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -80,7 +82,32 @@ async function callBdcWebApi<T>(
       },
     })
 
-    const data = await response.json()
+    console.log('[bdc-web API] 응답 상태:', response.status, response.statusText)
+
+    // 응답 텍스트 먼저 확인
+    const responseText = await response.text()
+    console.log('[bdc-web API] 응답 본문 길이:', responseText.length)
+
+    // 빈 응답 처리
+    if (!responseText || responseText.trim() === '') {
+      console.error('[bdc-web API] 빈 응답 수신')
+      return {
+        success: false,
+        error: `서버로부터 빈 응답을 받았습니다. (HTTP ${response.status})`,
+      }
+    }
+
+    // JSON 파싱 시도
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('[bdc-web API] JSON 파싱 실패:', responseText.substring(0, 200))
+      return {
+        success: false,
+        error: `서버 응답을 파싱할 수 없습니다: ${responseText.substring(0, 100)}...`,
+      }
+    }
 
     if (!response.ok) {
       return {
@@ -96,7 +123,16 @@ async function callBdcWebApi<T>(
       message: data.message,
     }
   } catch (error) {
-    console.error('bdc-web API 호출 실패:', error)
+    console.error('[bdc-web API] 호출 실패:', error)
+
+    // 네트워크 에러 또는 fetch 실패
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      return {
+        success: false,
+        error: `API 서버에 연결할 수 없습니다. URL을 확인하세요: ${url}`,
+      }
+    }
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'API 호출 중 오류가 발생했습니다.',
