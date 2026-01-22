@@ -76,7 +76,7 @@ async function callBdcWebApi<T>(
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': BDC_WEB_API_KEY,
+        'x-api-key': BDC_WEB_API_KEY,
         ...options.headers,
       },
     })
@@ -158,16 +158,23 @@ export async function getCardDesign(designId: string): Promise<BdcWebApiResponse
 /**
  * 카드 디자인 생성 (bdc-web에 등록)
  *
- * card-admin JSON 구조가 cardDesigns 스키마와 동일하므로 변환 없이 그대로 전송
+ * card-admin JSON과 cardDesigns 스키마 간 필드 차이 처리:
+ * - id: card-admin 전용 식별자 (백엔드에서는 MongoDB _id 사용)
+ * - version: card-admin은 "1.0.0" 형식, 백엔드는 Number 타입 (0 기본값)
  */
 export async function createCardDesign(
   template: Record<string, unknown>
 ): Promise<BdcWebApiResponse<CardDesignCreateResponse>> {
   console.log('[bdc-web API] 카드 디자인 생성:', template.name || template.id)
 
+  // 백엔드 스키마와 호환되도록 필드 정리
+  const payload = { ...template }
+  delete payload.id // 백엔드는 MongoDB _id 자동 생성
+  delete payload.version // 백엔드는 Number 타입, 기본값 0 사용
+
   return callBdcWebApi<CardDesignCreateResponse>('/api/resources/cardDesigns', {
     method: 'POST',
-    body: JSON.stringify(template),
+    body: JSON.stringify(payload),
   })
 }
 
