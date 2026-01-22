@@ -109,9 +109,11 @@ async function callBdcWebApi<T>(
     }
 
     if (!response.ok) {
+      // 에러 응답 상세 로깅
+      console.error('[bdc-web API] 에러 응답:', JSON.stringify(data, null, 2))
       return {
         success: false,
-        error: data.error || data.message || `HTTP ${response.status} 오류`,
+        error: data.message || data.error || `HTTP ${response.status} 오류`,
         code: data.code,
       }
     }
