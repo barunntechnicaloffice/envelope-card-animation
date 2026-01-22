@@ -6,6 +6,32 @@
 
 const BDC_WEB_API_URL = process.env.BDC_WEB_API_URL || ''
 const BDC_WEB_API_KEY = process.env.BDC_WEB_API_KEY || ''
+const AWS_S3_PREFIX = process.env.AWS_S3_PREFIX || '_static/bdc/server'
+
+/**
+ * 템플릿 내 로컬 에셋 경로를 S3 경로로 변환
+ * /assets/... → /_static/bdc/server/assets/...
+ */
+function transformAssetPaths(obj: unknown): unknown {
+  if (typeof obj === 'string') {
+    // /assets/로 시작하는 경로를 S3 프리픽스로 변환
+    if (obj.startsWith('/assets/')) {
+      return `/${AWS_S3_PREFIX}${obj}`
+    }
+    return obj
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(transformAssetPaths)
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const result: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = transformAssetPaths(value)
+    }
+    return result
+  }
+  return obj
+}
 
 export interface BdcWebApiError {
   success: false
@@ -172,9 +198,13 @@ export async function createCardDesign(
   delete payload.id // 백엔드는 MongoDB _id 자동 생성
   delete payload.version // 백엔드는 Number 타입, 기본값 0 사용
 
+  // 에셋 경로를 S3 경로로 변환 (/assets/... → /_static/bdc/server/assets/...)
+  const transformedPayload = transformAssetPaths(payload) as Record<string, unknown>
+  console.log('[bdc-web API] 에셋 경로 변환 완료')
+
   return callBdcWebApi<CardDesignCreateResponse>('/api/resources/cardDesigns', {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(transformedPayload),
   })
 }
 
