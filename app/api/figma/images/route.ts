@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { writeFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
+import { uploadToS3, isS3Enabled } from '@/lib/storage/s3'
 
 const ASSETS_DIR = path.join(process.cwd(), 'public', 'assets')
 
@@ -158,14 +159,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 3. 에셋 폴더 생성
-    const templateAssetsDir = path.join(ASSETS_DIR, templateId)
-    if (!existsSync(templateAssetsDir)) {
-      await mkdir(templateAssetsDir, { recursive: true })
-    }
+    // 4. 이미지 다운로드 및 저장 (S3 또는 로컬)
+    const savedImages: { name: string; path: string; type: string; storage: string }[] = []
+    const useS3 = isS3Enabled()
 
-    // 4. 이미지 다운로드 및 저장
-    const savedImages: { name: string; path: string; type: string }[] = []
+    // 로컬 저장 시에만 폴더 생성
+    if (!useS3) {
+      const templateAssetsDir = path.join(ASSETS_DIR, templateId)
+      if (!existsSync(templateAssetsDir)) {
+        await mkdir(templateAssetsDir, { recursive: true })
+      }
+    }
 
     for (const [exportNodeId, imageUrl] of Object.entries(imagesData.images)) {
       if (!imageUrl) continue
@@ -184,26 +188,49 @@ export async function POST(request: NextRequest) {
         // 파일명 결정
         const fileName = `${nodeInfo.name}.png`
 
-        const filePath = path.join(templateAssetsDir, fileName)
-        await writeFile(filePath, buffer)
+        if (useS3) {
+          // S3에 업로드
+          const s3Result = await uploadToS3(
+            buffer,
+            fileName,
+            'image/png',
+            templateId  // folder로 templateId 사용
+          )
 
-        savedImages.push({
-          name: fileName,
-          path: `/assets/${templateId}/${fileName}`,
-          type: nodeInfo.type
-        })
+          savedImages.push({
+            name: fileName,
+            path: s3Result.url,  // S3/CloudFront URL
+            type: nodeInfo.type,
+            storage: 's3'
+          })
 
-        console.log(`Saved: ${fileName} (${nodeInfo.type})`)
+          console.log(`Uploaded to S3: ${fileName} -> ${s3Result.url}`)
+        } else {
+          // 로컬에 저장
+          const templateAssetsDir = path.join(ASSETS_DIR, templateId)
+          const filePath = path.join(templateAssetsDir, fileName)
+          await writeFile(filePath, buffer)
+
+          savedImages.push({
+            name: fileName,
+            path: `/assets/${templateId}/${fileName}`,
+            type: nodeInfo.type,
+            storage: 'local'
+          })
+
+          console.log(`Saved locally: ${fileName}`)
+        }
       } catch (err) {
-        console.error(`Failed to download image for node ${exportNodeId}:`, err)
+        console.error(`Failed to save image for node ${exportNodeId}:`, err)
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: `${savedImages.length}개 이미지가 저장되었습니다.`,
+      message: `${savedImages.length}개 이미지가 ${useS3 ? 'S3에' : '로컬에'} 저장되었습니다.`,
       images: savedImages,
-      assetsPath: `/assets/${templateId}/`
+      assetsPath: useS3 ? `S3/${templateId}/` : `/assets/${templateId}/`,
+      storage: useS3 ? 's3' : 'local'
     })
 
   } catch (error) {
