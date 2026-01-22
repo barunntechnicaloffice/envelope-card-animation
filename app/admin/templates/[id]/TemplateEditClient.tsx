@@ -148,7 +148,10 @@ export default function TemplateEditClient({
           const createResult = await createResponse.json()
 
           if (!createResponse.ok) {
-            setError(createResult.error || '저장에 실패했습니다.')
+            const errorMsg = typeof createResult.error === 'string'
+              ? createResult.error
+              : createResult.error?.message || '저장에 실패했습니다.'
+            setError(errorMsg)
             return
           }
 
@@ -157,7 +160,10 @@ export default function TemplateEditClient({
           return
         }
 
-        setError(result.error || '저장에 실패했습니다.')
+        const errorMsg = typeof result.error === 'string'
+          ? result.error
+          : result.error?.message || '저장에 실패했습니다.'
+        setError(errorMsg)
         return
       }
 
@@ -265,7 +271,10 @@ export default function TemplateEditClient({
       }
 
       if (!response.ok) {
-        setError(result.error || 'bdc-web 등록에 실패했습니다.')
+        const errorMsg = typeof result.error === 'string'
+          ? result.error
+          : result.error?.message || 'bdc-web 등록에 실패했습니다.'
+        setError(errorMsg)
         return
       }
 
