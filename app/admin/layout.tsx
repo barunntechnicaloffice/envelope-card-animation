@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 const navigation = [
   { name: '대시보드', href: '/admin', icon: '📊' },
@@ -17,6 +18,13 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, logout } = useAuth()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push('/login')
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -39,6 +47,19 @@ export default function AdminLayout({
               >
                 <span>🔗</span> 사이트 보기
               </Link>
+              {user && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600">
+                    {user.name || user.email}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
