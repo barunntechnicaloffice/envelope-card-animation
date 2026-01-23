@@ -6,11 +6,11 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { randomUUID } from 'crypto'
 import path from 'path'
 
-// S3 설정
+// S3 설정 (bdc-web 백오피스와 동일한 prefix 사용)
 const s3Config = {
   region: process.env.AWS_REGION || 'ap-northeast-2',
   bucket: process.env.AWS_S3_BUCKET || '',
-  prefix: process.env.AWS_S3_PREFIX || 'card-templates',
+  prefix: process.env.AWS_S3_PREFIX || '_static/bdc/server',
   cloudFrontDomain: process.env.AWS_CLOUDFRONT_DOMAIN || '',
 }
 
