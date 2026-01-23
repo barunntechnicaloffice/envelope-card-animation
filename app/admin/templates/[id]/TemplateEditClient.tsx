@@ -52,9 +52,11 @@ export default function TemplateEditClient({
     setError(null)
 
     try {
-      const res = await fetch(`/templates/${templateId}.json`)
+      // API 엔드포인트를 통해 템플릿 조회 (Dev 환경에서 동적으로 저장된 파일도 읽을 수 있음)
+      const res = await fetch(`/api/templates?id=${templateId}`)
       if (res.ok) {
-        const data = await res.json()
+        const result = await res.json()
+        const data = result.data
         setTemplateData(data)
         setJsonString(JSON.stringify(data, null, 2))
         // 원본 레이아웃 저장 (초기화용)
