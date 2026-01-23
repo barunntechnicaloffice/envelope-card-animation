@@ -54,7 +54,13 @@ export default function TemplatesListPage() {
 
     try {
       // API로 실제 존재하는 템플릿 목록 조회
-      const res = await fetch('/api/templates?list=true')
+      // cache: 'no-store'로 항상 최신 데이터 가져오기
+      const res = await fetch('/api/templates?list=true', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      })
       if (res.ok) {
         const data = await res.json()
         setTemplates(data.templates || [])

@@ -5,6 +5,10 @@ import path from 'path'
 
 const TEMPLATES_DIR = path.join(process.cwd(), 'public', 'templates')
 
+// 캐시 비활성화 - 동적으로 파일 시스템을 읽어야 하므로
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // GET: 템플릿 목록 또는 특정 템플릿 조회
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -70,7 +74,15 @@ export async function GET(request: NextRequest) {
       // ID 기준 정렬
       templates.sort((a, b) => a.id.localeCompare(b.id))
 
-      return NextResponse.json({ success: true, templates })
+      return NextResponse.json(
+        { success: true, templates },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate',
+            'Pragma': 'no-cache',
+          },
+        }
+      )
     } catch (error) {
       return NextResponse.json(
         { error: '템플릿 목록을 불러오는데 실패했습니다.' },
