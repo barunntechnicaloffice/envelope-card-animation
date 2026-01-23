@@ -419,8 +419,8 @@ export default function NewTemplatePage() {
     }
 
     // 카테고리에 따라 set 구조 결정
-    // 설문(survey) 카테고리는 cards.main만 필요
-    const isMinimalSet = category === '설문카드'
+    // 질문카드 카테고리는 cards.main만 필요
+    const isMinimalSet = category === '질문카드'
 
     const templateSet = isMinimalSet
       ? {
