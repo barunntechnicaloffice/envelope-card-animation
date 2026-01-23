@@ -70,4 +70,6 @@ vaultSecrets:
   enabled: false
   secrets: []
 
+podAnnotations: {}
+
 affinity: {}
