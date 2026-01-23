@@ -52,9 +52,25 @@ export default function TemplateEditClient({
     setError(null)
 
     try {
-      const res = await fetch(`/templates/${templateId}.json`)
+      // API 엔드포인트를 통해 템플릿 조회 (Dev 환경에서 동적으로 저장된 파일도 읽을 수 있음)
+      const res = await fetch(`/api/templates?id=${templateId}`)
+      console.log('=== 템플릿 로드 ===')
+      console.log('templateId:', templateId)
+      console.log('res.ok:', res.ok)
+      console.log('res.status:', res.status)
+
       if (res.ok) {
-        const data = await res.json()
+        const result = await res.json()
+        console.log('API 응답 result:', result)
+        console.log('result.data:', result.data)
+
+        const data = result.data
+        if (!data) {
+          console.error('data가 undefined입니다!')
+          setError('템플릿 데이터가 비어있습니다.')
+          return
+        }
+
         setTemplateData(data)
         setJsonString(JSON.stringify(data, null, 2))
         // 원본 레이아웃 저장 (초기화용)
@@ -62,6 +78,8 @@ export default function TemplateEditClient({
           setOriginalLayout(JSON.parse(JSON.stringify(data.layout)))
         }
       } else {
+        const errorResult = await res.json().catch(() => ({}))
+        console.log('API 오류 응답:', errorResult)
         // 새 템플릿 생성
         const newTemplate: TemplateData = {
           id: templateId,

@@ -516,6 +516,10 @@ export default function NewTemplatePage() {
             imageUrlMap[img.name] = img.path
           }
 
+          console.log('=== S3 이미지 URL 매핑 ===')
+          console.log('imageUrlMap:', imageUrlMap)
+          console.log('updatedJson.set:', JSON.stringify(updatedJson.set, null, 2))
+
           // set.cards.main 등 업데이트
           if (updatedJson.set) {
             if (updatedJson.set.cards?.main && imageUrlMap['card-main-bg']) {
@@ -551,6 +555,9 @@ export default function NewTemplatePage() {
               }
             }
           }
+
+          console.log('=== S3 URL 업데이트 후 ===')
+          console.log('updatedJson.set.cards.main:', updatedJson.set?.cards?.main)
 
           // 업데이트된 JSON을 저장
           jsonString = JSON.stringify(updatedJson, null, 2)
@@ -617,6 +624,70 @@ export default function NewTemplatePage() {
 
   // Step 4 탭 상태 (미리보기가 기본)
   const [step4Tab, setStep4Tab] = useState<'preview' | 'json'>('preview')
+
+  // bdc-web 등록 상태
+  const [publishing, setPublishing] = useState(false)
+  const [publishSuccess, setPublishSuccess] = useState(false)
+
+  // bdc-web에 템플릿 등록
+  const publishToBdcWeb = useCallback(async () => {
+    if (!generatedJson) {
+      setError('먼저 템플릿을 저장해주세요.')
+      return
+    }
+
+    const confirmed = confirm(
+      `"${templateName || templateId}" 템플릿을 bdc-web에 등록하시겠습니까?\n\n` +
+      `이미 등록된 템플릿이면 업데이트됩니다.`
+    )
+
+    if (!confirmed) return
+
+    setPublishing(true)
+    setPublishSuccess(false)
+    setError(null)
+
+    try {
+      const template = JSON.parse(generatedJson)
+
+      const response = await fetch('/api/templates/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ template }),
+      })
+
+      const responseText = await response.text()
+
+      if (!responseText || responseText.trim() === '') {
+        setError(`서버로부터 빈 응답을 받았습니다. (HTTP ${response.status})`)
+        return
+      }
+
+      let result
+      try {
+        result = JSON.parse(responseText)
+      } catch {
+        setError(`서버 응답 파싱 실패: ${responseText.substring(0, 100)}`)
+        return
+      }
+
+      if (!response.ok) {
+        const errorMsg = typeof result.error === 'string'
+          ? result.error
+          : result.error?.message || 'bdc-web 등록에 실패했습니다.'
+        setError(errorMsg)
+        return
+      }
+
+      setPublishSuccess(true)
+      alert('템플릿이 bdc-web에 등록되었습니다!')
+    } catch (err) {
+      console.error('bdc-web 등록 오류:', err)
+      setError(err instanceof Error ? err.message : 'bdc-web 등록 중 오류가 발생했습니다.')
+    } finally {
+      setPublishing(false)
+    }
+  }, [generatedJson, templateName, templateId])
 
   const saveToServer = useCallback(async () => {
     if (!templateId || !generatedJson) {
@@ -1280,6 +1351,14 @@ export default function NewTemplatePage() {
             </div>
           )}
 
+          {/* bdc-web 등록 성공 메시지 */}
+          {publishSuccess && (
+            <div className="p-4 bg-purple-50 text-purple-700 rounded-lg flex items-center gap-2">
+              <span>🚀</span>
+              <span>템플릿이 bdc-web에 등록되었습니다!</span>
+            </div>
+          )}
+
           {/* 이미지 다운로드 성공 메시지 */}
           {imagesDownloaded && downloadedImages.length > 0 && (
             <div className="p-4 bg-blue-50 text-blue-700 rounded-lg">
@@ -1337,22 +1416,56 @@ export default function NewTemplatePage() {
               )}
             </button>
             {saveSuccess ? (
-              <Link
-                href={`/admin/templates/${templateId}`}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-              >
-                <span>🔗</span>
-                편집 페이지로
-              </Link>
+              <>
+                <button
+                  onClick={publishToBdcWeb}
+                  disabled={publishing}
+                  className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {publishing ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      등록 중...
+                    </>
+                  ) : publishSuccess ? (
+                    <>
+                      <span>✅</span>
+                      등록 완료
+                    </>
+                  ) : (
+                    <>
+                      <span>🚀</span>
+                      bdc-web 등록
+                    </>
+                  )}
+                </button>
+                <Link
+                  href={`/admin/templates/${templateId}`}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                >
+                  <span>🔗</span>
+                  편집 페이지로
+                </Link>
+              </>
             ) : (
-              <button
-                disabled
-                className="px-6 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed flex items-center gap-2"
-                title="먼저 서버에 저장해주세요"
-              >
-                <span>🔗</span>
-                편집 페이지로
-              </button>
+              <>
+                <button
+                  disabled
+                  className="px-6 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed flex items-center gap-2"
+                  title="먼저 서버에 저장해주세요"
+                >
+                  <span>🚀</span>
+                  bdc-web 등록
+                </button>
+                <button
+                  disabled
+                  className="px-6 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed flex items-center gap-2"
+                  title="먼저 서버에 저장해주세요"
+                >
+                  <span>🔗</span>
+                  편집 페이지로
+                </button>
+              </>
             )}
           </div>
 

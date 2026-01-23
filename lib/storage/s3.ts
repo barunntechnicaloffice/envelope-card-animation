@@ -3,14 +3,13 @@
  */
 
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
-import { randomUUID } from 'crypto'
 import path from 'path'
 
-// S3 설정
+// S3 설정 (bdc-web 백오피스와 동일한 prefix 사용)
 const s3Config = {
   region: process.env.AWS_REGION || 'ap-northeast-2',
   bucket: process.env.AWS_S3_BUCKET || '',
-  prefix: process.env.AWS_S3_PREFIX || 'card-templates',
+  prefix: process.env.AWS_S3_PREFIX || '_static/bdc/server',
   cloudFrontDomain: process.env.AWS_CLOUDFRONT_DOMAIN || '',
 }
 
@@ -63,17 +62,17 @@ export async function uploadToS3(
   const extFromName = path.extname(originalName).toLowerCase()
   const extension = extFromName || imageExtensions[mimeType] || '.png'
 
-  // 안전한 파일명 생성
+  // 안전한 파일명 생성 (원본 파일명 유지 - bdc-web 호환)
+  // bdc-web 백오피스의 파일 경로 매핑 기능이 원본 파일명을 기대함
   const baseName = path.basename(originalName, extension)
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9_-]/g, '')
   const safeBaseName = baseName || 'upload'
 
-  // 고유한 파일명 생성
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '')
-  const uuid = randomUUID().slice(0, 8)
-  const fileName = `${timestamp}-${uuid}-${safeBaseName}${extension}`
+  // 파일명은 원본 유지, 폴더 경로로 고유성 확보
+  // 예: assets/survey-card-test1/card-main-bg.png
+  const fileName = `${safeBaseName}${extension}`
 
   // S3 키 생성
   const key = `${s3Config.prefix}/${folder}/${fileName}`
