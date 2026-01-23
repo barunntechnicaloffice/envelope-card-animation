@@ -9,15 +9,29 @@ const BDC_WEB_API_KEY = process.env.BDC_WEB_API_KEY || ''
 const AWS_S3_PREFIX = process.env.AWS_S3_PREFIX || '_static/bdc/server'
 
 /**
- * 템플릿 내 로컬 에셋 경로를 S3 경로로 변환
- * /assets/... → /_static/bdc/server/assets/...
+ * 템플릿 내 에셋 경로를 bdc-web 백오피스용 상대 경로로 변환
+ *
+ * 변환 케이스:
+ * 1. 로컬 경로: /assets/... → /_static/bdc/server/assets/...
+ * 2. S3 전체 URL: https://.../_static/bdc/server/assets/... → /_static/bdc/server/assets/...
+ *
+ * bdc-web 백오피스는 상대 경로를 사용하여 자체 도메인에서 이미지를 서빙함
  */
 function transformAssetPaths(obj: unknown): unknown {
   if (typeof obj === 'string') {
-    // /assets/로 시작하는 경로를 S3 프리픽스로 변환
+    // 케이스 1: 로컬 경로 (/assets/로 시작)
     if (obj.startsWith('/assets/')) {
       return `/${AWS_S3_PREFIX}${obj}`
     }
+
+    // 케이스 2: S3/CloudFront 전체 URL → 상대 경로로 변환
+    // https://도메인/_static/bdc/server/assets/... → /_static/bdc/server/assets/...
+    if (obj.includes('/_static/bdc/server/')) {
+      const relativePath = obj.substring(obj.indexOf('/_static/bdc/server/'))
+      console.log('[transformAssetPaths] S3 URL → 상대 경로:', obj, '→', relativePath)
+      return relativePath
+    }
+
     return obj
   }
   if (Array.isArray(obj)) {
