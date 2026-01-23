@@ -1,4 +1,9 @@
 # Production environment values for bdc-card-admin
+
+# Vault Secret 변경 시 자동 Pod 재시작
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
 image:
   repository: 909200564439.dkr.ecr.ap-northeast-2.amazonaws.com/bdc-card-admin
   tag: prod-latest
