@@ -516,6 +516,10 @@ export default function NewTemplatePage() {
             imageUrlMap[img.name] = img.path
           }
 
+          console.log('=== S3 이미지 URL 매핑 ===')
+          console.log('imageUrlMap:', imageUrlMap)
+          console.log('updatedJson.set:', JSON.stringify(updatedJson.set, null, 2))
+
           // set.cards.main 등 업데이트
           if (updatedJson.set) {
             if (updatedJson.set.cards?.main && imageUrlMap['card-main-bg']) {
@@ -551,6 +555,9 @@ export default function NewTemplatePage() {
               }
             }
           }
+
+          console.log('=== S3 URL 업데이트 후 ===')
+          console.log('updatedJson.set.cards.main:', updatedJson.set?.cards?.main)
 
           // 업데이트된 JSON을 저장
           jsonString = JSON.stringify(updatedJson, null, 2)
