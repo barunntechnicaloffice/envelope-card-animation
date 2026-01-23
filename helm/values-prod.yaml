@@ -19,6 +19,9 @@ ingress:
     alb.ingress.kubernetes.io/healthy-threshold-count: '2'
     alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
 namespace: bdc-card-admin
+# Reloader - Vault Secret 변경 시 자동 Pod 재시작
+podAnnotations:
+  reloader.stakater.com/auto: "true"
 resources:
   limits:
     cpu: 200m

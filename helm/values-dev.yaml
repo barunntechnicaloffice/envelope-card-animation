@@ -22,6 +22,10 @@ ingress:
 
 namespace: bdc-card-admin
 
+# Reloader - Vault Secret 변경 시 자동 Pod 재시작
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
 resources:
   limits:
     cpu: 200m
