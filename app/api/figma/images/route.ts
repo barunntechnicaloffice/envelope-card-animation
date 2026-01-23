@@ -190,11 +190,12 @@ export async function POST(request: NextRequest) {
 
         if (useS3) {
           // S3에 업로드
+          // folder: assets/{templateId} → S3 경로: {prefix}/assets/{templateId}/{fileName}
           const s3Result = await uploadToS3(
             buffer,
             fileName,
             'image/png',
-            templateId  // folder로 templateId 사용
+            `assets/${templateId}`  // assets/ prefix 추가
           )
 
           savedImages.push({
