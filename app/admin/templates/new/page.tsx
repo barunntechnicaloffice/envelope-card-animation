@@ -475,7 +475,7 @@ export default function NewTemplatePage() {
       ]
     }
 
-    const jsonString = JSON.stringify(templateJson, null, 2)
+    let jsonString = JSON.stringify(templateJson, null, 2)
     setGeneratedJson(jsonString)
 
     // JSON 생성 후 바로 서버에 저장
@@ -503,6 +503,58 @@ export default function NewTemplatePage() {
         if (imageResponse.ok && imageResult.images?.length > 0) {
           setDownloadedImages(imageResult.images)
           setImagesDownloaded(true)
+
+          // S3 업로드된 이미지 URL을 JSON에 반영
+          const updatedJson = { ...templateJson }
+
+          // 이미지 URL 매핑 (name -> path)
+          const imageUrlMap: Record<string, string> = {}
+          for (const img of imageResult.images) {
+            // card-main-bg.png -> card-main-bg
+            const nameWithoutExt = img.name.replace(/\.\w+$/, '')
+            imageUrlMap[nameWithoutExt] = img.path
+            imageUrlMap[img.name] = img.path
+          }
+
+          // set.cards.main 등 업데이트
+          if (updatedJson.set) {
+            if (updatedJson.set.cards?.main && imageUrlMap['card-main-bg']) {
+              updatedJson.set.cards.main = imageUrlMap['card-main-bg']
+            }
+            if (updatedJson.set.cards?.default && imageUrlMap['card-default-bg']) {
+              updatedJson.set.cards.default = imageUrlMap['card-default-bg']
+            }
+            if (updatedJson.set.envelope?.pattern && imageUrlMap['envelope-pattern']) {
+              updatedJson.set.envelope.pattern = imageUrlMap['envelope-pattern']
+            }
+            if (updatedJson.set.envelope?.seal && imageUrlMap['envelope-seal']) {
+              updatedJson.set.envelope.seal = imageUrlMap['envelope-seal']
+            }
+            if (updatedJson.set.envelope?.lining && imageUrlMap['envelope-lining']) {
+              updatedJson.set.envelope.lining = imageUrlMap['envelope-lining']
+            }
+            if (updatedJson.set.page?.background && imageUrlMap['page-bg']) {
+              updatedJson.set.page.background = imageUrlMap['page-bg']
+            }
+          }
+
+          // data 섹션의 이미지 경로도 업데이트
+          const dataSection = updatedJson.data[dataKey] as Record<string, string>
+          if (dataSection) {
+            for (const [key, value] of Object.entries(dataSection)) {
+              if (typeof value === 'string' && value.startsWith('/assets/')) {
+                // /assets/template-id/filename.png에서 filename 추출
+                const filename = value.split('/').pop()?.replace(/\.\w+$/, '')
+                if (filename && imageUrlMap[filename]) {
+                  dataSection[key] = imageUrlMap[filename]
+                }
+              }
+            }
+          }
+
+          // 업데이트된 JSON을 저장
+          jsonString = JSON.stringify(updatedJson, null, 2)
+          setGeneratedJson(jsonString)
         }
       }
 
@@ -596,11 +648,90 @@ export default function NewTemplatePage() {
         if (imageResponse.ok && imageResult.images?.length > 0) {
           setDownloadedImages(imageResult.images)
           setImagesDownloaded(true)
+
+          // S3 업로드된 이미지 URL을 JSON에 반영
+          try {
+            const currentJson = JSON.parse(generatedJson)
+
+            // 이미지 URL 매핑 (name -> path)
+            const imageUrlMap: Record<string, string> = {}
+            for (const img of imageResult.images) {
+              const nameWithoutExt = img.name.replace(/\.\w+$/, '')
+              imageUrlMap[nameWithoutExt] = img.path
+              imageUrlMap[img.name] = img.path
+            }
+
+            // set.cards.main 등 업데이트
+            if (currentJson.set) {
+              if (currentJson.set.cards?.main && imageUrlMap['card-main-bg']) {
+                currentJson.set.cards.main = imageUrlMap['card-main-bg']
+              }
+              if (currentJson.set.cards?.default && imageUrlMap['card-default-bg']) {
+                currentJson.set.cards.default = imageUrlMap['card-default-bg']
+              }
+              if (currentJson.set.envelope?.pattern && imageUrlMap['envelope-pattern']) {
+                currentJson.set.envelope.pattern = imageUrlMap['envelope-pattern']
+              }
+              if (currentJson.set.envelope?.seal && imageUrlMap['envelope-seal']) {
+                currentJson.set.envelope.seal = imageUrlMap['envelope-seal']
+              }
+              if (currentJson.set.envelope?.lining && imageUrlMap['envelope-lining']) {
+                currentJson.set.envelope.lining = imageUrlMap['envelope-lining']
+              }
+              if (currentJson.set.page?.background && imageUrlMap['page-bg']) {
+                currentJson.set.page.background = imageUrlMap['page-bg']
+              }
+            }
+
+            // data 섹션의 이미지 경로도 업데이트
+            if (currentJson.data) {
+              for (const dataKey of Object.keys(currentJson.data)) {
+                const dataSection = currentJson.data[dataKey]
+                if (dataSection && typeof dataSection === 'object') {
+                  for (const [key, value] of Object.entries(dataSection)) {
+                    if (typeof value === 'string' && value.startsWith('/assets/')) {
+                      const filename = value.split('/').pop()?.replace(/\.\w+$/, '')
+                      if (filename && imageUrlMap[filename]) {
+                        dataSection[key] = imageUrlMap[filename]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            // 업데이트된 JSON 저장
+            const updatedJsonString = JSON.stringify(currentJson, null, 2)
+            setGeneratedJson(updatedJsonString)
+
+            // 업데이트된 JSON으로 저장 진행
+            const response = await fetch('/api/templates', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                templateId,
+                content: updatedJsonString,
+              }),
+            })
+
+            const result = await response.json()
+
+            if (!response.ok) {
+              setError(result.error || '저장에 실패했습니다.')
+              return
+            }
+
+            setSaveSuccess(true)
+            alert(`템플릿이 저장되었습니다!\n- 이미지: S3에 업로드됨\n- JSON: 이미지 URL이 S3 경로로 업데이트됨`)
+            return
+          } catch (parseErr) {
+            console.error('JSON 파싱 오류:', parseErr)
+          }
         }
         // 이미지 저장 실패해도 JSON 저장은 계속 진행
       }
 
-      // 2. JSON 저장
+      // 2. JSON 저장 (이미지 업로드 없이 또는 실패 시)
       const response = await fetch('/api/templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
