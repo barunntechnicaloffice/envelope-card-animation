@@ -2,7 +2,7 @@
  * AWS S3 스토리지 (bdc-web 백오피스 참고)
  */
 
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3'
 import path from 'path'
 
 // S3 설정 (bdc-web 백오피스와 동일한 prefix 사용)
@@ -132,4 +132,136 @@ export async function deleteFromS3(key: string): Promise<void> {
  */
 export function isS3Enabled(): boolean {
   return process.env.USE_S3 === 'true' && Boolean(s3Config.bucket)
+}
+
+/**
+ * S3에 템플릿 JSON 저장
+ */
+export async function saveTemplateToS3(
+  templateId: string,
+  content: object
+): Promise<{ key: string; url: string }> {
+  if (!s3Config.bucket) {
+    throw new Error('AWS_S3_BUCKET이 설정되지 않았습니다.')
+  }
+
+  const client = getS3Client()
+  const jsonString = JSON.stringify(content, null, 2)
+  const key = `${s3Config.prefix}/templates/${templateId}.json`
+
+  await client.send(
+    new PutObjectCommand({
+      Bucket: s3Config.bucket,
+      Key: key,
+      Body: jsonString,
+      ContentType: 'application/json',
+      CacheControl: 'no-cache, no-store, must-revalidate',
+    })
+  )
+
+  const s3Url = `https://${s3Config.bucket}.s3.${s3Config.region}.amazonaws.com/${key}`
+  const cdnUrl = s3Config.cloudFrontDomain
+    ? `https://${s3Config.cloudFrontDomain.replace(/^https?:\/\//, '')}/${key}`
+    : undefined
+
+  return {
+    key,
+    url: cdnUrl || s3Url,
+  }
+}
+
+/**
+ * S3에서 템플릿 JSON 조회
+ */
+export async function getTemplateFromS3(templateId: string): Promise<object | null> {
+  if (!s3Config.bucket) {
+    return null
+  }
+
+  const client = getS3Client()
+  const key = `${s3Config.prefix}/templates/${templateId}.json`
+
+  try {
+    const response = await client.send(
+      new GetObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+      })
+    )
+
+    if (!response.Body) {
+      return null
+    }
+
+    const bodyString = await response.Body.transformToString()
+    return JSON.parse(bodyString)
+  } catch (error: unknown) {
+    // NoSuchKey 에러는 파일이 없는 것이므로 null 반환
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'NoSuchKey') {
+      return null
+    }
+    console.error(`[S3] 템플릿 조회 실패 (${templateId}):`, error)
+    return null
+  }
+}
+
+/**
+ * S3에서 템플릿 목록 조회
+ */
+export async function listTemplatesFromS3(): Promise<Array<{ id: string; key: string }>> {
+  if (!s3Config.bucket) {
+    return []
+  }
+
+  const client = getS3Client()
+  const prefix = `${s3Config.prefix}/templates/`
+
+  try {
+    const response = await client.send(
+      new ListObjectsV2Command({
+        Bucket: s3Config.bucket,
+        Prefix: prefix,
+      })
+    )
+
+    if (!response.Contents) {
+      return []
+    }
+
+    return response.Contents
+      .filter(item => item.Key && item.Key.endsWith('.json'))
+      .map(item => {
+        const key = item.Key!
+        const fileName = key.replace(prefix, '')
+        const id = fileName.replace('.json', '')
+        return { id, key }
+      })
+  } catch (error) {
+    console.error('[S3] 템플릿 목록 조회 실패:', error)
+    return []
+  }
+}
+
+/**
+ * S3에서 템플릿 삭제
+ */
+export async function deleteTemplateFromS3(templateId: string): Promise<void> {
+  if (!s3Config.bucket) {
+    return
+  }
+
+  const client = getS3Client()
+  const key = `${s3Config.prefix}/templates/${templateId}.json`
+
+  try {
+    await client.send(
+      new DeleteObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+      })
+    )
+    console.log(`[S3] 템플릿 삭제 완료: ${templateId}`)
+  } catch (error) {
+    console.warn(`[S3] 템플릿 삭제 실패 (${templateId}):`, error)
+  }
 }
