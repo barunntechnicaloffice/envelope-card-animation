@@ -3,10 +3,9 @@
 # Vault Secret 변경 시 자동 Pod 재시작
 podAnnotations:
   reloader.stakater.com/auto: "true"
-
 image:
   repository: 768157413559.dkr.ecr.ap-northeast-2.amazonaws.com/bdc-card-admin
-  tag: dev-bf43e18-20260123-132341
+  tag: dev-85e69bf-20260127-112907
 ingress:
   enabled: true
   className: alb
