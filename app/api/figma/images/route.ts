@@ -6,6 +6,91 @@ import { uploadToS3, isS3Enabled } from '@/lib/storage/s3'
 
 const ASSETS_DIR = path.join(process.cwd(), 'public', 'assets')
 
+/**
+ * 노드 이름에서 GIF URL 추출
+ * 형식: BG [gif:https://drive.google.com/file/d/FILE_ID/view]
+ * 또는: BG [gif:https://example.com/image.gif]
+ */
+function extractGifUrl(nodeName: string): string | null {
+  const gifMatch = nodeName.match(/\[gif:(https?:\/\/[^\]]+)\]/i)
+  return gifMatch ? gifMatch[1] : null
+}
+
+/**
+ * Google Drive URL을 직접 다운로드 URL로 변환
+ * https://drive.google.com/file/d/FILE_ID/view -> https://drive.google.com/uc?export=download&id=FILE_ID
+ */
+function convertGoogleDriveUrl(url: string): string {
+  // Google Drive 공유 링크 패턴
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)
+  if (driveMatch) {
+    const fileId = driveMatch[1]
+    console.log(`[GIF] Google Drive URL 변환: ${fileId}`)
+    return `https://drive.google.com/uc?export=download&id=${fileId}`
+  }
+
+  // 이미 직접 다운로드 URL이거나 다른 URL인 경우 그대로 반환
+  return url
+}
+
+/**
+ * 외부 URL에서 GIF 다운로드
+ */
+async function downloadGifFromUrl(url: string): Promise<Buffer | null> {
+  try {
+    const downloadUrl = convertGoogleDriveUrl(url)
+    console.log(`[GIF] 다운로드 시도: ${downloadUrl}`)
+
+    const response = await fetch(downloadUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+      redirect: 'follow',
+    })
+
+    if (!response.ok) {
+      console.error(`[GIF] 다운로드 실패: HTTP ${response.status}`)
+      return null
+    }
+
+    const contentType = response.headers.get('content-type') || ''
+    console.log(`[GIF] Content-Type: ${contentType}`)
+
+    // Google Drive는 HTML 페이지를 반환할 수 있음 (바이러스 스캔 경고)
+    if (contentType.includes('text/html')) {
+      console.warn('[GIF] HTML 응답 받음 - Google Drive 경고 페이지일 수 있음')
+      // confirm 파라미터 추가하여 재시도
+      const confirmUrl = `${downloadUrl}&confirm=t`
+      const retryResponse = await fetch(confirmUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        },
+        redirect: 'follow',
+      })
+
+      if (!retryResponse.ok) {
+        console.error(`[GIF] 재시도 실패: HTTP ${retryResponse.status}`)
+        return null
+      }
+
+      const retryContentType = retryResponse.headers.get('content-type') || ''
+      if (retryContentType.includes('text/html')) {
+        console.error('[GIF] 여전히 HTML 응답 - 파일 접근 권한 확인 필요')
+        return null
+      }
+
+      const arrayBuffer = await retryResponse.arrayBuffer()
+      return Buffer.from(arrayBuffer)
+    }
+
+    const arrayBuffer = await response.arrayBuffer()
+    return Buffer.from(arrayBuffer)
+  } catch (error) {
+    console.error('[GIF] 다운로드 오류:', error)
+    return null
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { fileKey, nodeId, apiKey, templateId } = await request.json()
@@ -54,11 +139,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 이미지로 내보낼 노드 수집: { nodeId, name, type }
+    // 이미지로 내보낼 노드 수집: { nodeId, name, type, gifUrl? }
     interface NodeToExport {
       id: string
       name: string
       type: 'frame' | 'bg' | 'photo' | 'decoration' | 'other'
+      gifUrl?: string  // 외부 GIF URL (있으면 Figma 대신 이 URL에서 다운로드)
     }
 
     const nodesToExport: NodeToExport[] = []
@@ -74,20 +160,28 @@ export async function POST(request: NextRequest) {
       // 디버그 로그
       console.log(`${'  '.repeat(depth)}[${nodeType}] "${nodeName}" (id: ${node.id})`)
 
-      // [locked], [editable] 태그 제거 (공백 유무 모두 처리)
+      // GIF URL 추출 (있으면)
+      const gifUrl = extractGifUrl(nodeName)
+      if (gifUrl) {
+        console.log(`  → Found GIF URL in node name: ${gifUrl}`)
+      }
+
+      // [locked], [editable], [gif:...] 태그 제거 (공백 유무 모두 처리)
       const cleanName = nameLower
         .replace(/\s*\[locked\]\s*/gi, '')
         .replace(/\s*\[editable\]\s*/gi, '')
+        .replace(/\s*\[gif:[^\]]+\]\s*/gi, '')  // GIF 태그도 제거
         .trim()
 
       // BG 노드 → card-main-bg로 저장 (배경 이미지)
       if (cleanName === 'bg' || cleanName === 'background') {
         if (!exportedNames.has('card-main-bg')) {
-          console.log(`  → Found BG node: ${node.id}`)
+          console.log(`  → Found BG node: ${node.id}${gifUrl ? ' (with GIF URL)' : ''}`)
           nodesToExport.push({
             id: node.id,
             name: 'card-main-bg',
-            type: 'bg'
+            type: 'bg',
+            gifUrl: gifUrl || undefined,  // GIF URL 있으면 포함
           })
           exportedNames.add('card-main-bg')
         }
@@ -179,14 +273,34 @@ export async function POST(request: NextRequest) {
       if (!nodeInfo) continue
 
       try {
-        const imgResponse = await fetch(imageUrl as string)
-        if (!imgResponse.ok) continue
+        let buffer: Buffer | null = null
+        let fileExtension = 'png'
+        let mimeType = 'image/png'
 
-        const arrayBuffer = await imgResponse.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
+        // GIF URL이 있으면 외부에서 다운로드
+        if (nodeInfo.gifUrl) {
+          console.log(`[GIF] 외부 URL에서 GIF 다운로드: ${nodeInfo.name}`)
+          buffer = await downloadGifFromUrl(nodeInfo.gifUrl)
+          if (buffer) {
+            fileExtension = 'gif'
+            mimeType = 'image/gif'
+            console.log(`[GIF] 다운로드 성공: ${buffer.length} bytes`)
+          } else {
+            console.warn(`[GIF] 다운로드 실패, Figma 이미지로 대체: ${nodeInfo.name}`)
+          }
+        }
+
+        // GIF가 없거나 다운로드 실패 시 Figma 이미지 사용
+        if (!buffer) {
+          const imgResponse = await fetch(imageUrl as string)
+          if (!imgResponse.ok) continue
+
+          const arrayBuffer = await imgResponse.arrayBuffer()
+          buffer = Buffer.from(arrayBuffer)
+        }
 
         // 파일명 결정
-        const fileName = `${nodeInfo.name}.png`
+        const fileName = `${nodeInfo.name}.${fileExtension}`
 
         if (useS3) {
           // S3에 업로드
@@ -194,7 +308,7 @@ export async function POST(request: NextRequest) {
           const s3Result = await uploadToS3(
             buffer,
             fileName,
-            'image/png',
+            mimeType,  // GIF인 경우 image/gif, 아니면 image/png
             `assets/${templateId}`  // assets/ prefix 추가
           )
 
