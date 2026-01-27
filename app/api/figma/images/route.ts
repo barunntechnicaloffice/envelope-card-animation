@@ -8,12 +8,29 @@ const ASSETS_DIR = path.join(process.cwd(), 'public', 'assets')
 
 /**
  * 노드 이름에서 GIF URL 추출
- * 형식: BG [gif:https://drive.google.com/file/d/FILE_ID/view]
- * 또는: BG [gif:https://example.com/image.gif]
+ *
+ * 지원 형식:
+ * 1. BG --gif-- https://drive.google.com/file/d/FILE_ID/view (권장 - Figma 호환)
+ * 2. BG [gif:https://...] (기존 형식 - Figma에서 변환될 수 있음)
+ *
+ * Figma는 레이어 이름의 특수문자를 camelCase로 변환하므로
+ * --gif-- 구분자 사용을 권장합니다.
  */
 function extractGifUrl(nodeName: string): string | null {
-  const gifMatch = nodeName.match(/\[gif:(https?:\/\/[^\]]+)\]/i)
-  return gifMatch ? gifMatch[1] : null
+  // 형식 1: --gif-- 구분자 사용 (권장)
+  // 예: "BG --gif-- https://drive.google.com/file/d/FILE_ID/view"
+  const dashMatch = nodeName.match(/--gif--\s*(https?:\/\/\S+)/i)
+  if (dashMatch) {
+    return dashMatch[1].trim()
+  }
+
+  // 형식 2: 기존 대괄호 형식 (Figma에서 변환될 수 있음)
+  const bracketMatch = nodeName.match(/\[gif:(https?:\/\/[^\]]+)\]/i)
+  if (bracketMatch) {
+    return bracketMatch[1]
+  }
+
+  return null
 }
 
 /**
@@ -166,11 +183,12 @@ export async function POST(request: NextRequest) {
         console.log(`  → Found GIF URL in node name: ${gifUrl}`)
       }
 
-      // [locked], [editable], [gif:...] 태그 제거 (공백 유무 모두 처리)
+      // [locked], [editable], [gif:...], --gif-- 태그 제거 (공백 유무 모두 처리)
       const cleanName = nameLower
         .replace(/\s*\[locked\]\s*/gi, '')
         .replace(/\s*\[editable\]\s*/gi, '')
-        .replace(/\s*\[gif:[^\]]+\]\s*/gi, '')  // GIF 태그도 제거
+        .replace(/\s*\[gif:[^\]]+\]\s*/gi, '')  // 기존 GIF 태그 제거
+        .replace(/\s*--gif--\s*https?:\/\/\S+/gi, '')  // 새 형식 GIF URL 제거
         .trim()
 
       // BG 노드 → card-main-bg로 저장 (배경 이미지)
