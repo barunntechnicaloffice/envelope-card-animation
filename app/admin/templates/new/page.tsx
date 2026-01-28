@@ -22,6 +22,7 @@ interface FigmaElement {
   color?: string
   textAlign?: string
   letterSpacing?: number
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
   lineHeight?: number
   characters?: string
 }
@@ -41,6 +42,7 @@ interface ConvertedElement {
   color?: string
   align?: string
   letterSpacing?: number
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
   lineHeight?: number
   centerAlign?: boolean
 }
@@ -358,6 +360,7 @@ export default function NewTemplatePage() {
         if (el.color) converted.color = el.color
         if (el.textAlign) converted.align = el.textAlign as 'left' | 'center' | 'right'
         if (el.letterSpacing) converted.letterSpacing = el.letterSpacing
+        if (el.textTransform && el.textTransform !== 'none') converted.textTransform = el.textTransform
 
         // lineHeight: Figma에서 가져오거나 기본값 1.0 사용
         if (el.lineHeight) {
