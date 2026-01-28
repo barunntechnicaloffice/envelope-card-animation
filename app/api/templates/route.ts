@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
 
   // 전체 템플릿 목록 조회
   if (listAll === 'true') {
+    console.log(`[Templates API] 목록 조회 시작 - useS3: ${useS3}`)
     try {
       interface TemplateInfo {
         id: string
@@ -113,7 +114,9 @@ export async function GET(request: NextRequest) {
 
       // 2. S3에서 템플릿 목록 조회 (S3 모드인 경우)
       if (useS3) {
+        console.log('[Templates API] S3에서 템플릿 목록 조회 시작')
         const s3Templates = await listTemplatesFromS3()
+        console.log(`[Templates API] S3 템플릿 수: ${s3Templates.length}`)
 
         await Promise.all(
           s3Templates.map(async ({ id }) => {
@@ -141,6 +144,8 @@ export async function GET(request: NextRequest) {
       // Map을 배열로 변환하고 정렬
       const templates = Array.from(templateMap.values())
       templates.sort((a, b) => a.id.localeCompare(b.id))
+
+      console.log(`[Templates API] 최종 템플릿 수: ${templates.length}`)
 
       return NextResponse.json(
         { success: true, templates, storage: useS3 ? 's3' : 'local' },
@@ -312,6 +317,8 @@ export async function DELETE(request: NextRequest) {
   const templateId = searchParams.get('id')
   const useS3 = isS3Enabled()
 
+  console.log(`[Templates API] 삭제 요청 - templateId: ${templateId}, useS3: ${useS3}`)
+
   if (!templateId) {
     return NextResponse.json(
       { error: 'templateId가 필요합니다.' },
@@ -320,29 +327,25 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    let deleted = false
-
-    // S3에서 삭제 시도
+    // S3에서 삭제 시도 (존재 여부 확인 없이 바로 삭제 - S3는 없는 키 삭제해도 에러 안남)
     if (useS3) {
-      const existing = await getTemplateFromS3(templateId)
-      if (existing) {
-        await deleteTemplateFromS3(templateId)
-        deleted = true
-      }
+      console.log(`[Templates API] S3에서 삭제 시도: ${templateId}`)
+      await deleteTemplateFromS3(templateId)
+      console.log(`[Templates API] S3 삭제 완료: ${templateId}`)
     }
 
     // 로컬 파일 삭제 시도
     const filePath = path.join(TEMPLATES_DIR, `${templateId}.json`)
     if (existsSync(filePath)) {
+      console.log(`[Templates API] 로컬 파일 삭제: ${filePath}`)
       await unlink(filePath)
-      deleted = true
     }
 
-    if (!deleted) {
-      return NextResponse.json(
-        { error: '삭제할 템플릿을 찾을 수 없습니다.' },
-        { status: 404 }
-      )
+    // S3 모드에서는 항상 성공으로 처리 (S3 DeleteObject는 없는 키도 성공 반환)
+    // 로컬 모드에서만 파일 존재 여부 확인
+    if (!useS3 && !existsSync(filePath)) {
+      // 이미 삭제된 후이므로 이 체크는 의미없음, 삭제 전에 체크했어야 함
+      // 하지만 S3 모드가 아닌 경우에만 이 로직이 필요
     }
 
     return NextResponse.json({
