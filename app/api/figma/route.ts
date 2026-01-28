@@ -17,6 +17,7 @@ interface FigmaNode {
     letterSpacing?: number
     lineHeightPx?: number
     textAlignHorizontal?: string
+    textCase?: 'ORIGINAL' | 'UPPER' | 'LOWER' | 'TITLE'
   }
   fills?: Array<{
     type: string
@@ -45,6 +46,7 @@ interface ParsedElement {
   color?: string
   textAlign?: string
   letterSpacing?: number
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
   characters?: string
 }
 
@@ -79,6 +81,17 @@ function parseNode(node: FigmaNode, elements: ParsedElement[]): void {
       element.letterSpacing = node.style.letterSpacing
       element.textAlign = node.style.textAlignHorizontal?.toLowerCase()
       element.characters = node.characters
+
+      // textCase → textTransform 변환
+      if (node.style.textCase) {
+        const textCaseMap: Record<string, 'none' | 'uppercase' | 'lowercase' | 'capitalize'> = {
+          'ORIGINAL': 'none',
+          'UPPER': 'uppercase',
+          'LOWER': 'lowercase',
+          'TITLE': 'capitalize'
+        }
+        element.textTransform = textCaseMap[node.style.textCase] || 'none'
+      }
     }
 
     // 색상 추출 (fills에서)
