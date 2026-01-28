@@ -5,7 +5,7 @@ podAnnotations:
   reloader.stakater.com/auto: "true"
 image:
   repository: 768157413559.dkr.ecr.ap-northeast-2.amazonaws.com/bdc-card-admin
-  tag: dev-b2cbbde-20260127-125526
+  tag: dev-8efb2eb-20260128-165928
 ingress:
   enabled: true
   className: alb
