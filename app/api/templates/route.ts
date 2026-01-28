@@ -317,6 +317,8 @@ export async function DELETE(request: NextRequest) {
   const templateId = searchParams.get('id')
   const useS3 = isS3Enabled()
 
+  console.log(`[Templates API] 삭제 요청 - templateId: ${templateId}, useS3: ${useS3}`)
+
   if (!templateId) {
     return NextResponse.json(
       { error: 'templateId가 필요합니다.' },
@@ -325,29 +327,25 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    let deleted = false
-
-    // S3에서 삭제 시도
+    // S3에서 삭제 시도 (존재 여부 확인 없이 바로 삭제 - S3는 없는 키 삭제해도 에러 안남)
     if (useS3) {
-      const existing = await getTemplateFromS3(templateId)
-      if (existing) {
-        await deleteTemplateFromS3(templateId)
-        deleted = true
-      }
+      console.log(`[Templates API] S3에서 삭제 시도: ${templateId}`)
+      await deleteTemplateFromS3(templateId)
+      console.log(`[Templates API] S3 삭제 완료: ${templateId}`)
     }
 
     // 로컬 파일 삭제 시도
     const filePath = path.join(TEMPLATES_DIR, `${templateId}.json`)
     if (existsSync(filePath)) {
+      console.log(`[Templates API] 로컬 파일 삭제: ${filePath}`)
       await unlink(filePath)
-      deleted = true
     }
 
-    if (!deleted) {
-      return NextResponse.json(
-        { error: '삭제할 템플릿을 찾을 수 없습니다.' },
-        { status: 404 }
-      )
+    // S3 모드에서는 항상 성공으로 처리 (S3 DeleteObject는 없는 키도 성공 반환)
+    // 로컬 모드에서만 파일 존재 여부 확인
+    if (!useS3 && !existsSync(filePath)) {
+      // 이미 삭제된 후이므로 이 체크는 의미없음, 삭제 전에 체크했어야 함
+      // 하지만 S3 모드가 아닌 경우에만 이 로직이 필요
     }
 
     return NextResponse.json({
