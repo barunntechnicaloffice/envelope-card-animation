@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
 
   // 전체 템플릿 목록 조회
   if (listAll === 'true') {
+    console.log(`[Templates API] 목록 조회 시작 - useS3: ${useS3}`)
     try {
       interface TemplateInfo {
         id: string
@@ -113,7 +114,9 @@ export async function GET(request: NextRequest) {
 
       // 2. S3에서 템플릿 목록 조회 (S3 모드인 경우)
       if (useS3) {
+        console.log('[Templates API] S3에서 템플릿 목록 조회 시작')
         const s3Templates = await listTemplatesFromS3()
+        console.log(`[Templates API] S3 템플릿 수: ${s3Templates.length}`)
 
         await Promise.all(
           s3Templates.map(async ({ id }) => {
@@ -141,6 +144,8 @@ export async function GET(request: NextRequest) {
       // Map을 배열로 변환하고 정렬
       const templates = Array.from(templateMap.values())
       templates.sort((a, b) => a.id.localeCompare(b.id))
+
+      console.log(`[Templates API] 최종 템플릿 수: ${templates.length}`)
 
       return NextResponse.json(
         { success: true, templates, storage: useS3 ? 's3' : 'local' },

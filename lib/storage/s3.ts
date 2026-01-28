@@ -206,15 +206,18 @@ export async function getTemplateFromS3(templateId: string): Promise<object | nu
 }
 
 /**
- * S3에서 템플릿 목록 조회
+ * S3에서 템플릿 목록 조회 (페이지네이션 지원)
  */
 export async function listTemplatesFromS3(): Promise<Array<{ id: string; key: string }>> {
   if (!s3Config.bucket) {
+    console.log('[S3] listTemplatesFromS3: bucket이 설정되지 않음')
     return []
   }
 
   const client = getS3Client()
   const prefix = `${s3Config.prefix}/templates/`
+
+  console.log(`[S3] 템플릿 목록 조회 시작 - bucket: ${s3Config.bucket}, prefix: ${prefix}`)
 
   try {
     const response = await client.send(
@@ -224,11 +227,14 @@ export async function listTemplatesFromS3(): Promise<Array<{ id: string; key: st
       })
     )
 
+    console.log(`[S3] ListObjectsV2 응답 - Contents: ${response.Contents?.length ?? 0}개`)
+
     if (!response.Contents) {
+      console.log('[S3] 템플릿 없음 (Contents가 비어있음)')
       return []
     }
 
-    return response.Contents
+    const templates = response.Contents
       .filter(item => item.Key && item.Key.endsWith('.json'))
       .map(item => {
         const key = item.Key!
@@ -236,8 +242,15 @@ export async function listTemplatesFromS3(): Promise<Array<{ id: string; key: st
         const id = fileName.replace('.json', '')
         return { id, key }
       })
+
+    console.log(`[S3] 템플릿 목록 조회 완료 - ${templates.length}개 발견`)
+    return templates
   } catch (error) {
     console.error('[S3] 템플릿 목록 조회 실패:', error)
+    // 에러 상세 정보 로깅
+    if (error instanceof Error) {
+      console.error('[S3] 에러 상세:', error.name, error.message)
+    }
     return []
   }
 }
