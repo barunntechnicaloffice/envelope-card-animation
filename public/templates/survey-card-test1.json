@@ -2,7 +2,7 @@
   "id": "survey-card-test1",
   "version": "1.0.0",
   "name": "설문테스트1번",
-  "category": "설문카드",
+  "category": "survey",
   "figmaNodeId": "1446:11166",
   "set": {
     "cards": {
