@@ -251,7 +251,7 @@ export default function TemplatesPage() {
               cursor: 'pointer'
             }}
           >
-            웨딩
+            Wedding
           </button>
         </div>
 
@@ -321,7 +321,7 @@ export default function TemplatesPage() {
                     color: '#666',
                     margin: 0
                   }}>
-                    {template.category === 'wedding' ? '웨딩' : template.category}
+                    {template.category === 'wedding' ? 'Wedding' : template.category}
                   </p>
                 </div>
               </div>
