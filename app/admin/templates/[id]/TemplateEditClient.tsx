@@ -84,8 +84,8 @@ export default function TemplateEditClient({
         const newTemplate: TemplateData = {
           id: templateId,
           version: '1.0.0',
-          name: `웨딩 카드 ${templateId.split('-').pop()}`,
-          category: '웨딩',
+          name: `Wedding Card ${templateId.split('-').pop()}`,
+          category: 'wedding',
           layout: {
             baseSize: { width: 335, height: 515 }
           },
